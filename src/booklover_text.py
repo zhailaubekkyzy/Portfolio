@@ -10,7 +10,6 @@ T = {
 "nav_label": ("Разделы", "Sections"),
 "nav_back": ("← Все проекты", "← All projects"),
 "nav_crm": ("CRM-дашборд →", "CRM dashboard →"),
-"pres_link": ("▶ Презентация проекта · 11 шагов", "▶ Project presentation · 11 steps"),
 "crm_link": ("Все расчёты на уровне пользователей, с фильтрами по каналам, платформам и жанрам: CRM-дашборд →",
              "Every figure at user level, with filters by channel, platform and genre: CRM dashboard →"),
 "h2_sim": ("Оценка — в симуляторе бюджета на дашборде. Остальной разрыв закрывает исправление Android v2.0: около +5 п.п.",
@@ -60,8 +59,8 @@ T = {
 "sum_l3": ("Только каждый пятый доходит до второй книги. Дочитанная книга — момент успеха и одновременно точка выхода.",
            "Only one user in five reaches a second book. A finished book is the moment of success and also the exit point."),
 "sum_l4_b": ("Что делаю", "What I do"),
-"sum_l4": ("Мост ко второй книге, чистка каналов привлечения, привычка чтения в первую неделю. Каждая ставка — с метрикой, порогом успеха и guardrail.",
-           "A bridge to the second book, cleaning up acquisition channels, a reading habit in week one. Each bet has a metric, a success threshold and a guardrail."),
+"sum_l4": ("Хотфикс Android v2.0, затем мост ко второй книге, чистка каналов привлечения и привычка чтения в первую неделю. Каждая ставка — с метрикой, порогом успеха и guardrail.",
+           "An Android v2.0 hotfix, then a bridge to the second book, cleaner acquisition channels and a first-week reading habit. Each bet has a metric, a success threshold and a guardrail."),
 
 # ---------- cohorts ----------
 "coh_e": ("Шаг 1 · Когорты", "Step 1 · Cohorts"),

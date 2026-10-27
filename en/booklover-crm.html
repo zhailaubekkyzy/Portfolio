@@ -223,52 +223,66 @@ input[type="range"] { width: 100%; accent-color: var(--s0); }
 .tl li:not(:last-child)::after { content: ""; position: absolute; left: 78px; top: 14px; bottom: -2px; width: 2px; background: var(--line); }
 .rec { background: color-mix(in srgb, var(--focus) 10%, transparent); border-radius: 10px; padding: 12px; font-size: 13.5px; }
 
-/* presentation */
-body.presenting .view { padding-bottom: 230px; }
-body.presenting #undoBtn, body.presenting #prBtn { display: none; }
-.pbar { position: fixed; left: 240px; right: 0; bottom: 0; z-index: 25; background: var(--surface); border-top: 1px solid var(--line); box-shadow: 0 -8px 30px rgb(15 23 42 / .12);
-  padding: 12px max(20px, env(safe-area-inset-right, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)) 20px; }
-.pbar-in { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 16px; align-items: center; max-width: 1200px; }
-.pmeta { display: grid; gap: 2px; min-width: 0; }
-.pmeta b { font-family: var(--f-display); font-size: 16px; line-height: 1.25; }
-.pbtns { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
-.pbtns .btn[aria-pressed="true"] { background: var(--surface-2); }
-.pnotes { grid-column: 1 / -1; background: var(--warn-bg); color: var(--ink); border-radius: 10px; padding: 10px 12px; font-size: 14px; display: grid; gap: 4px; }
-.pnotes .lab { color: var(--warn); }
-.pnotes .keys { font-size: 11.5px; color: var(--muted); }
-.pdots { grid-column: 1 / -1; display: flex; gap: 4px; }
-.pdots i { flex: 1; height: 3px; border-radius: 2px; background: var(--line); }
-.pdots i.on { background: var(--s0); }
-.spot { outline: 3px solid var(--s4); outline-offset: 4px; border-radius: 14px; }
-tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
-.slide { min-height: calc(100vh - 140px); align-content: center; }
-.sl { max-width: 1000px; display: grid; gap: 22px; }
-.sl h2 { font-family: var(--f-display); font-size: clamp(28px, 4.4vw, 52px); font-weight: 700; letter-spacing: -.02em; line-height: 1.05; }
-.sl .lead { font-size: clamp(16px, 1.8vw, 20px); color: var(--ink-2); max-width: 60ch; }
-.sl .nums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-.sl .nums div { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 4px; }
-.sl .nums b { font-family: var(--f-display); font-size: clamp(24px, 3vw, 38px); font-weight: 700; font-variant-numeric: tabular-nums; }
-.sl .nums b.bad { color: var(--bad); }
-.sl .nums span { font-size: 13.5px; color: var(--ink-2); }
-.sl .q { font-size: 17px; font-weight: 600; }
-.sl .bets { display: grid; gap: 10px; }
-.sl .bet { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 14px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; }
-.sl .bet .n { font-family: var(--f-display); font-weight: 700; font-size: 18px; width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--surface-2); }
-.sl .bet.fix .n { background: var(--good-bg); color: var(--good); }
-.sl .bet b { display: block; font-size: 16px; }
-.sl .bet span { font-size: 13.5px; color: var(--ink-2); }
-.sl .weeks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
-.sl .weeks div { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 4px; align-content: start; }
-.sl .weeks b { font-size: 15px; }
-.sl .weeks span { font-size: 13.5px; color: var(--ink-2); }
-.sl .links { font-size: 14px; }
-.sl .links a { color: var(--focus); }
+/* step-by-step case */
+.nav-btn .no { width: 22px; height: 22px; flex: none; border-radius: 7px; display: grid; place-items: center; font-family: var(--f-mono); font-size: 11.5px; font-weight: 600; background: var(--side-act); color: var(--side-ink); }
+.nav-btn[aria-current="page"] .no { background: var(--s0); color: #fff; }
+.stepno { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--s0); font-weight: 600; }
+.stepnav { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin-top: 8px; }
+.stepnav button { text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: 14px; padding: 14px 16px; cursor: pointer; display: grid; gap: 2px; min-width: 0; }
+.stepnav button:hover { border-color: var(--ink-2); }
+.stepnav button.next { text-align: right; background: var(--ink); color: var(--bg); border-color: var(--ink); grid-column: 2; }
+.stepnav button span { font-size: 12px; opacity: .7; }
+.stepnav button b { font-size: 15px; }
+.hero-h { font-size: clamp(28px, 4vw, 44px) !important; }
+.hero-h span { color: var(--muted); font-weight: 500; }
+.notepill { display: inline-flex; width: fit-content; max-width: 100%; font-size: 13px; color: var(--warn); background: var(--warn-bg); padding: 5px 12px; border-radius: 999px; }
+.kpis4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.kpis4 .v { font-size: clamp(20px, 2.2vw, 28px); }
+.sumgrid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 12px; align-items: start; }
+.sumgrid .finding b { font-size: clamp(28px, 3.4vw, 40px); }
+.sumlist { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.sumlist li { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 6px; align-content: start; font-size: 14.5px; color: var(--ink-2); }
+.sumlist b { font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; font-weight: 500; color: var(--muted); }
+.bucket { display: grid; gap: 12px; align-content: start; }
+.bucket h3 { font-family: var(--f-display); font-size: 17px; }
+.fac { display: grid; gap: 5px; padding-top: 12px; border-top: 1px solid var(--line); }
+.bucket h3 + .fac { border-top: 0; padding-top: 0; }
+.fac .pill { width: fit-content; }
+.fac b { font-weight: 600; font-size: 14.5px; }
+.fac > span:last-child { font-size: 13px; color: var(--ink-2); }
+.fixcard { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 14px; align-items: center; }
+.fixcard .n { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-family: var(--f-display); font-weight: 700; background: var(--good-bg); color: var(--good); }
+.fixcard b { display: block; font-size: 15.5px; }
+.fixcard span { font-size: 13.5px; color: var(--ink-2); }
+.hcard { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 20px; }
+.hcard h3 { font-family: var(--f-display); font-size: 18px; margin: 4px 0 12px; }
+.chain { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+.chain li { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 10px; font-size: 13.5px; color: var(--ink-2); }
+.chain li b { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; font-weight: 500; color: var(--muted); padding-top: 2px; }
+.stmt { background: var(--surface-2); border-radius: 10px; padding: 14px 16px; font-size: 15.5px; line-height: 1.6; }
+.stmt em { font-style: normal; font-family: var(--f-mono); font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--s0); margin-right: 4px; }
+.hmore { display: grid; gap: 8px; margin-top: 12px; font-size: 13.5px; color: var(--ink-2); }
+.hmore b { color: var(--ink); }
+table.crm td.wrap { white-space: normal; min-width: 220px; color: var(--ink-2); }
+.pill.t1 { background: color-mix(in srgb, var(--s0) 14%, transparent); color: var(--s0); }
+.tree { font-family: var(--f-mono); font-size: 13px; line-height: 1.7; margin-top: 8px; }
+.weeks { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.weeks li { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 6px; align-content: start; font-size: 13.5px; color: var(--ink-2); }
+.weeks b { color: var(--ink); font-size: 15px; }
+pre.code { margin: 0; background: var(--surface-2); border-radius: 10px; padding: 14px; overflow-x: auto; font-family: var(--f-mono); font-size: 12px; line-height: 1.6; }
+.msteps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; counter-reset: m; }
+.msteps li { counter-increment: m; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px 14px 52px; position: relative; display: grid; gap: 4px; font-size: 13.5px; color: var(--ink-2); }
+.msteps li::before { content: counter(m); position: absolute; left: 16px; top: 14px; width: 24px; height: 24px; border-radius: 50%; background: var(--ink); color: var(--bg); display: grid; place-items: center; font-size: 12px; font-weight: 600; }
+.msteps b { color: var(--ink); font-size: 14.5px; }
+.res { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; font-size: 13.5px; }
+.res a { color: var(--focus); font-weight: 600; text-decoration: none; }
+.res a:hover { text-decoration: underline; }
 @media (max-width: 900px) {
-  .pbar { left: 0; padding-left: max(16px, env(safe-area-inset-left, 0px)); }
-  .pbar-in { grid-template-columns: minmax(0, 1fr); }
-  .pbtns { justify-content: flex-start; }
-  .pnotes .keys { display: none; }
-  .sl .nums, .sl .weeks { grid-template-columns: minmax(0, 1fr); }
+  .kpis4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sumgrid, .hcard, .msteps, .weeks, .sumlist { grid-template-columns: minmax(0, 1fr); }
+  .stepnav { grid-template-columns: minmax(0, 1fr); }
+  .stepnav button.next { grid-column: 1; grid-row: 1; }
+  .chain li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
 }
 
 .tip { position: fixed; pointer-events: none; z-index: 40; background: var(--ink); color: var(--bg); font-size: 12.5px; line-height: 1.45; padding: 7px 10px; border-radius: 8px; max-width: 260px; opacity: 0; transition: opacity .12s; }
@@ -305,16 +319,19 @@ tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
 <div class="app">
   <aside class="side" aria-label="Sections">
     <div class="brand"><span class="logo">BL</span><div><b>BookLover · Retention</b><span>CRM on demo data</span></div></div>
-    <div class="navgroup">Analysis</div>
-    <button class="nav-btn" data-view="overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Overview</button>
-    <button class="nav-btn" data-view="sources"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16l-6 8v6l-4 2v-8z"/></svg>Traffic sources</button>
-    <button class="nav-btn" data-view="cohorts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h12M9 3v18M15 3v12"/></svg>Cohorts</button>
-    <button class="nav-btn" data-view="funnel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16M7 10h10M10 15h4M11 20h2"/></svg>Reading funnel</button>
-    <button class="nav-btn" data-view="diagnosis"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>Diagnosis</button>
-    <div class="navgroup">Users</div>
+    <div class="navgroup">The case, step by step</div>
+    <button class="nav-btn" data-view="task"><span class="no">1</span>The problem</button>
+    <button class="nav-btn" data-view="overview"><span class="no">2</span>Overview</button>
+    <button class="nav-btn" data-view="cohorts"><span class="no">3</span>Cohorts</button>
+    <button class="nav-btn" data-view="factors"><span class="no">4</span>Possible causes</button>
+    <button class="nav-btn" data-view="sources"><span class="no">5</span>Traffic sources</button>
+    <button class="nav-btn" data-view="diagnosis"><span class="no">6</span>Diagnosis</button>
+    <button class="nav-btn" data-view="funnel"><span class="no">7</span>Reading funnel</button>
+    <button class="nav-btn" data-view="hypotheses"><span class="no">8</span>Hypotheses</button>
+    <button class="nav-btn" data-view="experiments"><span class="no">9</span>Metrics & tests</button>
+    <button class="nav-btn" data-view="plan"><span class="no">10</span>Plan</button>
+    <div class="navgroup">Appendix</div>
     <button class="nav-btn" data-view="users"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6"/><path d="M16 4a4 4 0 0 1 0 8M22 21c0-3-2-5-5-5.6"/></svg>Users<span class="cnt" id="cntU"></span></button>
-    <div class="navgroup">Decisions</div>
-    <button class="nav-btn" data-view="experiments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-5-9V3"/></svg>Experiments</button>
     <button class="nav-btn" data-view="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg>About the data</button>
     <div class="foot">
       <a href="../#en">← Portfolio</a>
@@ -329,10 +346,9 @@ tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
         <button type="button" class="btn" id="undoBtn" hidden title="One step back · Alt + ←" aria-label="One step back · Alt + ←">← Back</button>
         <h1 id="vTitle">Overview</h1>
         <label class="search" for="q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input class="ctl" id="q" placeholder="BL-000123" autocomplete="off" aria-label="Find a user by ID"></label>
-        <button type="button" class="btn pri" id="prBtn" title="Walk through the case step by step: from problem to solution">▶ Present</button>
         <a class="btn lang" href="../booklover-crm.html">RU</a>
       </div>
-      <div class="top-row">
+      <div class="top-row" id="fRow">
         <span class="fgroup">Sign-up months
           <select class="ctl" id="fM0" aria-label="From"></select>–<select class="ctl" id="fM1" aria-label="to"></select></span>
         <select class="ctl" id="fCh" aria-label="Channel"></select>
@@ -341,6 +357,26 @@ tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
         <div class="active-filters" id="af"></div>
       </div>
     </div>
+
+    <!-- 1 TASK -->
+    <section class="view" data-view="task" hidden>
+      <div class="vhead"><span class="eyebrow">Product case · Retention & churn</span><h2 class="hero-h">Retention <span>BookLover</span></h2><p>BookLover is a mobile reading app launched six months ago. Acquisition grows every month, yet since April 30-day retention has been falling: from 45% to 28%. I found when and where retention breaks, separated causes into “who arrived” and “what they found”, and proposed three hypotheses with metrics and a test plan.</p><span class="notepill">A training case from a product management course: the data come from the brief, not a real product</span></div>
+      <div class="kpis4">
+        <div class="kpi"><span class="eyebrow">D30 retention</span><span class="v down">45% → 28%</span><span class="d">January vs June cohort</span></div>
+        <div class="kpi"><span class="eyebrow">Retained from growth</span><span class="v down">6.5%</span><span class="d">of April’s extra users vs March (baseline 45%)</span></div>
+        <div class="kpi"><span class="eyebrow">Reached a second book</span><span class="v">19.5%</span><span class="d">of all users: 65% × 30%</span></div>
+        <div class="kpi"><span class="eyebrow">Lost in 3 months</span><span class="v">≈ 9,900</span><span class="d">active users vs a 45% retention baseline</span></div>
+      </div>
+      <div class="sumgrid">
+        <div class="finding"><span class="eyebrow" style="color:inherit;opacity:.7">The 30-second version</span><b>3 bets</b><span>Two problems: growth is buying the wrong users, and the product does not lead readers to a second book</span></div>
+        <ul class="sumlist">
+          <li><b>What happened</b>From the April cohort on, D30 retention falls and does not recover: 45 → 38 → 30 → 28%. This is a lasting shift, not a one-off incident.</li>
+          <li><b>Where</b>Retained users have stalled at about 8,000 a month while new users grew 50%. Almost all growth churns. In May part of the core audience went too.</li>
+          <li><b>Chronic</b>Only one user in five reaches a second book. A finished book is the moment of success and also the exit point.</li>
+          <li><b>What I do</b>An Android v2.0 hotfix, then a bridge to the second book, cleaner acquisition channels and a first-week reading habit. Each bet has a metric, a success threshold and a guardrail.</li>
+        </ul>
+      </div>
+    </section>
 
     <!-- OVERVIEW -->
     <section class="view" data-view="overview">
@@ -354,6 +390,26 @@ tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
           <svg class="chart" id="ovMix" viewBox="0 0 560 260" role="img" aria-label="Where users come from"></svg>
           <div class="legend" id="ovMixLeg"></div></div>
       </div>
+    </section>
+
+    <!-- 4 FACTORS -->
+    <section class="view" data-view="factors" hidden>
+      <div class="vhead"><h2>Causes in three buckets: what the data show and what needs checking</h2><p>Each cause is marked as backed by the case data or as an assumption. Each has a way to check it.</p></div>
+      <div class="g3">
+        <div class="card bucket"><h3>Who arrived</h3>
+          <div class="fac"><span class="pill y">In the data</span><b>New channels brought a less relevant audience</b><span>How to check: cohort retention split by channel and campaign</span></div>
+          <div class="fac"><span class="pill m">Assumption</span><b>The ad offer did not match the product (e.g. “free books”)</b><span>How to check: April–May creatives, retention per creative, 1–2★ reviews about being misled</span></div>
+          <div class="fac"><span class="pill m">Assumption</span><b>Geography or platform mix shifted (Android/iOS)</b><span>How to check: share of countries and platforms per cohort</span></div></div>
+        <div class="card bucket"><h3>What they found</h3>
+          <div class="fac"><span class="pill y">In the data</span><b>An April release hurt the experience: bugs, speed, a new UI</b><span>How to check: retention by app version, crash rate, book load time</span></div>
+          <div class="fac"><span class="pill m">Assumption</span><b>Catalog, pricing or the paywall changed</b><span>How to check: changelog, share of searches with no result, paid conversion</span></div>
+          <div class="fac"><span class="pill y">In the data</span><b>No bridge to a second book (chronic)</b><span>How to check: second-book rate by cohort and what a user sees on the last page</span></div></div>
+        <div class="card bucket"><h3>What’s around</h3>
+          <div class="fac"><span class="pill m">Assumption</span><b>Seasonality: exams and vacations in May–June</b><span>How to check: reading time by weekday and week, last year’s market data</span></div>
+          <div class="fac"><span class="pill m">Assumption</span><b>A competitor launched a promo or free access</b><span>How to check: competitor monitoring, “what do you use instead” in interviews</span></div></div>
+      </div>
+      <p class="note" style="margin-top:0"><b>About the 4.5 → 4.2 rating.</b> Timing alone does not prove cause. The rating can fall because the product got worse, or because people arrived who were never a fit. Check: rating by app version and by acquisition channel.</p>
+      <p class="note" style="margin-top:0">Next I check the causes against data: step 5 — acquisition channels, step 6 — product and app versions, step 7 — the reader’s path inside the product.</p>
     </section>
 
     <!-- SOURCES -->
@@ -428,6 +484,87 @@ tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
       <p class="sub" style="font-size:12.5px;color:var(--muted)">The decomposition always compares March and June; the month filter does not apply to it.</p>
     </section>
 
+    <!-- 8 HYPOTHESES -->
+    <section class="view" data-view="hypotheses" hidden>
+      <div class="vhead"><h2>Three bets in “If… then… because…” form</h2><p>Each hypothesis follows the chain: observation → insight → solution → metric. The “because” holds an assumption about people’s behavior. That is what the test checks.</p></div>
+      <div class="card fixcard"><span class="n">0</span><div><b>First, fix Android v2.0 — no experiment needed</b><span>Step 6 showed the core holds 45% on iOS but 33% on Android after v2.0. A hotfix returns about +5 pp of D30. Days of work, not weeks.</span></div></div>
+        <article class="card hcard">
+          <div><span class="eyebrow">H1</span><h3>A bridge to the second book</h3>
+            <ol class="chain">
+              <li><b>Observation</b><span>65% finished, but only 30% of them started a second book: 45% of all users stopped after the first.</span></li>
+              <li><b>Insight</b><span>Choosing the next book is separate work that the app leaves to the person right when their job is already done.</span></li>
+              <li><b>Solution</b><span>A last-page screen: 3 personal picks (same author, genre, “readers of this book chose”) and the first chapter in one tap.</span></li>
+              <li><b>Metric</b><span>Share of finishers who start a second book within 7 days.</span></li>
+            </ol></div>
+          <div><p class="stmt"><em>If</em>we show 3 personal picks on the last page and open the first chapter in one tap, <em>then</em>the 7-day second-book rate rises from 30% to 40%, and D30 retention by 2–3 pp, <em>because</em>people are willing to keep reading but do not want to spend effort choosing once the job is done.</p>
+            <div class="hmore"><p><b>How I test it.</b> A/B test on new users who reach the end of a book. About 360 finishers per arm detect +10 pp (α = 0.05, 80% power). Runs until every participant has lived 30 days.</p><p><b>What would disprove it.</b> The rate rises but reading time on the second book and D30 do not: people open the pick but do not read. Then the problem is pick quality, not the moment.</p></div></div>
+        </article>
+        <article class="card hcard">
+          <div><span class="eyebrow">H2</span><h3>Acquire readers, not installs</h3>
+            <ol class="chain">
+              <li><b>Observation</b><span>Since April retained users sit near 8,000 while acquisition grows. 6.5% of April’s growth retained, vs 45% in January–March.</span></li>
+              <li><b>Insight</b><span>Marketing optimizes for installs and scales into people who never planned to read. A cheap install becomes an expensive reader.</span></li>
+              <li><b>Solution</b><span>Measure cost per retained reader by channel, cut channels with D30 under 20%, align creatives with what the app actually offers.</span></li>
+              <li><b>Metric</b><span>D30 retention by channel and cost per retained user (CAC ÷ D30).</span></li>
+            </ol></div>
+          <div><p class="stmt"><em>If</em>we move budget from channels with D30 under 20% to channels above 40% and drop offers that promise what the product lacks, <em>then</em>blended D30 retention rises from 28% to 34–38%, and cost per retained reader falls 10–15% on the same budget, <em>because</em>the drop began with accelerated acquisition, and almost all the growth churned within 30 days.</p>
+            <div class="hmore"><p><b>How I test it.</b> Not an A/B test but a 4-week budget shift with a control set of channels. Diagnosis first: split April–June cohorts by channel. If every channel retains badly, the hypothesis falls and focus moves to the product. The estimate comes from the dashboard’s budget simulator. The remaining gap closes with the Android v2.0 fix: about +5 pp.</p><p><b>What would disprove it.</b> Organic and the original channels also fell to around 30%. Then the cause is the product, not the audience.</p></div></div>
+        </article>
+        <article class="card hcard">
+          <div><span class="eyebrow">H3</span><h3>A reading habit in week one</h3>
+            <ol class="chain">
+              <li><b>Observation</b><span>35% of users never finish even their first book.</span></li>
+              <li><b>Insight</b><span>People start a book on impulse, but with no rhythm reading breaks on day 2–3 and the book is abandoned.</span></li>
+              <li><b>Solution</b><span>Onboarding: 3 favorite genres, a “10 minutes a day” goal, a reminder at a chosen time and visible book progress.</span></li>
+              <li><b>Metric</b><span>First-book completion, D7 and D30 retention.</span></li>
+            </ol></div>
+          <div><p class="stmt"><em>If</em>at sign-up we offer a 10-minutes-a-day goal with a reminder at a chosen time and a pick based on 3 genres, <em>then</em>first-book completion rises from 65% to 70%, and D7 retention by 3 pp, <em>because</em>habits come from repeating at the same time and a small goal, not from day-one motivation.</p>
+            <div class="hmore"><p><b>How I test it.</b> A/B test on new users: about 1,400 per arm for +5 pp completion. Guardrails: notification opt-outs and uninstalls.</p><p><b>What would disprove it.</b> Completion rises but D30 does not. Then the first book is not the main lever, and the bridge to the second (hypothesis 1) matters more.</p></div></div>
+        </article>
+      <div class="card"><h3>ICE prioritization</h3><p class="sub">Impact × Confidence × Ease, each scored 1–10. Launch order: cheap diagnosis for hypothesis 2 first, building hypothesis 1 in parallel.</p>
+        <div class="tw"><table class="crm" style="min-width:640px">
+          <thead><tr><th>Hypothesis</th><th class="r">I</th><th class="r">C</th><th class="r">E</th><th class="r">ICE</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td>H1 · A bridge to the second book</td><td class="r">8</td><td class="r">7</td><td class="r">7</td><td class="r"><b>392</b></td><td class="wrap">Hits 45% of users, clear mechanism, moderate build</td></tr>
+            <tr><td>H2 · Acquire readers, not installs</td><td class="r">8</td><td class="r">6</td><td class="r">8</td><td class="r"><b>384</b></td><td class="wrap">Explains the April drop, almost no build; confidence lower until the channel split</td></tr>
+            <tr><td>H3 · A reading habit in week one</td><td class="r">6</td><td class="r">5</td><td class="r">6</td><td class="r"><b>180</b></td><td class="wrap">Smaller segment, notifications can annoy</td></tr>
+          </tbody></table></div></div>
+    </section>
+
+    <!-- 10 PLAN -->
+    <section class="view" data-view="plan" hidden>
+      <div class="vhead"><h2>Cheap knowledge first, expensive builds later</h2></div>
+      <ol class="weeks">
+        <li><b>Week 1 · Diagnosis</b>SQL: cohorts by channel, campaign, platform and app version. In parallel, 6–8 interviews with people who finished and stopped and with April churners. Review 1–3★ ratings since April.</li>
+        <li><b>Week 2 · Channel decision</b>If channels are to blame: shift budget (hypothesis 2). If the product: find the April change and roll it back or fix it. Design the last-page screen.</li>
+        <li><b>Weeks 3–4 · Launch tests</b>A/B test of the second-book bridge (hypothesis 1). Prepare the habit onboarding (hypothesis 3).</li>
+        <li><b>Weeks 5–9 · Decisions</b>Read D7 and D30, check guardrails, decide: scale, iterate or kill. Write down what we learned about users even if the test lost.</li>
+      </ol>
+      <div class="card"><h3>SQL: retention by cohort and channel</h3><p class="sub">The first query of week 1. Tables users (id, created_at, channel) and events (user_id, event_time).</p>
+<pre class="code">-- D30 retention by monthly cohort and channel
+WITH cohort AS (
+  SELECT id AS user_id, DATE_TRUNC('month', created_at) AS cohort_month, channel, created_at
+  FROM users
+),
+active_d30 AS (
+  SELECT DISTINCT c.user_id
+  FROM cohort c
+  JOIN events e ON e.user_id = c.user_id
+  WHERE e.event_time &gt;= c.created_at + INTERVAL '28 days'
+    AND e.event_time &lt;  c.created_at + INTERVAL '31 days'
+)
+SELECT c.cohort_month, c.channel,
+       COUNT(*) AS new_users,
+       COUNT(a.user_id) AS active_d30,
+       ROUND(100.0 * COUNT(a.user_id) / COUNT(*), 1) AS retention_d30
+FROM cohort c
+LEFT JOIN active_d30 a ON a.user_id = c.user_id
+GROUP BY 1, 2
+ORDER BY 1, retention_d30;</pre>
+        <div class="links" style="margin-top:12px"><a class="btn" href="../files/booklover-retention.sql" target="_blank" rel="noopener">All case queries · SQL</a></div></div>
+      <p class="note" style="margin-top:0">This is the last step of the case. The appendix holds all 119,000 users with their cards and notes on how the data are built.</p>
+    </section>
+
     <!-- USERS -->
     <section class="view" data-view="users" hidden>
       <div class="vhead"><span class="eyebrow">Users</span><h2>Every user in the cohorts</h2><p>Click a row to open the user card with their reading history.</p></div>
@@ -441,7 +578,25 @@ tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
 
     <!-- EXPERIMENTS -->
     <section class="view" data-view="experiments" hidden>
-      <div class="vhead"><span class="eyebrow">Experiments</span><h2>How many users and days a test needs</h2><p>Sample-size calculator for an A/B test of proportions. Traffic comes from the data with the filters applied: how many eligible users arrive per day.</p></div>
+      <div class="vhead"><h2>What I track and where I stop</h2><p>Each hypothesis has one primary metric, secondary metrics to understand the mechanism and guardrail metrics that must not get worse. Thresholds are written down before launch.</p></div>
+      <div class="g75" style="grid-template-columns:minmax(0,4fr) minmax(0,8fr)">
+        <div class="finding"><span class="eyebrow" style="color:inherit;opacity:.7">North Star</span><b>Weekly active readers</b><span>users who read at least 15 minutes in a week. Not “opened the app”, but got value.</span></div>
+        <div class="card"><h3>Metric tree</h3><p class="tree">Weekly active readers = new users × finished first book × started second × still active at 30 days + returning readers</p></div>
+      </div>
+      <div class="card"><div class="tw"><table class="crm" style="min-width:640px">
+        <thead><tr><th>Metric</th><th>Type</th><th class="r">Now</th><th class="r">Target</th><th>Hypothesis</th></tr></thead>
+        <tbody>
+          <tr><td>Started a 2nd book within 7 days, % of finishers</td><td><span class="pill t1">Primary</span></td><td class="r">30%</td><td class="r">40%</td><td>H1</td></tr>
+          <tr><td>Minutes read on the 2nd book in week one</td><td><span class="pill m">Secondary</span></td><td class="r">to measure</td><td class="r">up</td><td>H1</td></tr>
+          <tr><td>D30 retention by channel</td><td><span class="pill t1">Primary</span></td><td class="r">28%</td><td class="r">34–38%</td><td>H2</td></tr>
+          <tr><td>Cost per retained reader, CAC ÷ D30</td><td><span class="pill m">Secondary</span></td><td class="r">to measure</td><td class="r">−10–15%</td><td>H2</td></tr>
+          <tr><td>Finished the first book, %</td><td><span class="pill t1">Primary</span></td><td class="r">65%</td><td class="r">70%</td><td>H3</td></tr>
+          <tr><td>D7 retention</td><td><span class="pill m">Secondary</span></td><td class="r">to measure</td><td class="r">+3&nbsp;pp</td><td>H3</td></tr>
+          <tr><td>D30 retention, all new users</td><td><span class="pill m">Secondary</span></td><td class="r">28%</td><td class="r">up</td><td>all</td></tr>
+          <tr><td>Notification opt-outs and uninstalls</td><td><span class="pill n">Guardrail</span></td><td class="r">to measure</td><td class="r">no worse than control</td><td>H1, H3</td></tr>
+          <tr><td>Store rating by version</td><td><span class="pill n">Guardrail</span></td><td class="r">4.2</td><td class="r">back to ≥ 4.4</td><td>all</td></tr>
+        </tbody></table></div></div>
+      <div class="vhead" style="margin-top:8px"><h2 style="font-size:20px">How many users and days a test needs</h2><p>Sample-size calculator for an A/B test of proportions. Traffic comes from the data with the filters applied: how many eligible users arrive per day.</p></div>
       <div class="g75">
         <div class="card"><h3>Calculator</h3>
           <div class="sim" style="margin-top:12px">
@@ -463,9 +618,6 @@ tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
       </div>
     </section>
 
-    <!-- PRESENTATION SLIDE (shown only in presentation mode) -->
-    <section class="view slide" data-view="slide" hidden><div id="slideBody"></div></section>
-
     <!-- METHOD -->
     <section class="view" data-view="method" hidden>
       <div class="vhead"><span class="eyebrow">About the data</span><h2>A model that reproduces the case brief</h2><p>The brief gives totals only. To practise on segments, I simulated every user so that the totals match the brief exactly.</p></div>
@@ -474,23 +626,27 @@ tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
         <div class="card"><h3>Illustrative assumptions</h3><p>TikTok and a “free books” promo start in April. v2.0 ships on May 6 and performs worse on Android. Channels, platforms, genres, CAC and spend are invented to show how to find a cause.</p></div>
         <div class="card"><h3>How totals are pinned</h3><p>Each user has a probability to stay, driven by channel, motivation, platform and version. A logit shift scales it so the expected sum equals the brief. Systematic sampling then picks exactly that many.</p></div>
         <div class="card"><h3>SQL for real data</h3><p>On a real database the same cuts come from the queries in the file: retention by cohort, channel and version, reading funnel, cost per retained reader.</p>
-          <div class="links" style="margin-top:12px"><a class="btn" href="../files/booklover-retention.sql" target="_blank" rel="noopener">Open the SQL queries</a><a class="btn pri" href="booklover-retention.html">Back to the case</a></div></div>
+          <div class="links" style="margin-top:12px"><a class="btn" href="../files/booklover-retention.sql" target="_blank" rel="noopener">Open the SQL queries</a><a class="btn" href="booklover-retention.html">Back to the case</a></div></div>
+      </div>
+      <div class="vhead" style="margin-top:12px"><span class="eyebrow">How a PM thinks</span><h2>The method behind this case</h2><p>Eight steps that repeat in any retention problem. Order matters: each step narrows the field for the next one.</p></div>
+      <ol class="msteps">
+        <li><b>Frame the problem</b><span>Which metric, by how much, since when, for whom. “Retention is falling” is not a problem statement. “D30 of new users fell from 45% to 28% starting with the April cohort” is.</span></li><li><b>Sanity-check the data</b><span>How is “active” defined? Has the last cohort completed its 30 days? Did tracking change? Don’t confuse an aggregate with a split: 65% and 30% here are totals, not per cohort.</span></li>
+        <li><b>Size it</b><span>Turn percentages into people and money: ≈ 9,900 active users lost in 3 months. Scale decides how much effort the problem deserves.</span></li><li><b>Decompose</b><span>Mix or core? Retention = who arrived × what they found. Compare old vs new channels, app versions, funnel stages.</span></li>
+        <li><b>Observation → insight → solution → metric</b><span>A fact from the data, an explanation through human behavior, a product change, a number to check it. An insight is not a restated number but an answer to “why”.</span></li><li><b>Write the hypothesis</b><span>If [action], then [metric] moves by [amount], because [behavior]. Plus what would disprove it. Without a number and a threshold it cannot be tested.</span></li>
+        <li><b>Prioritize</b><span>ICE or RICE. Start with what is cheap and teaches the most: SQL and interviews cost days, builds cost weeks.</span></li><li><b>Design the test and decide</b><span>Primary metric, guardrails, sample size, duration, stopping rule — before launch. After — scale, iterate or kill, and record what was learned.</span></li>
+      </ol>
+      <div class="g2">
+        <div class="card"><h3>Traps I avoid</h3><ul class="rules"><li>Looking at total actives instead of cohorts</li><li>Filling data gaps to fit the hypothesis: “it must have dropped”</li><li>Confusing timing with cause (rating and retention)</li><li>Scaling power-user behavior without a test: they might read anywhere</li><li>Picking a tool before the problem: RFM without revenue data</li><li>A hypothesis with no number: “retention will go up”</li></ul></div>
+        <div class="card"><h3>Where the method comes from</h3><p class="sub" style="margin-top:6px">The Build–Measure–Learn loop and testing assumptions come from Eric Ries’s The Lean Startup. The hypothesis template “We believe… will result in… we’ll know when…” comes from Jeff Gothelf’s Lean UX. The four-link chain is a simplified scheme I use for practice.</p>
+          <ul class="res">
+            <li><a href="https://www.youtube.com/results?search_query=The+Lean+Startup+Eric+Ries+Talks+at+Google" target="_blank" rel="noopener">Eric Ries, The Lean Startup · Talks at Google, ≈ 55 min</a></li>
+            <li><a href="https://thisweekinstartups.com/766" target="_blank" rel="noopener">Casey Winters on measuring retention & product-market fit · ≈ 50 min</a></li>
+            <li><a href="https://www.youtube.com/@LennysPodcast/search?query=retention" target="_blank" rel="noopener">Lenny’s Podcast on YouTube</a></li>
+            <li><a href="https://caseyaccidental.com/" target="_blank" rel="noopener">Casey Winters, Guide to Finding Product/Market Fit</a></li>
+            <li><a href="https://amplitude.com/explore/analytics/cohort-analysis" target="_blank" rel="noopener">Amplitude: the complete guide to cohort analysis</a></li>
+          </ul></div>
       </div>
     </section>
-  </div>
-</div>
-
-<div class="pbar" id="pbar" hidden role="region" aria-label="▶ Present">
-  <div class="pbar-in">
-    <div class="pmeta"><span class="eyebrow" id="pStep"></span><b id="pTitle"></b></div>
-    <div class="pbtns">
-      <button type="button" class="btn" id="pNotesBtn" aria-pressed="true">Notes</button>
-      <button type="button" class="btn" id="pPrev">← Back</button>
-      <button type="button" class="btn pri" id="pNext">Next →</button>
-      <button type="button" class="btn" id="pExit">Exit</button>
-    </div>
-    <div class="pnotes" id="pNotes"><span class="lab">What to say</span><p id="pSay"></p><span class="keys">→ next · ← back · N notes · Esc exit</span></div>
-    <div class="pdots" id="pDots" aria-hidden="true"></div>
   </div>
 </div>
 
@@ -657,7 +813,7 @@ if (typeof module !== "undefined") module.exports = { simulateBooklover };
 </script>
 <script>
 (function () {
-  const T = {"title": "BookLover CRM", "brand_sub": "CRM on demo data", "nav_label": "Sections", "g_analysis": "Analysis", "g_users": "Users", "g_decide": "Decisions", "v_overview": "Overview", "v_sources": "Traffic sources", "v_cohorts": "Cohorts", "v_funnel": "Reading funnel", "v_diagnosis": "Diagnosis", "v_users": "Users", "v_experiments": "Experiments", "v_method": "About the data", "foot_back": "← Portfolio", "foot_case": "Case: BookLover Retention", "foot_demo": "Demo data: a model that reproduces the figures in the case brief. Channels, platforms and versions are illustrative.", "pr_btn": "▶ Present", "pr_btn_t": "Walk through the case step by step: from problem to solution", "pr_step": "Step {n} of {t}", "pr_next": "Next →", "pr_prev": "← Back", "pr_exit": "Exit", "pr_notes": "Notes", "pr_say": "What to say", "pr_keys": "→ next · ← back · N notes · Esc exit", "pr_done": "Done. You can answer questions right in the dashboard.", "p1_t": "Acquisition grows while retention falls", "p1_say": "BookLover is a reading app, six months on the market. New users grew 2.25×, while the share still reading after 30 days fell from 45% to 28%. It’s a training case: totals from the brief, user-level data simulated to match them exactly.", "p1_e": "BookLover Retention · product case", "p1_k1": "D30 retention", "p1_k2": "new users, Jan → Jun", "p1_k3": "active users lost in 3 months", "p1_q": "Question: why, and what to do first?", "p2_t": "Total growth hides the problem", "p2_say": "Grey bars are sign-ups, blue are users still active on day 30. Acquisition grows every month, but retained users have stalled near 8K since March. Almost all the growth leaves within 30 days.", "p3_t": "Retention curves: the plateau drops cohort by cohort", "p3_say": "January to March are identical: 45% on day 30. From April the curve drops from day one. So it’s not a one-off incident: something permanent changed — the audience or the product.", "p4_t": "Sources: TikTok and promo bring installs, not readers", "p4_say": "Sorted by cost per retained reader. TikTok and promo have cheap installs, but very few reach day 30. A retained reader from promo costs several times more than one from Telegram.", "p5_t": "Decomposition: 12 points channels, 5 points core", "p5_say": "I split the drop in two. About 12 points are the mix shift: new channels barely retain. About 5 points are the decline inside the original channels. So it’s not only marketing.", "p6_t": "On iOS the core never fell — Android v2.0 is to blame", "p6_say": "I switch the filter to iOS — the core decline disappears. In the versions table, v2.0 on Android retains 33% vs 45% elsewhere. First action: check crash rate and book open time, ship a hotfix. Days, not weeks.", "p7_t": "Chronic: book finished, user gone", "p7_say": "This doesn’t explain April, but it’s the biggest lever. 65% finish, yet only 30% of them start a second book. Fantasy and romance continue more — they have series. Hence hypothesis 1.", "p8_t": "Three bets and one fix", "p8_say": "First, the Android fix, no experiment needed — about +5 points. Then three hypotheses ranked by ICE. First, a bridge to the second book: it hits 45% of users. Second, budget from TikTok and promo into channels that retain. Third, a first-week habit.", "p8_fix": "Fix Android v2.0", "p8_fix_d": "no experiment · ≈ +5 pp to D30", "p8_h1": "H1 · Bridge to the second book", "p8_h1_d": "3 picks on the last page · rate 30% → 40% · ICE 392", "p8_h2": "H2 · Readers, not installs", "p8_h2_d": "budget out of TikTok and promo · D30 28% → 34–38% · ICE 384", "p8_h3": "H3 · First-week habit", "p8_h3_d": "10-minute goal and reminder · completion 65% → 70% · ICE 180", "p9_t": "Hypothesis 2 in numbers: same budget, more readers", "p9_say": "I move the whole TikTok and promo budget evenly into Telegram, Instagram and referrals, with a 30% markup for rising bids. Fewer sign-ups, more retained users, each cheaper. Verified by a 4-week shift with control channels.", "p10_t": "Hypothesis 1: the test fills in a couple of days", "p10_say": "To detect +10 points in the second-book rate I need about 360 finishers per arm. Over 400 people finish a book every day, so the sample fills fast. The constraint is time: D30 is measured 30 days after the last participant.", "p11_t": "Plan: cheap knowledge first", "p11_say": "Week 1 — SQL cuts and interviews, Android hotfix in parallel. Week 2 — budget decision. Weeks 3–4 — the second-book bridge test. Then data-driven decisions. Thank you, happy to take questions — right here in the dashboard.", "p11_w1": "Week 1", "p11_w1d": "SQL by channel and version · 6–8 interviews · Android hotfix", "p11_w2": "Week 2", "p11_w2d": "Budget shift (H2) · last-page screen design", "p11_w3": "Weeks 3–4", "p11_w3d": "A/B test of the second-book bridge (H1)", "p11_w4": "Weeks 5–9", "p11_w4d": "D7 and D30, guardrails · scale, iterate or kill", "p11_links": "Details: case · SQL queries", "f_from": "From", "f_to": "to", "f_months": "Sign-up months", "f_channel": "Channel", "f_platform": "Platform", "f_genre": "Genre", "f_all_ch": "All channels", "f_all_pl": "All platforms", "f_all_g": "All genres", "f_reset": "Reset", "back": "Back", "back_t": "One step back · Alt + ←", "undone": "Stepped back", "f_active": "Filters:", "q_ph": "BL-000123", "q_label": "Find a user by ID", "not_found": "User not found", "months": ["January", "February", "March", "April", "May", "June"], "mshort": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"], "ch_names": ["Organic (app stores)", "Friend referrals", "Instagram", "Telegram channels", "TikTok", "“Free books” promo"], "ch_short": ["Organic", "Referrals", "Instagram", "Telegram", "TikTok", "Promo"], "pl_names": ["iOS", "Android"], "g_names": ["Fantasy", "Romance", "Contemporary fiction", "Business", "Self-help", "Classics"], "dec": ".", "thou": ",", "mln": "M", "thsd": "K", "tg": "", "tg_pre": "₸", "pp": " pp", "users_u": "users", "day_u": "day", "days_u": "days", "min_u": "min", "ov_e": "January – June · sign-up cohorts", "ov_h": "Acquisition grows, retention falls from April", "ov_p": "Every user of the case’s six cohorts is a row of data. The filters at the top change every section. Click a month on a chart to open its users.", "k_new": "New users", "k_ret": "D30 retention", "k_act": "Active on day 30", "k_fin": "Finished 1st book", "k_sec": "Started 2nd book", "k_sec_d": "of finishers", "k_rate": "Store rating", "k_cpr": "Cost per retained", "k_vs": "Jan–Mar", "ov_c1": "Signed up and retained by month", "ov_c1s": "Grey: signed up, blue: active on day 30", "ov_hint1": "Click a month → its users", "ov_c2": "Where users come from", "ov_c2s": "Acquisition mix by channel, thousands", "ov_hint2": "Click a channel → traffic sources", "fd1": "Growth bought the wrong users", "fd1_t": "TikTok and promo bring {share} of {m} sign-ups but retain {r}", "fd2": "The core dipped too", "fd2_t": "Android after v2.0: {a} vs {i} on iOS in the same channels", "fd3": "Book finished, user gone", "fd3_t": "Only {s} of finishers start a second book", "src_e": "Traffic sources", "src_h": "Which channel brings readers and which brings installs", "src_p": "Cost per retained reader = channel spend ÷ users active on day 30. This is the key budget metric: a cheap install can be expensive if the person leaves in week one.", "st_ch": "Channel", "st_users": "New", "st_share": "Share", "st_ret": "D30", "st_fin": "Finished", "st_sec": "2nd book", "st_rate": "Rating", "st_cac": "CAC", "st_spend": "Spend", "st_cpr": "Cost / retained", "src_tbl": "Channels for the selected months", "src_tbl_s": "Click a header to sort. Click a row to filter every section by that channel.", "src_heat": "Channels by month", "src_heat_s": "Pick a metric. An empty cell means the channel did not run yet.", "m_ret": "D30 retention", "m_users": "New users", "m_cpr": "Cost per retained", "m_fin": "Finished 1st", "sim_h": "Budget simulator · hypothesis 2", "sim_s": "Base: June. Move part of the TikTok and promo budget into channels that retain. Scaling raises bids, so the target channel’s CAC gets a scale markup.", "sim_move": "Move from TikTok and promo", "sim_to": "Into", "sim_mark": "CAC markup at scale", "sim_split": "Evenly: Telegram, Instagram, referrals", "sim_before": "June now", "sim_after": "After", "sim_new": "New users", "sim_act": "Active on day 30", "sim_r": "D30 retention", "sim_cpr": "Cost per retained", "sim_note": "Same budget: {b}. Channel retention as in June. An estimate for prioritizing, not a forecast: verified by a 4-week shift with control channels.", "coh_e": "Cohorts", "coh_h": "Retention curves by sign-up month", "coh_p": "The share of a cohort still reading on day 1, 3, 7, 14 and 30. A curve that flattens means the product has a core. Here the plateau gets lower every month.", "coh_tbl": "Cohort heatmap", "coh_pct": "Percent", "coh_ppl": "People", "coh_curves": "Curves", "coh_curves_s": "Hover a line to see values", "coh_col": "Cohort", "coh_size": "Size", "coh_day": "Day", "coh_hint": "Click a cell → users who left before that day", "fun_e": "Reading funnel", "fun_h": "Where readers drop inside the product", "fun_p": "Each step is a share of sign-ups. The biggest drop is between “finished” and “started a second”: the moment of success becomes the exit point.", "fs1": "Signed up", "fs2": "Came back on day 2", "fs3": "Finished the first book", "fs4": "Started a second within 7 days", "fs5": "Active on day 30", "fs1s": "Signed up", "fs2s": "Day 2", "fs3s": "Finished", "fs4s": "2nd book", "fs5s": "D30", "fun_by": "Breakdown", "by_month": "By month", "by_channel": "By channel", "by_genre": "By genre", "by_platform": "By platform", "fun_tbl_s": "Conversion to each step from sign-ups. The last column is the second-book rate among finishers.", "fun_sec_of": "2nd of finishers", "fun_ins": "Fantasy and romance continue more often: they have series. Business and self-help continue least. Last-page picks should start from genre and series.", "dia_e": "Diagnosis", "dia_h": "What explains the drop: audience or product", "dia_p": "The decomposition shows how many points of the drop came from the channel mix shift and how many from worse retention inside the original channels.", "wf_h": "D30 retention: March → June", "wf_s": "Core: organic, referrals, Instagram, Telegram. New: TikTok and promo.", "wf_mar": "March", "wf_mix": "New channels", "wf_core": "Core worse", "wf_jun": "June", "wf_note": "Channel mix shift: {mix}; core decline: {core}; total {tot}", "seg_h": "D30 retention by segment", "seg_s": "The core on iOS holds, the core on Android falls from the May cohort — after v2.0 shipped (May 6).", "seg_ios": "Core · iOS", "seg_and": "Core · Android", "seg_new": "New channels", "ver_h": "App versions", "ver_s": "Core only: shows the product without the new channels’ effect", "vt_ver": "Version", "vt_pl": "Platform", "vt_users": "Users", "vt_ret": "D30", "vt_rate": "Rating", "vt_from": "Released", "v18": "until Mar 31", "v19": "Apr 1", "v20": "May 6", "dia_c1": "Audience", "dia_c1t": "About two thirds of the drop is the new channels. Their users rarely reach day 30. Fix: hypothesis 2.", "dia_c2": "Product", "dia_c2t": "The rest is Android on v2.0. First step: crash rate and book open time on v2.0, roll back or hotfix. Cheaper than any experiment.", "dia_c3": "Chronic", "dia_c3t": "The second-book rate barely moved month to month. It doesn’t explain April, but it is the biggest growth lever. Fix: hypothesis 1.", "dia_ignore": "The decomposition always compares March and June; the month filter does not apply to it.", "us_e": "Users", "us_h": "Every user in the cohorts", "us_p": "Click a row to open the user card with their reading history.", "chip_all": "All", "chip_act": "Active on day 30", "chip_churn": "Churned", "chip_stop": "Finished and stopped", "chip_sec": "Started a second", "chip_nofin": "Did not finish", "ut_id": "ID", "ut_date": "Signed up", "ut_ch": "Channel", "ut_pl": "Platform", "ut_g": "Genre", "ut_days": "Days active", "ut_min": "Minutes", "ut_book": "Books", "ut_rate": "Rating", "ut_status": "Status", "st_active": "Active", "st_left": "Left on day {d}", "st_left0": "Never came back", "b_none": "reading 1st", "b_fin": "1 finished", "b_sec": "2nd started", "pg_shown": "Showing {a}–{b} of {n}", "pg_prev": "← Prev", "pg_next": "Next →", "us_stats": "{n} users · active on day 30 {r} · finished {f}", "dr_close": "Close", "dr_signup": "Signed up", "dr_days": "Days active", "dr_min": "Minutes read", "dr_rate": "Rating", "dr_none": "none", "dr_tl": "History", "tl_signup": "Signed up · {ch} · {pl} {v}", "tl_start": "Started a book · {g}", "tl_fin": "Finished the first book", "tl_sec": "Started a second book", "tl_nosec": "Did not start a second — stopped after the first", "tl_left": "Last reading session", "tl_d30": "Reading on day 30", "tl_rate": "Rated the app: {r}★", "dr_seg": "What to offer", "rec_stop": "“What’s next” screen: 3 books in the same genre, first chapter in one tap (hypothesis 1).", "rec_nofin": "A 10-minutes-a-day goal and a reminder at a chosen time (hypothesis 3).", "rec_act": "Core user: ask in an interview what keeps them reading.", "rec_sec": "Continuing: study the path — what helped pick the second book.", "ex_e": "Experiments", "ex_h": "How many users and days a test needs", "ex_p": "Sample-size calculator for an A/B test of proportions. Traffic comes from the data with the filters applied: how many eligible users arrive per day.", "ex_calc": "Calculator", "ex_test": "Test", "ex_base": "Baseline", "ex_mde": "Expected effect", "ex_alpha": "Significance level α", "ex_power": "Power", "ex_n": "per arm", "ex_days": "days to fill", "ex_daily": "Eligible per day: {d} · {who}", "ex_wait": "Plus 30 days of waiting if the primary metric is D30.", "ex_h1": "H1 · Bridge to the second book", "ex_h1w": "first-book finishers", "ex_h2": "H3 · First-week habit", "ex_h2w": "all new users", "ex_h3": "D30 retention overall", "ex_h3w": "all new users", "ex_rules": "Rules I write down before launch", "ex_r1": "One primary metric and a success threshold", "ex_r2": "Guardrails: uninstalls, notification opt-outs, rating", "ex_r3": "No peeking before the sample is full", "ex_r4": "Test on new users only", "ex_r5": "Decision: scale, iterate or kill — and record what was learned", "me_e": "About the data", "me_h": "A model that reproduces the case brief", "me_p": "The brief gives totals only. To practise on segments, I simulated every user so that the totals match the brief exactly.", "me1_t": "Exact totals", "me1": "New users 12/15/18/22/25/27K, active on day 30: 5,400 / 6,750 / 8,100 / 8,360 / 7,500 / 7,560. 65% finished, 30% of them started a second. Rating about 4.5 in Jan–Mar and 4.2 in Apr–Jun.", "me2_t": "Illustrative assumptions", "me2": "TikTok and a “free books” promo start in April. v2.0 ships on May 6 and performs worse on Android. Channels, platforms, genres, CAC and spend are invented to show how to find a cause.", "me3_t": "How totals are pinned", "me3": "Each user has a probability to stay, driven by channel, motivation, platform and version. A logit shift scales it so the expected sum equals the brief. Systematic sampling then picks exactly that many.", "me4_t": "SQL for real data", "me4": "On a real database the same cuts come from the queries in the file: retention by cohort, channel and version, reading funnel, cost per retained reader.", "me_sql": "Open the SQL queries", "me_case": "Back to the case"};
+  const T = {"title": "BookLover CRM", "brand_sub": "CRM on demo data", "nav_label": "Sections", "g_analysis": "Analysis", "g_users": "Users", "g_decide": "Decisions", "v_overview": "Overview", "v_sources": "Traffic sources", "v_cohorts": "Cohorts", "v_funnel": "Reading funnel", "v_diagnosis": "Diagnosis", "v_users": "Users", "v_experiments": "Metrics & tests", "v_method": "About the data", "g_steps": "The case, step by step", "g_appx": "Appendix", "v_task": "The problem", "v_factors": "Possible causes", "v_hyp": "Hypotheses", "v_plan": "Plan", "step_of": "Step {n} of {t}", "step_prev": "Previous step", "step_next": "Next step", "step_appx": "Appendix", "step_restart": "Back to start", "fix_t": "First, fix Android v2.0 — no experiment needed", "fix_d": "Step 6 showed the core holds 45% on iOS but 33% on Android after v2.0. A hotfix returns about +5 pp of D30. Days of work, not weeks.", "fac_next": "Next I check the causes against data: step 5 — acquisition channels, step 6 — product and app versions, step 7 — the reader’s path inside the product.", "end_note": "This is the last step of the case. The appendix holds all 119,000 users with their cards and notes on how the data are built.", "foot_back": "← Portfolio", "foot_case": "Case: BookLover Retention", "foot_demo": "Demo data: a model that reproduces the figures in the case brief. Channels, platforms and versions are illustrative.", "f_from": "From", "f_to": "to", "f_months": "Sign-up months", "f_channel": "Channel", "f_platform": "Platform", "f_genre": "Genre", "f_all_ch": "All channels", "f_all_pl": "All platforms", "f_all_g": "All genres", "f_reset": "Reset", "back": "Back", "back_t": "One step back · Alt + ←", "undone": "Stepped back", "f_active": "Filters:", "q_ph": "BL-000123", "q_label": "Find a user by ID", "not_found": "User not found", "months": ["January", "February", "March", "April", "May", "June"], "mshort": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"], "ch_names": ["Organic (app stores)", "Friend referrals", "Instagram", "Telegram channels", "TikTok", "“Free books” promo"], "ch_short": ["Organic", "Referrals", "Instagram", "Telegram", "TikTok", "Promo"], "pl_names": ["iOS", "Android"], "g_names": ["Fantasy", "Romance", "Contemporary fiction", "Business", "Self-help", "Classics"], "dec": ".", "thou": ",", "mln": "M", "thsd": "K", "tg": "", "tg_pre": "₸", "pp": " pp", "users_u": "users", "day_u": "day", "days_u": "days", "min_u": "min", "ov_e": "January – June · sign-up cohorts", "ov_h": "Acquisition grows, retention falls from April", "ov_p": "Every user of the case’s six cohorts is a row of data. The filters at the top change every section. Click a month on a chart to open its users.", "k_new": "New users", "k_ret": "D30 retention", "k_act": "Active on day 30", "k_fin": "Finished 1st book", "k_sec": "Started 2nd book", "k_sec_d": "of finishers", "k_rate": "Store rating", "k_cpr": "Cost per retained", "k_vs": "Jan–Mar", "ov_c1": "Signed up and retained by month", "ov_c1s": "Grey: signed up, blue: active on day 30", "ov_hint1": "Click a month → its users", "ov_c2": "Where users come from", "ov_c2s": "Acquisition mix by channel, thousands", "ov_hint2": "Click a channel → traffic sources", "fd1": "Growth bought the wrong users", "fd1_t": "TikTok and promo bring {share} of {m} sign-ups but retain {r}", "fd2": "The core dipped too", "fd2_t": "Android after v2.0: {a} vs {i} on iOS in the same channels", "fd3": "Book finished, user gone", "fd3_t": "Only {s} of finishers start a second book", "src_e": "Traffic sources", "src_h": "Which channel brings readers and which brings installs", "src_p": "Cost per retained reader = channel spend ÷ users active on day 30. This is the key budget metric: a cheap install can be expensive if the person leaves in week one.", "st_ch": "Channel", "st_users": "New", "st_share": "Share", "st_ret": "D30", "st_fin": "Finished", "st_sec": "2nd book", "st_rate": "Rating", "st_cac": "CAC", "st_spend": "Spend", "st_cpr": "Cost / retained", "src_tbl": "Channels for the selected months", "src_tbl_s": "Click a header to sort. Click a row to filter every section by that channel.", "src_heat": "Channels by month", "src_heat_s": "Pick a metric. An empty cell means the channel did not run yet.", "m_ret": "D30 retention", "m_users": "New users", "m_cpr": "Cost per retained", "m_fin": "Finished 1st", "sim_h": "Budget simulator · hypothesis 2", "sim_s": "Base: June. Move part of the TikTok and promo budget into channels that retain. Scaling raises bids, so the target channel’s CAC gets a scale markup.", "sim_move": "Move from TikTok and promo", "sim_to": "Into", "sim_mark": "CAC markup at scale", "sim_split": "Evenly: Telegram, Instagram, referrals", "sim_before": "June now", "sim_after": "After", "sim_new": "New users", "sim_act": "Active on day 30", "sim_r": "D30 retention", "sim_cpr": "Cost per retained", "sim_note": "Same budget: {b}. Channel retention as in June. An estimate for prioritizing, not a forecast: verified by a 4-week shift with control channels.", "coh_e": "Cohorts", "coh_h": "Retention curves by sign-up month", "coh_p": "The share of a cohort still reading on day 1, 3, 7, 14 and 30. A curve that flattens means the product has a core. Here the plateau gets lower every month.", "coh_tbl": "Cohort heatmap", "coh_pct": "Percent", "coh_ppl": "People", "coh_curves": "Curves", "coh_curves_s": "Hover a line to see values", "coh_col": "Cohort", "coh_size": "Size", "coh_day": "Day", "coh_hint": "Click a cell → users who left before that day", "fun_e": "Reading funnel", "fun_h": "Where readers drop inside the product", "fun_p": "Each step is a share of sign-ups. The biggest drop is between “finished” and “started a second”: the moment of success becomes the exit point.", "fs1": "Signed up", "fs2": "Came back on day 2", "fs3": "Finished the first book", "fs4": "Started a second within 7 days", "fs5": "Active on day 30", "fs1s": "Signed up", "fs2s": "Day 2", "fs3s": "Finished", "fs4s": "2nd book", "fs5s": "D30", "fun_by": "Breakdown", "by_month": "By month", "by_channel": "By channel", "by_genre": "By genre", "by_platform": "By platform", "fun_tbl_s": "Conversion to each step from sign-ups. The last column is the second-book rate among finishers.", "fun_sec_of": "2nd of finishers", "fun_ins": "Fantasy and romance continue more often: they have series. Business and self-help continue least. Last-page picks should start from genre and series.", "dia_e": "Diagnosis", "dia_h": "What explains the drop: audience or product", "dia_p": "The decomposition shows how many points of the drop came from the channel mix shift and how many from worse retention inside the original channels.", "wf_h": "D30 retention: March → June", "wf_s": "Core: organic, referrals, Instagram, Telegram. New: TikTok and promo.", "wf_mar": "March", "wf_mix": "New channels", "wf_core": "Core worse", "wf_jun": "June", "wf_note": "Channel mix shift: {mix}; core decline: {core}; total {tot}", "seg_h": "D30 retention by segment", "seg_s": "The core on iOS holds, the core on Android falls from the May cohort — after v2.0 shipped (May 6).", "seg_ios": "Core · iOS", "seg_and": "Core · Android", "seg_new": "New channels", "ver_h": "App versions", "ver_s": "Core only: shows the product without the new channels’ effect", "vt_ver": "Version", "vt_pl": "Platform", "vt_users": "Users", "vt_ret": "D30", "vt_rate": "Rating", "vt_from": "Released", "v18": "until Mar 31", "v19": "Apr 1", "v20": "May 6", "dia_c1": "Audience", "dia_c1t": "About two thirds of the drop is the new channels. Their users rarely reach day 30. Fix: hypothesis 2.", "dia_c2": "Product", "dia_c2t": "The rest is Android on v2.0. First step: crash rate and book open time on v2.0, roll back or hotfix. Cheaper than any experiment.", "dia_c3": "Chronic", "dia_c3t": "The second-book rate barely moved month to month. It doesn’t explain April, but it is the biggest growth lever. Fix: hypothesis 1.", "dia_ignore": "The decomposition always compares March and June; the month filter does not apply to it.", "us_e": "Users", "us_h": "Every user in the cohorts", "us_p": "Click a row to open the user card with their reading history.", "chip_all": "All", "chip_act": "Active on day 30", "chip_churn": "Churned", "chip_stop": "Finished and stopped", "chip_sec": "Started a second", "chip_nofin": "Did not finish", "ut_id": "ID", "ut_date": "Signed up", "ut_ch": "Channel", "ut_pl": "Platform", "ut_g": "Genre", "ut_days": "Days active", "ut_min": "Minutes", "ut_book": "Books", "ut_rate": "Rating", "ut_status": "Status", "st_active": "Active", "st_left": "Left on day {d}", "st_left0": "Never came back", "b_none": "reading 1st", "b_fin": "1 finished", "b_sec": "2nd started", "pg_shown": "Showing {a}–{b} of {n}", "pg_prev": "← Prev", "pg_next": "Next →", "us_stats": "{n} users · active on day 30 {r} · finished {f}", "dr_close": "Close", "dr_signup": "Signed up", "dr_days": "Days active", "dr_min": "Minutes read", "dr_rate": "Rating", "dr_none": "none", "dr_tl": "History", "tl_signup": "Signed up · {ch} · {pl} {v}", "tl_start": "Started a book · {g}", "tl_fin": "Finished the first book", "tl_sec": "Started a second book", "tl_nosec": "Did not start a second — stopped after the first", "tl_left": "Last reading session", "tl_d30": "Reading on day 30", "tl_rate": "Rated the app: {r}★", "dr_seg": "What to offer", "rec_stop": "“What’s next” screen: 3 books in the same genre, first chapter in one tap (hypothesis 1).", "rec_nofin": "A 10-minutes-a-day goal and a reminder at a chosen time (hypothesis 3).", "rec_act": "Core user: ask in an interview what keeps them reading.", "rec_sec": "Continuing: study the path — what helped pick the second book.", "ex_e": "Experiments", "ex_h": "How many users and days a test needs", "ex_p": "Sample-size calculator for an A/B test of proportions. Traffic comes from the data with the filters applied: how many eligible users arrive per day.", "ex_calc": "Calculator", "ex_test": "Test", "ex_base": "Baseline", "ex_mde": "Expected effect", "ex_alpha": "Significance level α", "ex_power": "Power", "ex_n": "per arm", "ex_days": "days to fill", "ex_daily": "Eligible per day: {d} · {who}", "ex_wait": "Plus 30 days of waiting if the primary metric is D30.", "ex_h1": "H1 · Bridge to the second book", "ex_h1w": "first-book finishers", "ex_h2": "H3 · First-week habit", "ex_h2w": "all new users", "ex_h3": "D30 retention overall", "ex_h3w": "all new users", "ex_rules": "Rules I write down before launch", "ex_r1": "One primary metric and a success threshold", "ex_r2": "Guardrails: uninstalls, notification opt-outs, rating", "ex_r3": "No peeking before the sample is full", "ex_r4": "Test on new users only", "ex_r5": "Decision: scale, iterate or kill — and record what was learned", "me_e": "About the data", "me_h": "A model that reproduces the case brief", "me_p": "The brief gives totals only. To practise on segments, I simulated every user so that the totals match the brief exactly.", "me1_t": "Exact totals", "me1": "New users 12/15/18/22/25/27K, active on day 30: 5,400 / 6,750 / 8,100 / 8,360 / 7,500 / 7,560. 65% finished, 30% of them started a second. Rating about 4.5 in Jan–Mar and 4.2 in Apr–Jun.", "me2_t": "Illustrative assumptions", "me2": "TikTok and a “free books” promo start in April. v2.0 ships on May 6 and performs worse on Android. Channels, platforms, genres, CAC and spend are invented to show how to find a cause.", "me3_t": "How totals are pinned", "me3": "Each user has a probability to stay, driven by channel, motivation, platform and version. A logit shift scales it so the expected sum equals the brief. Systematic sampling then picks exactly that many.", "me4_t": "SQL for real data", "me4": "On a real database the same cuts come from the queries in the file: retention by cohort, channel and version, reading funnel, cost per retained reader.", "me_sql": "Open the SQL queries", "me_case": "Back to the case", "c_title": "BookLover Retention", "c_desc": "Product case: why 30-day retention of a reading app fell from 45% to 28%, three hypotheses and an experiment plan.", "c_nav_label": "Sections", "c_nav_back": "← All projects", "c_nav_crm": "CRM dashboard →", "c_crm_link": "Every figure at user level, with filters by channel, platform and genre: CRM dashboard →", "c_h2_sim": "The estimate comes from the dashboard’s budget simulator. The remaining gap closes with the Android v2.0 fix: about +5 pp.", "c_nav_summary": "Summary", "c_nav_data": "Cohorts", "c_nav_diag": "Diagnosis", "c_nav_factors": "Factors", "c_nav_hyp": "Hypotheses", "c_nav_metrics": "Metrics", "c_nav_plan": "Plan", "c_nav_method": "How a PM thinks", "c_nav_learn": "Resources", "c_eyebrow": "Product case · Retention & churn", "c_h1": "Retention <span>BookLover</span>", "c_lead": "BookLover is a mobile reading app launched six months ago. Acquisition grows every month, yet since April 30-day retention has been falling: from 45% to 28%. I found when and where retention breaks, separated causes into “who arrived” and “what they found”, and proposed three hypotheses with metrics and a test plan.", "c_note": "A training case from a product management course: the data come from the brief, not a real product", "c_k1_e": "D30 retention", "c_k1_v": "45% → 28%", "c_k1_d": "January vs June cohort", "c_k2_e": "Retained from growth", "c_k2_v": "6.5%", "c_k2_d": "of April’s extra users vs March (baseline 45%)", "c_k3_e": "Reached a second book", "c_k3_v": "19.5%", "c_k3_d": "of all users: 65% × 30%", "c_k4_e": "Lost in 3 months", "c_k4_v": "≈ 9,900", "c_k4_d": "active users vs a 45% retention baseline", "c_sum_e": "The 30-second version", "c_sum_h": "Two problems: growth is buying the wrong users, and the product does not lead readers to a second book", "c_sum_big": "3 bets", "c_sum_l1_b": "What happened", "c_sum_l1": "From the April cohort on, D30 retention falls and does not recover: 45 → 38 → 30 → 28%. This is a lasting shift, not a one-off incident.", "c_sum_l2_b": "Where", "c_sum_l2": "Retained users have stalled at about 8,000 a month while new users grew 50%. Almost all growth churns. In May part of the core audience went too.", "c_sum_l3_b": "Chronic", "c_sum_l3": "Only one user in five reaches a second book. A finished book is the moment of success and also the exit point.", "c_sum_l4_b": "What I do", "c_sum_l4": "An Android v2.0 hotfix, then a bridge to the second book, cleaner acquisition channels and a first-week reading habit. Each bet has a metric, a success threshold and a guardrail.", "c_coh_e": "Step 1 · Cohorts", "c_coh_h": "Retention held at 45% for three months, then broke", "c_coh_p": "D30 retention = users active on day 30 after sign-up ÷ users who signed up that month. Total active users kept growing, so the problem is invisible there: growing acquisition masks it. Cohorts separate product quality from marketing power.", "c_c1_h": "D30 retention by cohort", "c_c1_s": "Dashed line: the level of the first three months. Hover a bar.", "c_c1_aria": "Bar chart: D30 retention by monthly cohort, January to June", "c_c2_h": "Signed up vs retained, thousands", "c_c2_s": "New users keep growing, retained users do not: about 8,000 since March.", "c_c2_aria": "Grouped bars: new and retained users by month", "c_leg_new": "Signed up", "c_leg_ret": "Active on day 30", "c_tbl_h": "Cohort table", "c_th_m": "Cohort", "c_th_new": "Signed up", "c_th_act": "Active D30", "c_th_r": "Retention", "c_th_dn": "Δ new", "c_th_da": "Δ retained", "c_th_mr": "Retained from growth", "c_tbl_note": "“Retained from growth” is the share of a month’s extra users who stayed: Δ retained ÷ Δ new. In January–March every new wave retained like the base (45%). In April only 260 of 4,000 extra users stayed.", "c_dia_e": "Step 2 · Diagnosis", "c_dia_h": "Three conclusions from the shape of the curve", "c_dia_p": "The drop is obvious. Its shape matters more, because it points to the type of cause.", "c_d1_t": "The shift is lasting, not an incident", "c_d1": "An incident usually gets fixed within days: one cohort dips and the next ones return to 45%. Here May and June did not recover, and June settled at 28%. Something permanent changed: the audience, the product or the market.", "c_d2_t": "Growth barely retains", "c_d2": "Retained users have been around 8,000 a month since March, while sign-ups grew 50%. Of April’s extra 4,000 people, 6.5% stayed. This is the main signal that marketing scaled into a less relevant audience.", "c_d3_t": "In May the core got hurt too", "c_d3": "If the problem were only new channels, the May cohort would retain at least as many as March: 8,100 people from the same 18,000 “old” sources. It retained 7,500. So people who would have come anyway also did worse. That points to a product change: a release, the catalog, pricing. The rating drop from 4.5 to 4.2 supports this but does not prove it.", "c_fun_h": "Where the product loses readers", "c_fun_s": "The 65% and 30% figures are a six-month aggregate with no cohort split. So this is a chronic problem, not the cause of the April drop.", "c_fun_aria": "Funnel: all users, finished the first book, started a second one", "c_f1": "All users", "c_f2": "Finished the first book", "c_f3": "Started a second book", "c_fun_ins": "<b>Insight.</b> 45% of users finished a book and stopped. They came to read a book, read it, job done. The app is good at helping people read but does not help them choose what to read next. The moment of highest satisfaction becomes the exit point.", "c_fac_e": "Step 3 · Factors", "c_fac_h": "Causes in three buckets: what the data show and what needs checking", "c_fac_p": "Each cause is marked as backed by the case data or as an assumption. Each has a way to check it.", "c_tag_data": "In the data", "c_tag_guess": "Assumption", "c_b1": "Who arrived", "c_b2": "What they found", "c_b3": "What’s around", "c_how": "How to check:", "c_f1_1_t": "New channels brought a less relevant audience", "c_f1_1_h": "cohort retention split by channel and campaign", "c_f1_2_t": "The ad offer did not match the product (e.g. “free books”)", "c_f1_2_h": "April–May creatives, retention per creative, 1–2★ reviews about being misled", "c_f1_3_t": "Geography or platform mix shifted (Android/iOS)", "c_f1_3_h": "share of countries and platforms per cohort", "c_f2_1_t": "An April release hurt the experience: bugs, speed, a new UI", "c_f2_1_h": "retention by app version, crash rate, book load time", "c_f2_2_t": "Catalog, pricing or the paywall changed", "c_f2_2_h": "changelog, share of searches with no result, paid conversion", "c_f2_3_t": "No bridge to a second book (chronic)", "c_f2_3_h": "second-book rate by cohort and what a user sees on the last page", "c_f3_1_t": "Seasonality: exams and vacations in May–June", "c_f3_1_h": "reading time by weekday and week, last year’s market data", "c_f3_2_t": "A competitor launched a promo or free access", "c_f3_2_h": "competitor monitoring, “what do you use instead” in interviews", "c_fac_rating": "<b>About the 4.5 → 4.2 rating.</b> Timing alone does not prove cause. The rating can fall because the product got worse, or because people arrived who were never a fit. Check: rating by app version and by acquisition channel.", "c_hyp_e": "Step 4 · Hypotheses", "c_hyp_h": "Three bets in “If… then… because…” form", "c_hyp_p": "Each hypothesis follows the chain: observation → insight → solution → metric. The “because” holds an assumption about people’s behavior. That is what the test checks.", "c_lbl_obs": "Observation", "c_lbl_ins": "Insight", "c_lbl_sol": "Solution", "c_lbl_met": "Metric", "c_lbl_if": "If", "c_lbl_then": "then", "c_lbl_bec": "because", "c_lbl_test": "How I test it", "c_lbl_wrong": "What would disprove it", "c_h1_t": "A bridge to the second book", "c_h1_obs": "65% finished, but only 30% of them started a second book: 45% of all users stopped after the first.", "c_h1_ins": "Choosing the next book is separate work that the app leaves to the person right when their job is already done.", "c_h1_sol": "A last-page screen: 3 personal picks (same author, genre, “readers of this book chose”) and the first chapter in one tap.", "c_h1_met": "Share of finishers who start a second book within 7 days.", "c_h1_if": "we show 3 personal picks on the last page and open the first chapter in one tap,", "c_h1_then": "the 7-day second-book rate rises from 30% to 40%, and D30 retention by 2–3 pp,", "c_h1_bec": "people are willing to keep reading but do not want to spend effort choosing once the job is done.", "c_h1_test": "A/B test on new users who reach the end of a book. About 360 finishers per arm detect +10 pp (α = 0.05, 80% power). Runs until every participant has lived 30 days.", "c_h1_wrong": "The rate rises but reading time on the second book and D30 do not: people open the pick but do not read. Then the problem is pick quality, not the moment.", "c_h2_t": "Acquire readers, not installs", "c_h2_obs": "Since April retained users sit near 8,000 while acquisition grows. 6.5% of April’s growth retained, vs 45% in January–March.", "c_h2_ins": "Marketing optimizes for installs and scales into people who never planned to read. A cheap install becomes an expensive reader.", "c_h2_sol": "Measure cost per retained reader by channel, cut channels with D30 under 20%, align creatives with what the app actually offers.", "c_h2_met": "D30 retention by channel and cost per retained user (CAC ÷ D30).", "c_h2_if": "we move budget from channels with D30 under 20% to channels above 40% and drop offers that promise what the product lacks,", "c_h2_then": "blended D30 retention rises from 28% to 34–38%, and cost per retained reader falls 10–15% on the same budget,", "c_h2_bec": "the drop began with accelerated acquisition, and almost all the growth churned within 30 days.", "c_h2_test": "Not an A/B test but a 4-week budget shift with a control set of channels. Diagnosis first: split April–June cohorts by channel. If every channel retains badly, the hypothesis falls and focus moves to the product.", "c_h2_wrong": "Organic and the original channels also fell to around 30%. Then the cause is the product, not the audience.", "c_h3_t": "A reading habit in week one", "c_h3_obs": "35% of users never finish even their first book.", "c_h3_ins": "People start a book on impulse, but with no rhythm reading breaks on day 2–3 and the book is abandoned.", "c_h3_sol": "Onboarding: 3 favorite genres, a “10 minutes a day” goal, a reminder at a chosen time and visible book progress.", "c_h3_met": "First-book completion, D7 and D30 retention.", "c_h3_if": "at sign-up we offer a 10-minutes-a-day goal with a reminder at a chosen time and a pick based on 3 genres,", "c_h3_then": "first-book completion rises from 65% to 70%, and D7 retention by 3 pp,", "c_h3_bec": "habits come from repeating at the same time and a small goal, not from day-one motivation.", "c_h3_test": "A/B test on new users: about 1,400 per arm for +5 pp completion. Guardrails: notification opt-outs and uninstalls.", "c_h3_wrong": "Completion rises but D30 does not. Then the first book is not the main lever, and the bridge to the second (hypothesis 1) matters more.", "c_ice_h": "ICE prioritization", "c_ice_s": "Impact × Confidence × Ease, each scored 1–10. Launch order: cheap diagnosis for hypothesis 2 first, building hypothesis 1 in parallel.", "c_th_h": "Hypothesis", "c_ice_why": "Why", "c_ice1_w": "Hits 45% of users, clear mechanism, moderate build", "c_ice2_w": "Explains the April drop, almost no build; confidence lower until the channel split", "c_ice3_w": "Smaller segment, notifications can annoy", "c_met_e": "Step 5 · Metrics", "c_met_h": "What I track and where I stop", "c_met_p": "Each hypothesis has one primary metric, secondary metrics to understand the mechanism and guardrail metrics that must not get worse. Thresholds are written down before launch.", "c_ns_e": "North Star", "c_ns_v": "Weekly active readers", "c_ns_d": "users who read at least 15 minutes in a week. Not “opened the app”, but got value.", "c_tree_h": "Metric tree", "c_tree": "Weekly active readers = new users × finished first book × started second × still active at 30 days + returning readers", "c_th_metric": "Metric", "c_th_type": "Type", "c_th_now": "Now", "c_th_goal": "Target", "c_th_hyp": "Hypothesis", "c_t_primary": "Primary", "c_t_secondary": "Secondary", "c_t_guard": "Guardrail", "c_m1": "Started a 2nd book within 7 days, % of finishers", "c_m2": "Minutes read on the 2nd book in week one", "c_m3": "D30 retention by channel", "c_m4": "Cost per retained reader, CAC ÷ D30", "c_m5": "Finished the first book, %", "c_m6": "D7 retention", "c_m7": "D30 retention, all new users", "c_m8": "Notification opt-outs and uninstalls", "c_m9": "Store rating by version", "c_v_meas": "to measure", "c_v_nogrow": "no worse than control", "c_v_grow": "up", "c_v_cut25": "−10–15%", "c_v_h2goal": "34–38%", "c_v_back": "back to ≥ 4.4", "c_v_all": "all", "c_ss_h": "How many users a test needs", "c_ss_p": "The smaller the expected effect, the larger the sample. Two-sided test, α = 0.05, 80% power:", "c_ss1": "Second book 30% → 40%: ≈ 360 finishers per arm", "c_ss2": "Second book 30% → 36%: ≈ 960 per arm", "c_ss3": "Completion 65% → 70%: ≈ 1,400 per arm", "c_ss4": "D30 retention 28% → 31%: ≈ 3,600 per arm", "c_ss_n": "With 27,000 new users a month any of these tests fills its sample in 1–2 weeks. The constraint is time: D30 can only be measured 30 days after the last participant joins.", "c_plan_e": "Plan", "c_plan_h": "Cheap knowledge first, expensive builds later", "c_w1_t": "Week 1 · Diagnosis", "c_w1": "SQL: cohorts by channel, campaign, platform and app version. In parallel, 6–8 interviews with people who finished and stopped and with April churners. Review 1–3★ ratings since April.", "c_w2_t": "Week 2 · Channel decision", "c_w2": "If channels are to blame: shift budget (hypothesis 2). If the product: find the April change and roll it back or fix it. Design the last-page screen.", "c_w3_t": "Weeks 3–4 · Launch tests", "c_w3": "A/B test of the second-book bridge (hypothesis 1). Prepare the habit onboarding (hypothesis 3).", "c_w4_t": "Weeks 5–9 · Decisions", "c_w4": "Read D7 and D30, check guardrails, decide: scale, iterate or kill. Write down what we learned about users even if the test lost.", "c_sql_h": "SQL: retention by cohort and channel", "c_sql_s": "The first query of week 1. Tables users (id, created_at, channel) and events (user_id, event_time).", "c_sql_file": "All case queries · SQL", "c_meth_e": "How a PM thinks", "c_meth_h": "The method behind this case", "c_meth_p": "Eight steps that repeat in any retention problem. Order matters: each step narrows the field for the next one.", "c_s1_t": "Frame the problem", "c_s1": "Which metric, by how much, since when, for whom. “Retention is falling” is not a problem statement. “D30 of new users fell from 45% to 28% starting with the April cohort” is.", "c_s2_t": "Sanity-check the data", "c_s2": "How is “active” defined? Has the last cohort completed its 30 days? Did tracking change? Don’t confuse an aggregate with a split: 65% and 30% here are totals, not per cohort.", "c_s3_t": "Size it", "c_s3": "Turn percentages into people and money: ≈ 9,900 active users lost in 3 months. Scale decides how much effort the problem deserves.", "c_s4_t": "Decompose", "c_s4": "Mix or core? Retention = who arrived × what they found. Compare old vs new channels, app versions, funnel stages.", "c_s5_t": "Observation → insight → solution → metric", "c_s5": "A fact from the data, an explanation through human behavior, a product change, a number to check it. An insight is not a restated number but an answer to “why”.", "c_s6_t": "Write the hypothesis", "c_s6": "If [action], then [metric] moves by [amount], because [behavior]. Plus what would disprove it. Without a number and a threshold it cannot be tested.", "c_s7_t": "Prioritize", "c_s7": "ICE or RICE. Start with what is cheap and teaches the most: SQL and interviews cost days, builds cost weeks.", "c_s8_t": "Design the test and decide", "c_s8": "Primary metric, guardrails, sample size, duration, stopping rule — before launch. After — scale, iterate or kill, and record what was learned.", "c_traps_h": "Traps I avoid", "c_tr1": "Looking at total actives instead of cohorts", "c_tr2": "Filling data gaps to fit the hypothesis: “it must have dropped”", "c_tr3": "Confusing timing with cause (rating and retention)", "c_tr4": "Scaling power-user behavior without a test: they might read anywhere", "c_tr5": "Picking a tool before the problem: RFM without revenue data", "c_tr6": "A hypothesis with no number: “retention will go up”", "c_src_h": "Where the method comes from", "c_src_p": "The Build–Measure–Learn loop and testing assumptions come from Eric Ries’s The Lean Startup. The hypothesis template “We believe… will result in… we’ll know when…” comes from Jeff Gothelf’s Lean UX. The four-link chain is a simplified scheme I use for practice.", "c_learn_e": "Resources", "c_learn_h": "What to watch and read", "c_r_video": "Video", "c_r_read": "Reading", "c_r1": "Eric Ries, The Lean Startup · Talks at Google, ≈ 55 min", "c_r1_d": "Build–Measure–Learn and MVPs from the method’s author", "c_r2": "Casey Winters on measuring retention & product-market fit · ≈ 50 min", "c_r2_d": "Pinterest’s former head of growth reads retention curves of real startups", "c_r3": "Lenny’s Podcast on YouTube", "c_r3_d": "Search the channel: retention, Elena Verna, Casey Winters", "c_r4": "GoPractice: webinars on product hypotheses (Russian)", "c_r4_d": "Writing and testing hypotheses with data", "c_r5": "Casey Winters, Guide to Finding Product/Market Fit", "c_r5_d": "PMF is when the retention curve flattens", "c_r6": "Amplitude: the complete guide to cohort analysis", "c_r6_d": "Cohort types, a step-by-step walkthrough and common mistakes", "c_r7": "Spotify Confidence: hypothesis-driven development", "c_r7_d": "What makes a good hypothesis and why a vague one teaches nothing", "c_pp": "pp", "c_rating_now": "4.2", "c_foot": "BookLover Retention · training product case · 2026"};
   const D = simulateBooklover();
   const N = D.N, CH = D.CHANNELS;
   const COL = ["var(--s0)", "var(--s1)", "var(--s2)", "var(--s3)", "var(--s4)", "var(--s5)"];
@@ -804,15 +960,33 @@ if (typeof module !== "undefined") module.exports = { simulateBooklover };
   $("fG").addEventListener("change", e => { F.g = +e.target.value; changed(); });
 
   // ---------- views ----------
-  const VIEWS = ["overview", "sources", "cohorts", "funnel", "diagnosis", "users", "experiments", "method", "slide"];
-  const TITLES = { overview: T.v_overview, sources: T.v_sources, cohorts: T.v_cohorts, funnel: T.v_funnel, diagnosis: T.v_diagnosis, users: T.v_users, experiments: T.v_experiments, method: T.v_method, slide: T.pr_btn.replace("▶ ", "") };
-  let view = "overview";
+  // the case is one path of numbered steps; users and data notes are appendices
+  const STEPS = ["task", "overview", "cohorts", "factors", "sources", "diagnosis", "funnel", "hypotheses", "experiments", "plan"];
+  const VIEWS = STEPS.concat(["users", "method"]);
+  const TITLES = { task: T.v_task, overview: T.v_overview, cohorts: T.v_cohorts, factors: T.v_factors, sources: T.v_sources, diagnosis: T.v_diagnosis, funnel: T.v_funnel,
+    hypotheses: T.v_hyp, experiments: T.v_experiments, plan: T.v_plan, users: T.v_users, method: T.v_method };
+  let view = "task";
+  // step label at the top and "previous / next" at the bottom of every step
+  document.querySelectorAll(".view").forEach(sec => {
+    const v = sec.dataset.view, k = STEPS.indexOf(v);
+    const head = sec.querySelector(".vhead");
+    if (k >= 0 && head) head.insertAdjacentHTML("afterbegin", `<span class="stepno">${tpl(T.step_of, { n: k + 1, t: STEPS.length })}</span>`);
+    const prev = k > 0 ? STEPS[k - 1] : k < 0 ? null : null;
+    const next = k >= 0 && k < STEPS.length - 1 ? STEPS[k + 1] : k === STEPS.length - 1 ? "users" : null;
+    let h = "";
+    if (prev) h += `<button type="button" data-go="${prev}"><span>← ${T.step_prev}</span><b>${STEPS.indexOf(prev) + 1}. ${TITLES[prev]}</b></button>`;
+    if (next) h += `<button type="button" class="next" data-go="${next}"><span>${next === "users" ? T.step_appx : T.step_next} →</span><b>${STEPS.includes(next) ? (STEPS.indexOf(next) + 1) + ". " : ""}${TITLES[next]}</b></button>`;
+    if (v === "users") h = `<button type="button" data-go="plan"><span>← ${T.step_prev}</span><b>${STEPS.length}. ${TITLES.plan}</b></button><button type="button" class="next" data-go="task"><span>${T.step_restart} →</span><b>1. ${TITLES.task}</b></button>`;
+    if (h) sec.insertAdjacentHTML("beforeend", `<nav class="stepnav" aria-label="${T.nav_label}">${h}</nav>`);
+  });
+  document.querySelectorAll(".stepnav button").forEach(b => b.addEventListener("click", () => go(b.dataset.go)));
   function go(v, push = true) {
-    if (!VIEWS.includes(v)) v = "overview";
+    if (!VIEWS.includes(v)) v = "task";
     view = v;
     document.querySelectorAll(".view").forEach(s => s.hidden = s.dataset.view !== v);
     document.querySelectorAll(".nav-btn").forEach(b => b.setAttribute("aria-current", b.dataset.view === v ? "page" : "false"));
-    $("vTitle").textContent = TITLES[v];
+    $("vTitle").textContent = (STEPS.includes(v) ? (STEPS.indexOf(v) + 1) + ". " : "") + TITLES[v];
+    $("fRow").hidden = ["task", "factors", "hypotheses", "plan", "method"].includes(v); // filters only where there is data
     if (push) { try { history.replaceState(null, "", "#" + v); } catch (e) {} }
     render();
     window.scrollTo(0, 0);
@@ -820,11 +994,12 @@ if (typeof module !== "undefined") module.exports = { simulateBooklover };
     if (btn && btn.parentElement.scrollWidth > btn.parentElement.clientWidth) btn.parentElement.scrollLeft = btn.offsetLeft - 40;
   }
   document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.view)));
-  window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if (h === "present") { if (!presenting) startPresentation(); return; } if (!presenting && h && h !== view && h !== "slide") go(h, false); });
+  window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if (h && h !== view) go(h, false); });
 
   function changed() { syncControls(); uPage = 0; exPreset = -1; render(); }
   function render() {
-    const fn = { overview: rOverview, sources: rSources, cohorts: rCohorts, funnel: rFunnel, diagnosis: rDiagnosis, users: rUsers, experiments: rExperiments, method: () => {}, slide: () => {} }[view];
+    const none = () => {};
+    const fn = { task: none, overview: rOverview, cohorts: rCohorts, factors: none, sources: rSources, diagnosis: rDiagnosis, funnel: rFunnel, hypotheses: none, experiments: rExperiments, plan: none, users: rUsers, method: none }[view];
     fn();
     $("cntU").textContent = fmtN(sel().length);
     commit();
@@ -842,7 +1017,7 @@ if (typeof module !== "undefined") module.exports = { simulateBooklover };
       sim: [val("simMove"), val("simTo"), val("simMark")], ex: [val("exTest"), val("exBase"), val("exMde"), val("exAlpha"), val("exPower")] });
   }
   function commit() {
-    if (restoring || presenting) return;
+    if (restoring) return;
     const now = snap();
     if (last !== null && now !== last) { UNDO.push({ s: last, y: preScroll }); if (UNDO.length > 150) UNDO.shift(); }
     last = now;
@@ -871,7 +1046,6 @@ if (typeof module !== "undefined") module.exports = { simulateBooklover };
   $("undoBtn").addEventListener("click", undo);
   document.addEventListener("keydown", e => {
     const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement && document.activeElement.tagName) && document.activeElement.type !== "range";
-    if (presenting) return;
     if ((e.altKey && e.key === "ArrowLeft") || (!typing && (e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === "z")) { e.preventDefault(); undo(); }
   });
 
@@ -1217,7 +1391,7 @@ if (typeof module !== "undefined") module.exports = { simulateBooklover };
     openId = -1; if (was) commit();
   }
   scrim.addEventListener("click", closeUser);
-  document.addEventListener("keydown", e => { if (e.key === "Escape" && !presenting) closeUser(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeUser(); });
 
   // search
   const toast = $("toast");
@@ -1265,104 +1439,10 @@ if (typeof module !== "undefined") module.exports = { simulateBooklover };
 
   let rz; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(render, 150); });
 
-  // ---------- PRESENTATION MODE ----------
-  // One link, one path: story slides and live dashboard states in the order of the case. "Next" sets the section,
-  // filters and toggles for each step and highlights what to point at; notes tell the presenter what to say.
-  let presenting = false, pIdx = 0, notesOn = true;
-  try { notesOn = localStorage.getItem("bl-notes") !== "0"; } catch (e) {}
-  const DEF = () => { Object.assign(F, { m0: 0, m1: 5, ch: -1, pl: -1, g: -1 }); uChip = "all"; uPage = 0; srcMetric = "ret"; cohMode = "pct"; funBy = "month"; };
-  const slideHTML = {
-    s1: () => {
-      let lost = 0; for (let m = 3; m < 6; m++) lost += D.NEW[m] * 0.45 - D.ACT[m];
-      return `<div class="sl"><span class="eyebrow">${T.p1_e}</span><h2>${T.p1_t}</h2><p class="lead">${T.p1_say}</p>
-        <div class="nums"><div><b class="bad">45% → 28%</b><span>${T.p1_k1}</span></div><div><b>+${fmtD((D.NEW[5] / D.NEW[0] - 1) * 100, 0)}%</b><span>${T.p1_k2}</span></div><div><b>≈ ${fmtN(Math.round(lost / 100) * 100)}</b><span>${T.p1_k3}</span></div></div>
-        <p class="q">${T.p1_q}</p></div>`;
-    },
-    s8: () => `<div class="sl"><h2>${T.p8_t}</h2><div class="bets">
-        <div class="bet fix"><span class="n">0</span><div><b>${T.p8_fix}</b><span>${T.p8_fix_d}</span></div></div>
-        <div class="bet"><span class="n">1</span><div><b>${T.p8_h1}</b><span>${T.p8_h1_d}</span></div></div>
-        <div class="bet"><span class="n">2</span><div><b>${T.p8_h2}</b><span>${T.p8_h2_d}</span></div></div>
-        <div class="bet"><span class="n">3</span><div><b>${T.p8_h3}</b><span>${T.p8_h3_d}</span></div></div></div></div>`,
-    s11: () => `<div class="sl"><h2>${T.p11_t}</h2><div class="weeks">
-        ${[1, 2, 3, 4].map(k => `<div><b>${T["p11_w" + k]}</b><span>${T["p11_w" + k + "d"]}</span></div>`).join("")}</div>
-        <p class="links"><a href="booklover-retention.html" target="_blank" rel="noopener">${T.foot_case}</a> · <a href="../files/booklover-retention.sql" target="_blank" rel="noopener">${T.me_sql}</a></p></div>`
-  };
-  const STEPS = [
-    { t: T.p1_t, say: T.p1_say, slide: "s1" },
-    { t: T.p2_t, say: T.p2_say, view: "overview", spot: () => $("ovBars").closest(".card") },
-    { t: T.p3_t, say: T.p3_say, view: "cohorts", spot: () => $("cohLines").closest(".card") },
-    { t: T.p4_t, say: T.p4_say, view: "sources", set: () => { srcSort = { k: "cpr", dir: -1 }; }, spot: () => $("srcTable").closest(".card") },
-    { t: T.p5_t, say: T.p5_say, view: "diagnosis", spot: () => $("wf").closest(".card") },
-    { t: T.p6_t, say: T.p6_say, view: "diagnosis", set: () => { F.pl = 0; }, spot: () => $("wf").closest(".card") },
-    { t: T.p7_t, say: T.p7_say, view: "funnel", set: () => { funBy = "genre"; }, spot: () => $("funTable").closest(".card") },
-    { t: T.p8_t, say: T.p8_say, slide: "s8" },
-    { t: T.p9_t, say: T.p9_say, view: "sources", set: () => { $("simMove").value = 100; $("simTo").value = -1; $("simMark").value = 30; }, spot: () => $("simTable").closest(".card") },
-    { t: T.p10_t, say: T.p10_say, view: "experiments", set: () => { $("exTest").value = 0; $("exAlpha").value = "0.05"; $("exPower").value = "0.8"; exPreset = -1; }, spot: () => $("exN").closest(".card") },
-    { t: T.p11_t, say: T.p11_say, slide: "s11" }
-  ];
-  $("pDots").innerHTML = STEPS.map(() => "<i></i>").join("");
-  function showStep(k) {
-    pIdx = Math.max(0, Math.min(STEPS.length - 1, k));
-    const st = STEPS[pIdx];
-    document.querySelectorAll(".spot").forEach(e => e.classList.remove("spot"));
-    closeUser();
-    DEF();
-    if (st.set) st.set();
-    syncControls();
-    if (st.slide) { $("slideBody").innerHTML = slideHTML[st.slide](); go("slide", false); }
-    else go(st.view, false);
-    $("pStep").textContent = tpl(T.pr_step, { n: pIdx + 1, t: STEPS.length });
-    $("pTitle").textContent = st.t;
-    $("pSay").textContent = st.say;
-    $("vTitle").textContent = st.slide ? "BookLover" : TITLES[st.view];
-    $("pPrev").disabled = pIdx === 0;
-    $("pNext").textContent = pIdx === STEPS.length - 1 ? T.pr_exit : T.pr_next;
-    [...$("pDots").children].forEach((d, j) => d.classList.toggle("on", j <= pIdx));
-    if (st.spot) {
-      const el = st.spot();
-      if (el) { el.classList.add("spot"); requestAnimationFrame(() => el.scrollIntoView({ block: "center", behavior: "auto" })); }
-    }
-  }
-  function setNotes(on) {
-    notesOn = on; $("pNotes").hidden = !on; $("pNotesBtn").setAttribute("aria-pressed", on);
-    try { localStorage.setItem("bl-notes", on ? "1" : "0"); } catch (e) {}
-  }
-  function startPresentation() {
-    presenting = true;
-    document.body.classList.add("presenting");
-    $("pbar").hidden = false;
-    setNotes(notesOn);
-    try { history.replaceState(null, "", "#present"); } catch (e) {}
-    showStep(0);
-  }
-  function endPresentation() {
-    presenting = false;
-    document.body.classList.remove("presenting");
-    $("pbar").hidden = true;
-    document.querySelectorAll(".spot").forEach(e => e.classList.remove("spot"));
-    DEF(); syncControls();
-    go("overview");
-    UNDO.length = 0; last = snap(); $("undoBtn").hidden = true;
-    flash(T.pr_done);
-  }
-  $("prBtn").addEventListener("click", startPresentation);
-  $("pNext").addEventListener("click", () => pIdx === STEPS.length - 1 ? endPresentation() : showStep(pIdx + 1));
-  $("pPrev").addEventListener("click", () => showStep(pIdx - 1));
-  $("pExit").addEventListener("click", endPresentation);
-  $("pNotesBtn").addEventListener("click", () => setNotes(!notesOn));
-  document.addEventListener("keydown", e => {
-    if (!presenting || /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement && document.activeElement.tagName)) return;
-    if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") { e.preventDefault(); pIdx === STEPS.length - 1 ? endPresentation() : showStep(pIdx + 1); }
-    else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); showStep(pIdx - 1); }
-    else if (e.key === "Escape") { e.preventDefault(); endPresentation(); }
-    else if (e.code === "KeyN") setNotes(!notesOn); // any keyboard layout
-  });
-
   // ---------- start ----------
   syncControls();
   const start = location.hash.slice(1);
-  if (start === "present") { go("overview", false); startPresentation(); }
-  else go(VIEWS.includes(start) && start !== "slide" ? start : "overview", false);
+  go(VIEWS.includes(start) ? start : "task", false);
 })();
 </script>
 

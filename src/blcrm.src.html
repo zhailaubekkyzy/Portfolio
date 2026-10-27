@@ -217,52 +217,66 @@ input[type="range"] { width: 100%; accent-color: var(--s0); }
 .tl li:not(:last-child)::after { content: ""; position: absolute; left: 78px; top: 14px; bottom: -2px; width: 2px; background: var(--line); }
 .rec { background: color-mix(in srgb, var(--focus) 10%, transparent); border-radius: 10px; padding: 12px; font-size: 13.5px; }
 
-/* presentation */
-body.presenting .view { padding-bottom: 230px; }
-body.presenting #undoBtn, body.presenting #prBtn { display: none; }
-.pbar { position: fixed; left: 240px; right: 0; bottom: 0; z-index: 25; background: var(--surface); border-top: 1px solid var(--line); box-shadow: 0 -8px 30px rgb(15 23 42 / .12);
-  padding: 12px max(20px, env(safe-area-inset-right, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)) 20px; }
-.pbar-in { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 16px; align-items: center; max-width: 1200px; }
-.pmeta { display: grid; gap: 2px; min-width: 0; }
-.pmeta b { font-family: var(--f-display); font-size: 16px; line-height: 1.25; }
-.pbtns { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
-.pbtns .btn[aria-pressed="true"] { background: var(--surface-2); }
-.pnotes { grid-column: 1 / -1; background: var(--warn-bg); color: var(--ink); border-radius: 10px; padding: 10px 12px; font-size: 14px; display: grid; gap: 4px; }
-.pnotes .lab { color: var(--warn); }
-.pnotes .keys { font-size: 11.5px; color: var(--muted); }
-.pdots { grid-column: 1 / -1; display: flex; gap: 4px; }
-.pdots i { flex: 1; height: 3px; border-radius: 2px; background: var(--line); }
-.pdots i.on { background: var(--s0); }
-.spot { outline: 3px solid var(--s4); outline-offset: 4px; border-radius: 14px; }
-tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
-.slide { min-height: calc(100vh - 140px); align-content: center; }
-.sl { max-width: 1000px; display: grid; gap: 22px; }
-.sl h2 { font-family: var(--f-display); font-size: clamp(28px, 4.4vw, 52px); font-weight: 700; letter-spacing: -.02em; line-height: 1.05; }
-.sl .lead { font-size: clamp(16px, 1.8vw, 20px); color: var(--ink-2); max-width: 60ch; }
-.sl .nums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-.sl .nums div { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 4px; }
-.sl .nums b { font-family: var(--f-display); font-size: clamp(24px, 3vw, 38px); font-weight: 700; font-variant-numeric: tabular-nums; }
-.sl .nums b.bad { color: var(--bad); }
-.sl .nums span { font-size: 13.5px; color: var(--ink-2); }
-.sl .q { font-size: 17px; font-weight: 600; }
-.sl .bets { display: grid; gap: 10px; }
-.sl .bet { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 14px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; }
-.sl .bet .n { font-family: var(--f-display); font-weight: 700; font-size: 18px; width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--surface-2); }
-.sl .bet.fix .n { background: var(--good-bg); color: var(--good); }
-.sl .bet b { display: block; font-size: 16px; }
-.sl .bet span { font-size: 13.5px; color: var(--ink-2); }
-.sl .weeks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
-.sl .weeks div { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 4px; align-content: start; }
-.sl .weeks b { font-size: 15px; }
-.sl .weeks span { font-size: 13.5px; color: var(--ink-2); }
-.sl .links { font-size: 14px; }
-.sl .links a { color: var(--focus); }
+/* step-by-step case */
+.nav-btn .no { width: 22px; height: 22px; flex: none; border-radius: 7px; display: grid; place-items: center; font-family: var(--f-mono); font-size: 11.5px; font-weight: 600; background: var(--side-act); color: var(--side-ink); }
+.nav-btn[aria-current="page"] .no { background: var(--s0); color: #fff; }
+.stepno { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--s0); font-weight: 600; }
+.stepnav { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin-top: 8px; }
+.stepnav button { text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: 14px; padding: 14px 16px; cursor: pointer; display: grid; gap: 2px; min-width: 0; }
+.stepnav button:hover { border-color: var(--ink-2); }
+.stepnav button.next { text-align: right; background: var(--ink); color: var(--bg); border-color: var(--ink); grid-column: 2; }
+.stepnav button span { font-size: 12px; opacity: .7; }
+.stepnav button b { font-size: 15px; }
+.hero-h { font-size: clamp(28px, 4vw, 44px) !important; }
+.hero-h span { color: var(--muted); font-weight: 500; }
+.notepill { display: inline-flex; width: fit-content; max-width: 100%; font-size: 13px; color: var(--warn); background: var(--warn-bg); padding: 5px 12px; border-radius: 999px; }
+.kpis4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.kpis4 .v { font-size: clamp(20px, 2.2vw, 28px); }
+.sumgrid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 12px; align-items: start; }
+.sumgrid .finding b { font-size: clamp(28px, 3.4vw, 40px); }
+.sumlist { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.sumlist li { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 6px; align-content: start; font-size: 14.5px; color: var(--ink-2); }
+.sumlist b { font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; font-weight: 500; color: var(--muted); }
+.bucket { display: grid; gap: 12px; align-content: start; }
+.bucket h3 { font-family: var(--f-display); font-size: 17px; }
+.fac { display: grid; gap: 5px; padding-top: 12px; border-top: 1px solid var(--line); }
+.bucket h3 + .fac { border-top: 0; padding-top: 0; }
+.fac .pill { width: fit-content; }
+.fac b { font-weight: 600; font-size: 14.5px; }
+.fac > span:last-child { font-size: 13px; color: var(--ink-2); }
+.fixcard { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 14px; align-items: center; }
+.fixcard .n { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-family: var(--f-display); font-weight: 700; background: var(--good-bg); color: var(--good); }
+.fixcard b { display: block; font-size: 15.5px; }
+.fixcard span { font-size: 13.5px; color: var(--ink-2); }
+.hcard { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 20px; }
+.hcard h3 { font-family: var(--f-display); font-size: 18px; margin: 4px 0 12px; }
+.chain { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+.chain li { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 10px; font-size: 13.5px; color: var(--ink-2); }
+.chain li b { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; font-weight: 500; color: var(--muted); padding-top: 2px; }
+.stmt { background: var(--surface-2); border-radius: 10px; padding: 14px 16px; font-size: 15.5px; line-height: 1.6; }
+.stmt em { font-style: normal; font-family: var(--f-mono); font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--s0); margin-right: 4px; }
+.hmore { display: grid; gap: 8px; margin-top: 12px; font-size: 13.5px; color: var(--ink-2); }
+.hmore b { color: var(--ink); }
+table.crm td.wrap { white-space: normal; min-width: 220px; color: var(--ink-2); }
+.pill.t1 { background: color-mix(in srgb, var(--s0) 14%, transparent); color: var(--s0); }
+.tree { font-family: var(--f-mono); font-size: 13px; line-height: 1.7; margin-top: 8px; }
+.weeks { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.weeks li { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 6px; align-content: start; font-size: 13.5px; color: var(--ink-2); }
+.weeks b { color: var(--ink); font-size: 15px; }
+pre.code { margin: 0; background: var(--surface-2); border-radius: 10px; padding: 14px; overflow-x: auto; font-family: var(--f-mono); font-size: 12px; line-height: 1.6; }
+.msteps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; counter-reset: m; }
+.msteps li { counter-increment: m; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px 14px 52px; position: relative; display: grid; gap: 4px; font-size: 13.5px; color: var(--ink-2); }
+.msteps li::before { content: counter(m); position: absolute; left: 16px; top: 14px; width: 24px; height: 24px; border-radius: 50%; background: var(--ink); color: var(--bg); display: grid; place-items: center; font-size: 12px; font-weight: 600; }
+.msteps b { color: var(--ink); font-size: 14.5px; }
+.res { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; font-size: 13.5px; }
+.res a { color: var(--focus); font-weight: 600; text-decoration: none; }
+.res a:hover { text-decoration: underline; }
 @media (max-width: 900px) {
-  .pbar { left: 0; padding-left: max(16px, env(safe-area-inset-left, 0px)); }
-  .pbar-in { grid-template-columns: minmax(0, 1fr); }
-  .pbtns { justify-content: flex-start; }
-  .pnotes .keys { display: none; }
-  .sl .nums, .sl .weeks { grid-template-columns: minmax(0, 1fr); }
+  .kpis4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sumgrid, .hcard, .msteps, .weeks, .sumlist { grid-template-columns: minmax(0, 1fr); }
+  .stepnav { grid-template-columns: minmax(0, 1fr); }
+  .stepnav button.next { grid-column: 1; grid-row: 1; }
+  .chain li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
 }
 
 .tip { position: fixed; pointer-events: none; z-index: 40; background: var(--ink); color: var(--bg); font-size: 12.5px; line-height: 1.45; padding: 7px 10px; border-radius: 8px; max-width: 260px; opacity: 0; transition: opacity .12s; }
@@ -296,16 +310,19 @@ tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
 <div class="app">
   <aside class="side" aria-label="{{nav_label}}">
     <div class="brand"><span class="logo">BL</span><div><b>BookLover · Retention</b><span>{{brand_sub}}</span></div></div>
-    <div class="navgroup">{{g_analysis}}</div>
-    <button class="nav-btn" data-view="overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>{{v_overview}}</button>
-    <button class="nav-btn" data-view="sources"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16l-6 8v6l-4 2v-8z"/></svg>{{v_sources}}</button>
-    <button class="nav-btn" data-view="cohorts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h12M9 3v18M15 3v12"/></svg>{{v_cohorts}}</button>
-    <button class="nav-btn" data-view="funnel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16M7 10h10M10 15h4M11 20h2"/></svg>{{v_funnel}}</button>
-    <button class="nav-btn" data-view="diagnosis"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>{{v_diagnosis}}</button>
-    <div class="navgroup">{{g_users}}</div>
+    <div class="navgroup">{{g_steps}}</div>
+    <button class="nav-btn" data-view="task"><span class="no">1</span>{{v_task}}</button>
+    <button class="nav-btn" data-view="overview"><span class="no">2</span>{{v_overview}}</button>
+    <button class="nav-btn" data-view="cohorts"><span class="no">3</span>{{v_cohorts}}</button>
+    <button class="nav-btn" data-view="factors"><span class="no">4</span>{{v_factors}}</button>
+    <button class="nav-btn" data-view="sources"><span class="no">5</span>{{v_sources}}</button>
+    <button class="nav-btn" data-view="diagnosis"><span class="no">6</span>{{v_diagnosis}}</button>
+    <button class="nav-btn" data-view="funnel"><span class="no">7</span>{{v_funnel}}</button>
+    <button class="nav-btn" data-view="hypotheses"><span class="no">8</span>{{v_hyp}}</button>
+    <button class="nav-btn" data-view="experiments"><span class="no">9</span>{{v_experiments}}</button>
+    <button class="nav-btn" data-view="plan"><span class="no">10</span>{{v_plan}}</button>
+    <div class="navgroup">{{g_appx}}</div>
     <button class="nav-btn" data-view="users"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6"/><path d="M16 4a4 4 0 0 1 0 8M22 21c0-3-2-5-5-5.6"/></svg>{{v_users}}<span class="cnt" id="cntU"></span></button>
-    <div class="navgroup">{{g_decide}}</div>
-    <button class="nav-btn" data-view="experiments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-5-9V3"/></svg>{{v_experiments}}</button>
     <button class="nav-btn" data-view="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg>{{v_method}}</button>
     <div class="foot">
       <a href="{{portfolio_href}}">{{foot_back}}</a>
@@ -320,10 +337,9 @@ tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
         <button type="button" class="btn" id="undoBtn" hidden title="{{back_t}}" aria-label="{{back_t}}">← {{back}}</button>
         <h1 id="vTitle">{{v_overview}}</h1>
         <label class="search" for="q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input class="ctl" id="q" placeholder="{{q_ph}}" autocomplete="off" aria-label="{{q_label}}"></label>
-        <button type="button" class="btn pri" id="prBtn" title="{{pr_btn_t}}">{{pr_btn}}</button>
         <a class="btn lang" href="{{lang_href}}">{{lang_label}}</a>
       </div>
-      <div class="top-row">
+      <div class="top-row" id="fRow">
         <span class="fgroup">{{f_months}}
           <select class="ctl" id="fM0" aria-label="{{f_from}}"></select>–<select class="ctl" id="fM1" aria-label="{{f_to}}"></select></span>
         <select class="ctl" id="fCh" aria-label="{{f_channel}}"></select>
@@ -332,6 +348,26 @@ tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
         <div class="active-filters" id="af"></div>
       </div>
     </div>
+
+    <!-- 1 TASK -->
+    <section class="view" data-view="task" hidden>
+      <div class="vhead"><span class="eyebrow">{{c_eyebrow}}</span><h2 class="hero-h">{{c_h1}}</h2><p>{{c_lead}}</p><span class="notepill">{{c_note}}</span></div>
+      <div class="kpis4">
+        <div class="kpi"><span class="eyebrow">{{c_k1_e}}</span><span class="v down">{{c_k1_v}}</span><span class="d">{{c_k1_d}}</span></div>
+        <div class="kpi"><span class="eyebrow">{{c_k2_e}}</span><span class="v down">{{c_k2_v}}</span><span class="d">{{c_k2_d}}</span></div>
+        <div class="kpi"><span class="eyebrow">{{c_k3_e}}</span><span class="v">{{c_k3_v}}</span><span class="d">{{c_k3_d}}</span></div>
+        <div class="kpi"><span class="eyebrow">{{c_k4_e}}</span><span class="v">{{c_k4_v}}</span><span class="d">{{c_k4_d}}</span></div>
+      </div>
+      <div class="sumgrid">
+        <div class="finding"><span class="eyebrow" style="color:inherit;opacity:.7">{{c_sum_e}}</span><b>{{c_sum_big}}</b><span>{{c_sum_h}}</span></div>
+        <ul class="sumlist">
+          <li><b>{{c_sum_l1_b}}</b>{{c_sum_l1}}</li>
+          <li><b>{{c_sum_l2_b}}</b>{{c_sum_l2}}</li>
+          <li><b>{{c_sum_l3_b}}</b>{{c_sum_l3}}</li>
+          <li><b>{{c_sum_l4_b}}</b>{{c_sum_l4}}</li>
+        </ul>
+      </div>
+    </section>
 
     <!-- OVERVIEW -->
     <section class="view" data-view="overview">
@@ -345,6 +381,26 @@ tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
           <svg class="chart" id="ovMix" viewBox="0 0 560 260" role="img" aria-label="{{ov_c2}}"></svg>
           <div class="legend" id="ovMixLeg"></div></div>
       </div>
+    </section>
+
+    <!-- 4 FACTORS -->
+    <section class="view" data-view="factors" hidden>
+      <div class="vhead"><h2>{{c_fac_h}}</h2><p>{{c_fac_p}}</p></div>
+      <div class="g3">
+        <div class="card bucket"><h3>{{c_b1}}</h3>
+          <div class="fac"><span class="pill y">{{c_tag_data}}</span><b>{{c_f1_1_t}}</b><span>{{c_how}} {{c_f1_1_h}}</span></div>
+          <div class="fac"><span class="pill m">{{c_tag_guess}}</span><b>{{c_f1_2_t}}</b><span>{{c_how}} {{c_f1_2_h}}</span></div>
+          <div class="fac"><span class="pill m">{{c_tag_guess}}</span><b>{{c_f1_3_t}}</b><span>{{c_how}} {{c_f1_3_h}}</span></div></div>
+        <div class="card bucket"><h3>{{c_b2}}</h3>
+          <div class="fac"><span class="pill y">{{c_tag_data}}</span><b>{{c_f2_1_t}}</b><span>{{c_how}} {{c_f2_1_h}}</span></div>
+          <div class="fac"><span class="pill m">{{c_tag_guess}}</span><b>{{c_f2_2_t}}</b><span>{{c_how}} {{c_f2_2_h}}</span></div>
+          <div class="fac"><span class="pill y">{{c_tag_data}}</span><b>{{c_f2_3_t}}</b><span>{{c_how}} {{c_f2_3_h}}</span></div></div>
+        <div class="card bucket"><h3>{{c_b3}}</h3>
+          <div class="fac"><span class="pill m">{{c_tag_guess}}</span><b>{{c_f3_1_t}}</b><span>{{c_how}} {{c_f3_1_h}}</span></div>
+          <div class="fac"><span class="pill m">{{c_tag_guess}}</span><b>{{c_f3_2_t}}</b><span>{{c_how}} {{c_f3_2_h}}</span></div></div>
+      </div>
+      <p class="note" style="margin-top:0">{{c_fac_rating}}</p>
+      <p class="note" style="margin-top:0">{{fac_next}}</p>
     </section>
 
     <!-- SOURCES -->
@@ -419,6 +475,87 @@ tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
       <p class="sub" style="font-size:12.5px;color:var(--muted)">{{dia_ignore}}</p>
     </section>
 
+    <!-- 8 HYPOTHESES -->
+    <section class="view" data-view="hypotheses" hidden>
+      <div class="vhead"><h2>{{c_hyp_h}}</h2><p>{{c_hyp_p}}</p></div>
+      <div class="card fixcard"><span class="n">0</span><div><b>{{fix_t}}</b><span>{{fix_d}}</span></div></div>
+        <article class="card hcard">
+          <div><span class="eyebrow">H1</span><h3>{{c_h1_t}}</h3>
+            <ol class="chain">
+              <li><b>{{c_lbl_obs}}</b><span>{{c_h1_obs}}</span></li>
+              <li><b>{{c_lbl_ins}}</b><span>{{c_h1_ins}}</span></li>
+              <li><b>{{c_lbl_sol}}</b><span>{{c_h1_sol}}</span></li>
+              <li><b>{{c_lbl_met}}</b><span>{{c_h1_met}}</span></li>
+            </ol></div>
+          <div><p class="stmt"><em>{{c_lbl_if}}</em>{{c_h1_if}} <em>{{c_lbl_then}}</em>{{c_h1_then}} <em>{{c_lbl_bec}}</em>{{c_h1_bec}}</p>
+            <div class="hmore"><p><b>{{c_lbl_test}}.</b> {{c_h1_test}}</p><p><b>{{c_lbl_wrong}}.</b> {{c_h1_wrong}}</p></div></div>
+        </article>
+        <article class="card hcard">
+          <div><span class="eyebrow">H2</span><h3>{{c_h2_t}}</h3>
+            <ol class="chain">
+              <li><b>{{c_lbl_obs}}</b><span>{{c_h2_obs}}</span></li>
+              <li><b>{{c_lbl_ins}}</b><span>{{c_h2_ins}}</span></li>
+              <li><b>{{c_lbl_sol}}</b><span>{{c_h2_sol}}</span></li>
+              <li><b>{{c_lbl_met}}</b><span>{{c_h2_met}}</span></li>
+            </ol></div>
+          <div><p class="stmt"><em>{{c_lbl_if}}</em>{{c_h2_if}} <em>{{c_lbl_then}}</em>{{c_h2_then}} <em>{{c_lbl_bec}}</em>{{c_h2_bec}}</p>
+            <div class="hmore"><p><b>{{c_lbl_test}}.</b> {{c_h2_test}} {{c_h2_sim}}</p><p><b>{{c_lbl_wrong}}.</b> {{c_h2_wrong}}</p></div></div>
+        </article>
+        <article class="card hcard">
+          <div><span class="eyebrow">H3</span><h3>{{c_h3_t}}</h3>
+            <ol class="chain">
+              <li><b>{{c_lbl_obs}}</b><span>{{c_h3_obs}}</span></li>
+              <li><b>{{c_lbl_ins}}</b><span>{{c_h3_ins}}</span></li>
+              <li><b>{{c_lbl_sol}}</b><span>{{c_h3_sol}}</span></li>
+              <li><b>{{c_lbl_met}}</b><span>{{c_h3_met}}</span></li>
+            </ol></div>
+          <div><p class="stmt"><em>{{c_lbl_if}}</em>{{c_h3_if}} <em>{{c_lbl_then}}</em>{{c_h3_then}} <em>{{c_lbl_bec}}</em>{{c_h3_bec}}</p>
+            <div class="hmore"><p><b>{{c_lbl_test}}.</b> {{c_h3_test}}</p><p><b>{{c_lbl_wrong}}.</b> {{c_h3_wrong}}</p></div></div>
+        </article>
+      <div class="card"><h3>{{c_ice_h}}</h3><p class="sub">{{c_ice_s}}</p>
+        <div class="tw"><table class="crm" style="min-width:640px">
+          <thead><tr><th>{{c_th_h}}</th><th class="r">I</th><th class="r">C</th><th class="r">E</th><th class="r">ICE</th><th>{{c_ice_why}}</th></tr></thead>
+          <tbody>
+            <tr><td>H1 · {{c_h1_t}}</td><td class="r">8</td><td class="r">7</td><td class="r">7</td><td class="r"><b>392</b></td><td class="wrap">{{c_ice1_w}}</td></tr>
+            <tr><td>H2 · {{c_h2_t}}</td><td class="r">8</td><td class="r">6</td><td class="r">8</td><td class="r"><b>384</b></td><td class="wrap">{{c_ice2_w}}</td></tr>
+            <tr><td>H3 · {{c_h3_t}}</td><td class="r">6</td><td class="r">5</td><td class="r">6</td><td class="r"><b>180</b></td><td class="wrap">{{c_ice3_w}}</td></tr>
+          </tbody></table></div></div>
+    </section>
+
+    <!-- 10 PLAN -->
+    <section class="view" data-view="plan" hidden>
+      <div class="vhead"><h2>{{c_plan_h}}</h2></div>
+      <ol class="weeks">
+        <li><b>{{c_w1_t}}</b>{{c_w1}}</li>
+        <li><b>{{c_w2_t}}</b>{{c_w2}}</li>
+        <li><b>{{c_w3_t}}</b>{{c_w3}}</li>
+        <li><b>{{c_w4_t}}</b>{{c_w4}}</li>
+      </ol>
+      <div class="card"><h3>{{c_sql_h}}</h3><p class="sub">{{c_sql_s}}</p>
+<pre class="code">-- D30 retention by monthly cohort and channel
+WITH cohort AS (
+  SELECT id AS user_id, DATE_TRUNC('month', created_at) AS cohort_month, channel, created_at
+  FROM users
+),
+active_d30 AS (
+  SELECT DISTINCT c.user_id
+  FROM cohort c
+  JOIN events e ON e.user_id = c.user_id
+  WHERE e.event_time &gt;= c.created_at + INTERVAL '28 days'
+    AND e.event_time &lt;  c.created_at + INTERVAL '31 days'
+)
+SELECT c.cohort_month, c.channel,
+       COUNT(*) AS new_users,
+       COUNT(a.user_id) AS active_d30,
+       ROUND(100.0 * COUNT(a.user_id) / COUNT(*), 1) AS retention_d30
+FROM cohort c
+LEFT JOIN active_d30 a ON a.user_id = c.user_id
+GROUP BY 1, 2
+ORDER BY 1, retention_d30;</pre>
+        <div class="links" style="margin-top:12px"><a class="btn" href="{{root}}files/booklover-retention.sql" target="_blank" rel="noopener">{{c_sql_file}}</a></div></div>
+      <p class="note" style="margin-top:0">{{end_note}}</p>
+    </section>
+
     <!-- USERS -->
     <section class="view" data-view="users" hidden>
       <div class="vhead"><span class="eyebrow">{{us_e}}</span><h2>{{us_h}}</h2><p>{{us_p}}</p></div>
@@ -432,7 +569,25 @@ tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
 
     <!-- EXPERIMENTS -->
     <section class="view" data-view="experiments" hidden>
-      <div class="vhead"><span class="eyebrow">{{ex_e}}</span><h2>{{ex_h}}</h2><p>{{ex_p}}</p></div>
+      <div class="vhead"><h2>{{c_met_h}}</h2><p>{{c_met_p}}</p></div>
+      <div class="g75" style="grid-template-columns:minmax(0,4fr) minmax(0,8fr)">
+        <div class="finding"><span class="eyebrow" style="color:inherit;opacity:.7">{{c_ns_e}}</span><b>{{c_ns_v}}</b><span>{{c_ns_d}}</span></div>
+        <div class="card"><h3>{{c_tree_h}}</h3><p class="tree">{{c_tree}}</p></div>
+      </div>
+      <div class="card"><div class="tw"><table class="crm" style="min-width:640px">
+        <thead><tr><th>{{c_th_metric}}</th><th>{{c_th_type}}</th><th class="r">{{c_th_now}}</th><th class="r">{{c_th_goal}}</th><th>{{c_th_hyp}}</th></tr></thead>
+        <tbody>
+          <tr><td>{{c_m1}}</td><td><span class="pill t1">{{c_t_primary}}</span></td><td class="r">30%</td><td class="r">40%</td><td>H1</td></tr>
+          <tr><td>{{c_m2}}</td><td><span class="pill m">{{c_t_secondary}}</span></td><td class="r">{{c_v_meas}}</td><td class="r">{{c_v_grow}}</td><td>H1</td></tr>
+          <tr><td>{{c_m3}}</td><td><span class="pill t1">{{c_t_primary}}</span></td><td class="r">28%</td><td class="r">{{c_v_h2goal}}</td><td>H2</td></tr>
+          <tr><td>{{c_m4}}</td><td><span class="pill m">{{c_t_secondary}}</span></td><td class="r">{{c_v_meas}}</td><td class="r">{{c_v_cut25}}</td><td>H2</td></tr>
+          <tr><td>{{c_m5}}</td><td><span class="pill t1">{{c_t_primary}}</span></td><td class="r">65%</td><td class="r">70%</td><td>H3</td></tr>
+          <tr><td>{{c_m6}}</td><td><span class="pill m">{{c_t_secondary}}</span></td><td class="r">{{c_v_meas}}</td><td class="r">+3&nbsp;{{c_pp}}</td><td>H3</td></tr>
+          <tr><td>{{c_m7}}</td><td><span class="pill m">{{c_t_secondary}}</span></td><td class="r">28%</td><td class="r">{{c_v_grow}}</td><td>{{c_v_all}}</td></tr>
+          <tr><td>{{c_m8}}</td><td><span class="pill n">{{c_t_guard}}</span></td><td class="r">{{c_v_meas}}</td><td class="r">{{c_v_nogrow}}</td><td>H1, H3</td></tr>
+          <tr><td>{{c_m9}}</td><td><span class="pill n">{{c_t_guard}}</span></td><td class="r">{{c_rating_now}}</td><td class="r">{{c_v_back}}</td><td>{{c_v_all}}</td></tr>
+        </tbody></table></div></div>
+      <div class="vhead" style="margin-top:8px"><h2 style="font-size:20px">{{ex_h}}</h2><p>{{ex_p}}</p></div>
       <div class="g75">
         <div class="card"><h3>{{ex_calc}}</h3>
           <div class="sim" style="margin-top:12px">
@@ -454,9 +609,6 @@ tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
       </div>
     </section>
 
-    <!-- PRESENTATION SLIDE (shown only in presentation mode) -->
-    <section class="view slide" data-view="slide" hidden><div id="slideBody"></div></section>
-
     <!-- METHOD -->
     <section class="view" data-view="method" hidden>
       <div class="vhead"><span class="eyebrow">{{me_e}}</span><h2>{{me_h}}</h2><p>{{me_p}}</p></div>
@@ -465,23 +617,27 @@ tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
         <div class="card"><h3>{{me2_t}}</h3><p>{{me2}}</p></div>
         <div class="card"><h3>{{me3_t}}</h3><p>{{me3}}</p></div>
         <div class="card"><h3>{{me4_t}}</h3><p>{{me4}}</p>
-          <div class="links" style="margin-top:12px"><a class="btn" href="{{root}}files/booklover-retention.sql" target="_blank" rel="noopener">{{me_sql}}</a><a class="btn pri" href="booklover-retention.html">{{me_case}}</a></div></div>
+          <div class="links" style="margin-top:12px"><a class="btn" href="{{root}}files/booklover-retention.sql" target="_blank" rel="noopener">{{me_sql}}</a><a class="btn" href="booklover-retention.html">{{me_case}}</a></div></div>
+      </div>
+      <div class="vhead" style="margin-top:12px"><span class="eyebrow">{{c_meth_e}}</span><h2>{{c_meth_h}}</h2><p>{{c_meth_p}}</p></div>
+      <ol class="msteps">
+        <li><b>{{c_s1_t}}</b><span>{{c_s1}}</span></li><li><b>{{c_s2_t}}</b><span>{{c_s2}}</span></li>
+        <li><b>{{c_s3_t}}</b><span>{{c_s3}}</span></li><li><b>{{c_s4_t}}</b><span>{{c_s4}}</span></li>
+        <li><b>{{c_s5_t}}</b><span>{{c_s5}}</span></li><li><b>{{c_s6_t}}</b><span>{{c_s6}}</span></li>
+        <li><b>{{c_s7_t}}</b><span>{{c_s7}}</span></li><li><b>{{c_s8_t}}</b><span>{{c_s8}}</span></li>
+      </ol>
+      <div class="g2">
+        <div class="card"><h3>{{c_traps_h}}</h3><ul class="rules"><li>{{c_tr1}}</li><li>{{c_tr2}}</li><li>{{c_tr3}}</li><li>{{c_tr4}}</li><li>{{c_tr5}}</li><li>{{c_tr6}}</li></ul></div>
+        <div class="card"><h3>{{c_src_h}}</h3><p class="sub" style="margin-top:6px">{{c_src_p}}</p>
+          <ul class="res">
+            <li><a href="https://www.youtube.com/results?search_query=The+Lean+Startup+Eric+Ries+Talks+at+Google" target="_blank" rel="noopener">{{c_r1}}</a></li>
+            <li><a href="https://thisweekinstartups.com/766" target="_blank" rel="noopener">{{c_r2}}</a></li>
+            <li><a href="https://www.youtube.com/@LennysPodcast/search?query=retention" target="_blank" rel="noopener">{{c_r3}}</a></li>
+            <li><a href="https://caseyaccidental.com/" target="_blank" rel="noopener">{{c_r5}}</a></li>
+            <li><a href="https://amplitude.com/explore/analytics/cohort-analysis" target="_blank" rel="noopener">{{c_r6}}</a></li>
+          </ul></div>
       </div>
     </section>
-  </div>
-</div>
-
-<div class="pbar" id="pbar" hidden role="region" aria-label="{{pr_btn}}">
-  <div class="pbar-in">
-    <div class="pmeta"><span class="eyebrow" id="pStep"></span><b id="pTitle"></b></div>
-    <div class="pbtns">
-      <button type="button" class="btn" id="pNotesBtn" aria-pressed="true">{{pr_notes}}</button>
-      <button type="button" class="btn" id="pPrev">{{pr_prev}}</button>
-      <button type="button" class="btn pri" id="pNext">{{pr_next}}</button>
-      <button type="button" class="btn" id="pExit">{{pr_exit}}</button>
-    </div>
-    <div class="pnotes" id="pNotes"><span class="lab">{{pr_say}}</span><p id="pSay"></p><span class="keys">{{pr_keys}}</span></div>
-    <div class="pdots" id="pDots" aria-hidden="true"></div>
   </div>
 </div>
 
@@ -642,15 +798,33 @@ tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
   $("fG").addEventListener("change", e => { F.g = +e.target.value; changed(); });
 
   // ---------- views ----------
-  const VIEWS = ["overview", "sources", "cohorts", "funnel", "diagnosis", "users", "experiments", "method", "slide"];
-  const TITLES = { overview: T.v_overview, sources: T.v_sources, cohorts: T.v_cohorts, funnel: T.v_funnel, diagnosis: T.v_diagnosis, users: T.v_users, experiments: T.v_experiments, method: T.v_method, slide: T.pr_btn.replace("▶ ", "") };
-  let view = "overview";
+  // the case is one path of numbered steps; users and data notes are appendices
+  const STEPS = ["task", "overview", "cohorts", "factors", "sources", "diagnosis", "funnel", "hypotheses", "experiments", "plan"];
+  const VIEWS = STEPS.concat(["users", "method"]);
+  const TITLES = { task: T.v_task, overview: T.v_overview, cohorts: T.v_cohorts, factors: T.v_factors, sources: T.v_sources, diagnosis: T.v_diagnosis, funnel: T.v_funnel,
+    hypotheses: T.v_hyp, experiments: T.v_experiments, plan: T.v_plan, users: T.v_users, method: T.v_method };
+  let view = "task";
+  // step label at the top and "previous / next" at the bottom of every step
+  document.querySelectorAll(".view").forEach(sec => {
+    const v = sec.dataset.view, k = STEPS.indexOf(v);
+    const head = sec.querySelector(".vhead");
+    if (k >= 0 && head) head.insertAdjacentHTML("afterbegin", `<span class="stepno">${tpl(T.step_of, { n: k + 1, t: STEPS.length })}</span>`);
+    const prev = k > 0 ? STEPS[k - 1] : k < 0 ? null : null;
+    const next = k >= 0 && k < STEPS.length - 1 ? STEPS[k + 1] : k === STEPS.length - 1 ? "users" : null;
+    let h = "";
+    if (prev) h += `<button type="button" data-go="${prev}"><span>← ${T.step_prev}</span><b>${STEPS.indexOf(prev) + 1}. ${TITLES[prev]}</b></button>`;
+    if (next) h += `<button type="button" class="next" data-go="${next}"><span>${next === "users" ? T.step_appx : T.step_next} →</span><b>${STEPS.includes(next) ? (STEPS.indexOf(next) + 1) + ". " : ""}${TITLES[next]}</b></button>`;
+    if (v === "users") h = `<button type="button" data-go="plan"><span>← ${T.step_prev}</span><b>${STEPS.length}. ${TITLES.plan}</b></button><button type="button" class="next" data-go="task"><span>${T.step_restart} →</span><b>1. ${TITLES.task}</b></button>`;
+    if (h) sec.insertAdjacentHTML("beforeend", `<nav class="stepnav" aria-label="${T.nav_label}">${h}</nav>`);
+  });
+  document.querySelectorAll(".stepnav button").forEach(b => b.addEventListener("click", () => go(b.dataset.go)));
   function go(v, push = true) {
-    if (!VIEWS.includes(v)) v = "overview";
+    if (!VIEWS.includes(v)) v = "task";
     view = v;
     document.querySelectorAll(".view").forEach(s => s.hidden = s.dataset.view !== v);
     document.querySelectorAll(".nav-btn").forEach(b => b.setAttribute("aria-current", b.dataset.view === v ? "page" : "false"));
-    $("vTitle").textContent = TITLES[v];
+    $("vTitle").textContent = (STEPS.includes(v) ? (STEPS.indexOf(v) + 1) + ". " : "") + TITLES[v];
+    $("fRow").hidden = ["task", "factors", "hypotheses", "plan", "method"].includes(v); // filters only where there is data
     if (push) { try { history.replaceState(null, "", "#" + v); } catch (e) {} }
     render();
     window.scrollTo(0, 0);
@@ -658,11 +832,12 @@ tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
     if (btn && btn.parentElement.scrollWidth > btn.parentElement.clientWidth) btn.parentElement.scrollLeft = btn.offsetLeft - 40;
   }
   document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.view)));
-  window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if (h === "present") { if (!presenting) startPresentation(); return; } if (!presenting && h && h !== view && h !== "slide") go(h, false); });
+  window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if (h && h !== view) go(h, false); });
 
   function changed() { syncControls(); uPage = 0; exPreset = -1; render(); }
   function render() {
-    const fn = { overview: rOverview, sources: rSources, cohorts: rCohorts, funnel: rFunnel, diagnosis: rDiagnosis, users: rUsers, experiments: rExperiments, method: () => {}, slide: () => {} }[view];
+    const none = () => {};
+    const fn = { task: none, overview: rOverview, cohorts: rCohorts, factors: none, sources: rSources, diagnosis: rDiagnosis, funnel: rFunnel, hypotheses: none, experiments: rExperiments, plan: none, users: rUsers, method: none }[view];
     fn();
     $("cntU").textContent = fmtN(sel().length);
     commit();
@@ -680,7 +855,7 @@ tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
       sim: [val("simMove"), val("simTo"), val("simMark")], ex: [val("exTest"), val("exBase"), val("exMde"), val("exAlpha"), val("exPower")] });
   }
   function commit() {
-    if (restoring || presenting) return;
+    if (restoring) return;
     const now = snap();
     if (last !== null && now !== last) { UNDO.push({ s: last, y: preScroll }); if (UNDO.length > 150) UNDO.shift(); }
     last = now;
@@ -709,7 +884,6 @@ tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
   $("undoBtn").addEventListener("click", undo);
   document.addEventListener("keydown", e => {
     const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement && document.activeElement.tagName) && document.activeElement.type !== "range";
-    if (presenting) return;
     if ((e.altKey && e.key === "ArrowLeft") || (!typing && (e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === "z")) { e.preventDefault(); undo(); }
   });
 
@@ -1055,7 +1229,7 @@ tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
     openId = -1; if (was) commit();
   }
   scrim.addEventListener("click", closeUser);
-  document.addEventListener("keydown", e => { if (e.key === "Escape" && !presenting) closeUser(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeUser(); });
 
   // search
   const toast = $("toast");
@@ -1103,103 +1277,9 @@ tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
 
   let rz; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(render, 150); });
 
-  // ---------- PRESENTATION MODE ----------
-  // One link, one path: story slides and live dashboard states in the order of the case. "Next" sets the section,
-  // filters and toggles for each step and highlights what to point at; notes tell the presenter what to say.
-  let presenting = false, pIdx = 0, notesOn = true;
-  try { notesOn = localStorage.getItem("bl-notes") !== "0"; } catch (e) {}
-  const DEF = () => { Object.assign(F, { m0: 0, m1: 5, ch: -1, pl: -1, g: -1 }); uChip = "all"; uPage = 0; srcMetric = "ret"; cohMode = "pct"; funBy = "month"; };
-  const slideHTML = {
-    s1: () => {
-      let lost = 0; for (let m = 3; m < 6; m++) lost += D.NEW[m] * 0.45 - D.ACT[m];
-      return `<div class="sl"><span class="eyebrow">${T.p1_e}</span><h2>${T.p1_t}</h2><p class="lead">${T.p1_say}</p>
-        <div class="nums"><div><b class="bad">45% → 28%</b><span>${T.p1_k1}</span></div><div><b>+${fmtD((D.NEW[5] / D.NEW[0] - 1) * 100, 0)}%</b><span>${T.p1_k2}</span></div><div><b>≈ ${fmtN(Math.round(lost / 100) * 100)}</b><span>${T.p1_k3}</span></div></div>
-        <p class="q">${T.p1_q}</p></div>`;
-    },
-    s8: () => `<div class="sl"><h2>${T.p8_t}</h2><div class="bets">
-        <div class="bet fix"><span class="n">0</span><div><b>${T.p8_fix}</b><span>${T.p8_fix_d}</span></div></div>
-        <div class="bet"><span class="n">1</span><div><b>${T.p8_h1}</b><span>${T.p8_h1_d}</span></div></div>
-        <div class="bet"><span class="n">2</span><div><b>${T.p8_h2}</b><span>${T.p8_h2_d}</span></div></div>
-        <div class="bet"><span class="n">3</span><div><b>${T.p8_h3}</b><span>${T.p8_h3_d}</span></div></div></div></div>`,
-    s11: () => `<div class="sl"><h2>${T.p11_t}</h2><div class="weeks">
-        ${[1, 2, 3, 4].map(k => `<div><b>${T["p11_w" + k]}</b><span>${T["p11_w" + k + "d"]}</span></div>`).join("")}</div>
-        <p class="links"><a href="booklover-retention.html" target="_blank" rel="noopener">${T.foot_case}</a> · <a href="{{root}}files/booklover-retention.sql" target="_blank" rel="noopener">${T.me_sql}</a></p></div>`
-  };
-  const STEPS = [
-    { t: T.p1_t, say: T.p1_say, slide: "s1" },
-    { t: T.p2_t, say: T.p2_say, view: "overview", spot: () => $("ovBars").closest(".card") },
-    { t: T.p3_t, say: T.p3_say, view: "cohorts", spot: () => $("cohLines").closest(".card") },
-    { t: T.p4_t, say: T.p4_say, view: "sources", set: () => { srcSort = { k: "cpr", dir: -1 }; }, spot: () => $("srcTable").closest(".card") },
-    { t: T.p5_t, say: T.p5_say, view: "diagnosis", spot: () => $("wf").closest(".card") },
-    { t: T.p6_t, say: T.p6_say, view: "diagnosis", set: () => { F.pl = 0; }, spot: () => $("wf").closest(".card") },
-    { t: T.p7_t, say: T.p7_say, view: "funnel", set: () => { funBy = "genre"; }, spot: () => $("funTable").closest(".card") },
-    { t: T.p8_t, say: T.p8_say, slide: "s8" },
-    { t: T.p9_t, say: T.p9_say, view: "sources", set: () => { $("simMove").value = 100; $("simTo").value = -1; $("simMark").value = 30; }, spot: () => $("simTable").closest(".card") },
-    { t: T.p10_t, say: T.p10_say, view: "experiments", set: () => { $("exTest").value = 0; $("exAlpha").value = "0.05"; $("exPower").value = "0.8"; exPreset = -1; }, spot: () => $("exN").closest(".card") },
-    { t: T.p11_t, say: T.p11_say, slide: "s11" }
-  ];
-  $("pDots").innerHTML = STEPS.map(() => "<i></i>").join("");
-  function showStep(k) {
-    pIdx = Math.max(0, Math.min(STEPS.length - 1, k));
-    const st = STEPS[pIdx];
-    document.querySelectorAll(".spot").forEach(e => e.classList.remove("spot"));
-    closeUser();
-    DEF();
-    if (st.set) st.set();
-    syncControls();
-    if (st.slide) { $("slideBody").innerHTML = slideHTML[st.slide](); go("slide", false); }
-    else go(st.view, false);
-    $("pStep").textContent = tpl(T.pr_step, { n: pIdx + 1, t: STEPS.length });
-    $("pTitle").textContent = st.t;
-    $("pSay").textContent = st.say;
-    $("vTitle").textContent = st.slide ? "BookLover" : TITLES[st.view];
-    $("pPrev").disabled = pIdx === 0;
-    $("pNext").textContent = pIdx === STEPS.length - 1 ? T.pr_exit : T.pr_next;
-    [...$("pDots").children].forEach((d, j) => d.classList.toggle("on", j <= pIdx));
-    if (st.spot) {
-      const el = st.spot();
-      if (el) { el.classList.add("spot"); requestAnimationFrame(() => el.scrollIntoView({ block: "center", behavior: "auto" })); }
-    }
-  }
-  function setNotes(on) {
-    notesOn = on; $("pNotes").hidden = !on; $("pNotesBtn").setAttribute("aria-pressed", on);
-    try { localStorage.setItem("bl-notes", on ? "1" : "0"); } catch (e) {}
-  }
-  function startPresentation() {
-    presenting = true;
-    document.body.classList.add("presenting");
-    $("pbar").hidden = false;
-    setNotes(notesOn);
-    try { history.replaceState(null, "", "#present"); } catch (e) {}
-    showStep(0);
-  }
-  function endPresentation() {
-    presenting = false;
-    document.body.classList.remove("presenting");
-    $("pbar").hidden = true;
-    document.querySelectorAll(".spot").forEach(e => e.classList.remove("spot"));
-    DEF(); syncControls();
-    go("overview");
-    UNDO.length = 0; last = snap(); $("undoBtn").hidden = true;
-    flash(T.pr_done);
-  }
-  $("prBtn").addEventListener("click", startPresentation);
-  $("pNext").addEventListener("click", () => pIdx === STEPS.length - 1 ? endPresentation() : showStep(pIdx + 1));
-  $("pPrev").addEventListener("click", () => showStep(pIdx - 1));
-  $("pExit").addEventListener("click", endPresentation);
-  $("pNotesBtn").addEventListener("click", () => setNotes(!notesOn));
-  document.addEventListener("keydown", e => {
-    if (!presenting || /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement && document.activeElement.tagName)) return;
-    if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") { e.preventDefault(); pIdx === STEPS.length - 1 ? endPresentation() : showStep(pIdx + 1); }
-    else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); showStep(pIdx - 1); }
-    else if (e.key === "Escape") { e.preventDefault(); endPresentation(); }
-    else if (e.code === "KeyN") setNotes(!notesOn); // any keyboard layout
-  });
-
   // ---------- start ----------
   syncControls();
   const start = location.hash.slice(1);
-  if (start === "present") { go("overview", false); startPresentation(); }
-  else go(VIEWS.includes(start) && start !== "slide" ? start : "overview", false);
+  go(VIEWS.includes(start) ? start : "task", false);
 })();
 </script>

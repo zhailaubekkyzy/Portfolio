@@ -139,6 +139,7 @@ def main():
             "root": ("", "../")[i],
         }
         tx = {k: v[i] for k, v in blcrm_text.T.items()}
+        tx.update({"c_" + k: v[i] for k, v in booklover_text.T.items()})  # case texts reused as steps of the dashboard
         def sub2(m):
             k = m.group(1)
             if k in extra:
