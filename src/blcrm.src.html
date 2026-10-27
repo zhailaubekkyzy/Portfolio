@@ -269,6 +269,14 @@ pre.code { margin: 0; background: var(--surface-2); border-radius: 10px; padding
 .msteps li { counter-increment: m; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px 14px 52px; position: relative; display: grid; gap: 4px; font-size: 13.5px; color: var(--ink-2); }
 .msteps li::before { content: counter(m); position: absolute; left: 16px; top: 14px; width: 24px; height: 24px; border-radius: 50%; background: var(--ink); color: var(--bg); display: grid; place-items: center; font-size: 12px; font-weight: 600; }
 .msteps b { color: var(--ink); font-size: 14.5px; }
+.sumh { font-family: var(--f-display); font-size: 17px !important; margin-bottom: 12px; }
+.slist { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.slist li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; font-size: 14.5px; color: var(--ink-2); }
+.slist li b { display: block; color: var(--ink); font-weight: 600; }
+.slist .n { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; font-family: var(--f-mono); font-size: 12px; font-weight: 600; background: var(--surface-2); color: var(--ink); }
+.slist .n.fix { background: var(--good-bg); color: var(--good); }
+a.stepref { color: var(--focus); font-weight: 600; cursor: pointer; white-space: nowrap; }
+a.stepref:hover { text-decoration: underline; }
 .res { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; font-size: 13.5px; }
 .res a { color: var(--focus); font-weight: 600; text-decoration: none; }
 .res a:hover { text-decoration: underline; }
@@ -322,6 +330,7 @@ pre.code { margin: 0; background: var(--surface-2); border-radius: 10px; padding
     <button class="nav-btn" data-view="hypotheses"><span class="no">8</span>{{v_hyp}}</button>
     <button class="nav-btn" data-view="experiments"><span class="no">9</span>{{v_experiments}}</button>
     <button class="nav-btn" data-view="plan"><span class="no">10</span>{{v_plan}}</button>
+    <button class="nav-btn" data-view="summary"><span class="no">11</span>{{v_summary}}</button>
     <div class="navgroup">{{g_appx}}</div>
     <button class="nav-btn" data-view="users"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6"/><path d="M16 4a4 4 0 0 1 0 8M22 21c0-3-2-5-5-5.6"/></svg>{{v_users}}<span class="cnt" id="cntU"></span></button>
     <button class="nav-btn" data-view="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg>{{v_method}}</button>
@@ -554,6 +563,33 @@ LEFT JOIN active_d30 a ON a.user_id = c.user_id
 GROUP BY 1, 2
 ORDER BY 1, retention_d30;</pre>
         <div class="links" style="margin-top:12px"><button type="button" class="btn pri" data-sql>{{c_sql_file}}</button></div></div>
+    </section>
+
+    <!-- 11 SUMMARY -->
+    <section class="view" data-view="summary" hidden>
+      <div class="vhead"><h2>{{sum_title}}</h2><p>{{c_one_lead}}</p></div>
+      <div class="kpis4">
+        <div class="kpi"><span class="eyebrow">{{c_k1_e}}</span><span class="v down">{{c_k1_v}}</span><span class="d">{{c_k1_d}}</span></div>
+        <div class="kpi"><span class="eyebrow">{{c_k2_e}}</span><span class="v down">{{c_k2_v}}</span><span class="d">{{c_k2_d}}</span></div>
+        <div class="kpi"><span class="eyebrow">{{c_k3_e}}</span><span class="v">{{c_k3_v}}</span><span class="d">{{c_k3_d}}</span></div>
+        <div class="kpi"><span class="eyebrow">{{c_k4_e}}</span><span class="v">{{c_k4_v}}</span><span class="d">{{c_k4_d}}</span></div>
+      </div>
+      <div class="g2">
+        <div class="card"><h3 class="sumh">{{c_con_h}}</h3>
+          <ol class="slist">
+            <li><span class="n">1</span><span><b>{{c_con1_t}}</b>{{c_con1}} <a class="stepref" data-go="sources">{{sum_see}} 5</a></span></li>
+            <li><span class="n">2</span><span><b>{{c_con2_t}}</b>{{c_con2}} <a class="stepref" data-go="diagnosis">{{sum_see}} 6</a></span></li>
+            <li><span class="n">3</span><span><b>{{c_con3_t}}</b>{{c_con3}} <a class="stepref" data-go="funnel">{{sum_see}} 7</a></span></li>
+          </ol></div>
+        <div class="card"><h3 class="sumh">{{c_do_h}}</h3>
+          <ol class="slist">
+            <li><span class="n fix">0</span><span><b>{{c_do0_t}}</b>{{c_do0}}</span></li>
+            <li><span class="n">H1</span><span><b>{{c_h1_t}}.</b>{{c_do1}}</span></li>
+            <li><span class="n">H2</span><span><b>{{c_h2_t}}.</b>{{c_do2}}</span></li>
+            <li><span class="n">H3</span><span><b>{{c_h3_t}}.</b>{{c_do3}}</span></li>
+          </ol></div>
+      </div>
+      <div class="finding"><b>{{sum_first_t}}</b><span>{{sum_first}}</span></div>
       <p class="note" style="margin-top:0">{{end_note}}</p>
     </section>
 
@@ -804,10 +840,10 @@ ORDER BY 1, retention_d30;</pre>
 
   // ---------- views ----------
   // the case is one path of numbered steps; users and data notes are appendices
-  const STEPS = ["task", "overview", "cohorts", "factors", "sources", "diagnosis", "funnel", "hypotheses", "experiments", "plan"];
+  const STEPS = ["task", "overview", "cohorts", "factors", "sources", "diagnosis", "funnel", "hypotheses", "experiments", "plan", "summary"];
   const VIEWS = STEPS.concat(["users", "method"]);
   const TITLES = { task: T.v_task, overview: T.v_overview, cohorts: T.v_cohorts, factors: T.v_factors, sources: T.v_sources, diagnosis: T.v_diagnosis, funnel: T.v_funnel,
-    hypotheses: T.v_hyp, experiments: T.v_experiments, plan: T.v_plan, users: T.v_users, method: T.v_method };
+    hypotheses: T.v_hyp, experiments: T.v_experiments, plan: T.v_plan, summary: T.v_summary, users: T.v_users, method: T.v_method };
   let view = "task";
   // step label at the top and "previous / next" at the bottom of every step
   document.querySelectorAll(".view").forEach(sec => {
@@ -819,17 +855,17 @@ ORDER BY 1, retention_d30;</pre>
     let h = "";
     if (prev) h += `<button type="button" data-go="${prev}"><span>← ${T.step_prev}</span><b>${STEPS.indexOf(prev) + 1}. ${TITLES[prev]}</b></button>`;
     if (next) h += `<button type="button" class="next" data-go="${next}"><span>${next === "users" ? T.step_appx : T.step_next} →</span><b>${STEPS.includes(next) ? (STEPS.indexOf(next) + 1) + ". " : ""}${TITLES[next]}</b></button>`;
-    if (v === "users") h = `<button type="button" data-go="plan"><span>← ${T.step_prev}</span><b>${STEPS.length}. ${TITLES.plan}</b></button><button type="button" class="next" data-go="task"><span>${T.step_restart} →</span><b>1. ${TITLES.task}</b></button>`;
+    if (v === "users") h = `<button type="button" data-go="summary"><span>← ${T.step_prev}</span><b>${STEPS.length}. ${TITLES.summary}</b></button><button type="button" class="next" data-go="task"><span>${T.step_restart} →</span><b>1. ${TITLES.task}</b></button>`;
     if (h) sec.insertAdjacentHTML("beforeend", `<nav class="stepnav" aria-label="${T.nav_label}">${h}</nav>`);
   });
-  document.querySelectorAll(".stepnav button").forEach(b => b.addEventListener("click", () => go(b.dataset.go)));
+  document.querySelectorAll(".stepnav button, a.stepref").forEach(b => b.addEventListener("click", () => go(b.dataset.go)));
   function go(v, push = true) {
     if (!VIEWS.includes(v)) v = "task";
     view = v;
     document.querySelectorAll(".view").forEach(s => s.hidden = s.dataset.view !== v);
     document.querySelectorAll(".nav-btn").forEach(b => b.setAttribute("aria-current", b.dataset.view === v ? "page" : "false"));
     $("vTitle").textContent = (STEPS.includes(v) ? (STEPS.indexOf(v) + 1) + ". " : "") + TITLES[v];
-    $("fRow").hidden = ["task", "factors", "hypotheses", "plan", "method"].includes(v); // filters only where there is data
+    $("fRow").hidden = ["task", "factors", "hypotheses", "plan", "summary", "method"].includes(v); // filters only where there is data
     if (push) { try { history.replaceState(null, "", "#" + v); } catch (e) {} }
     render();
     window.scrollTo(0, 0);
@@ -842,7 +878,7 @@ ORDER BY 1, retention_d30;</pre>
   function changed() { syncControls(); uPage = 0; exPreset = -1; render(); }
   function render() {
     const none = () => {};
-    const fn = { task: none, overview: rOverview, cohorts: rCohorts, factors: none, sources: rSources, diagnosis: rDiagnosis, funnel: rFunnel, hypotheses: none, experiments: rExperiments, plan: none, users: rUsers, method: none }[view];
+    const fn = { task: none, overview: rOverview, cohorts: rCohorts, factors: none, sources: rSources, diagnosis: rDiagnosis, funnel: rFunnel, hypotheses: none, experiments: rExperiments, plan: none, summary: none, users: rUsers, method: none }[view];
     fn();
     $("cntU").textContent = fmtN(sel().length);
     commit();

@@ -64,7 +64,7 @@ T = {
 "do1": (" Три книги на последней странице: переход ко второй книге 30% → 40%.", " Three picks on the last page: second-book rate 30% → 40%."),
 "do2": (" Бюджет из TikTok и промо в каналы, которые удерживают: D30 28% → 34–38%.", " Budget out of TikTok and promo into channels that retain: D30 28% → 34–38%."),
 "do3": (" Цель 10 минут в день и напоминание: дочитывание 65% → 70%.", " A 10-minute daily goal and reminder: completion 65% → 70%."),
-"open_t": ("Открыть проект: 10 шагов с данными", "Open the project: 10 steps with data"),
+"open_t": ("Открыть проект: 11 шагов с данными", "Open the project: 11 steps with data"),
 "open_s": ("Когорты, источники трафика, диагностика, гипотезы, метрики, план и все 119 000 пользователей", "Cohorts, traffic sources, diagnosis, hypotheses, metrics, plan and all 119,000 users"),
 
 # ---------- summary ----------
