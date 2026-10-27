@@ -36,7 +36,7 @@ T = {
 "end_note": ("Это последний шаг кейса. В приложениях — все 119 000 пользователей с карточками и описание того, как устроены данные.",
              "This is the last step of the case. The appendix holds all 119,000 users with their cards and notes on how the data are built."),
 "foot_back": ("← Портфолио", "← Portfolio"),
-"foot_case": ("Кейс: Retention BookLover", "Case: BookLover Retention"),
+"foot_case": ("Кейс кратко за 1 минуту", "The case in one minute"),
 "foot_demo": ("Демо-данные: модель воспроизводит цифры из условия кейса. Каналы, платформы и версии — учебные.",
               "Demo data: a model that reproduces the figures in the case brief. Channels, platforms and versions are illustrative."),
 
@@ -341,5 +341,5 @@ T = {
 "me4": ("Те же разрезы на реальной базе считаются запросами из файла: retention по когортам, каналам и версиям, воронка чтения, цена удержанного.",
         "On a real database the same cuts come from the queries in the file: retention by cohort, channel and version, reading funnel, cost per retained reader."),
 "me_sql": ("Открыть SQL-запросы", "Open the SQL queries"),
-"me_case": ("Вернуться к кейсу", "Back to the case"),
+"me_case": ("Кейс кратко за 1 минуту", "The case in one minute"),
 }
