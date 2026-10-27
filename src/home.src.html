@@ -1,0 +1,202 @@
+<title>Tomiris (Gulsara) Zhailaubekkyzy — Product Portfolio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Product portfolio: growth, retention and lifecycle cases. Портфолио продакт-менеджера.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a short intro, then an index of cases — each case is a row with its key result up front. Bilingual: RU / EN toggle, #en in the URL opens English. */
+:root {
+  --bg: #f4f6f9; --surface: #ffffff; --surface-2: #eceff4; --ink: #131a26; --ink-2: #485264; --muted: #7a8496; --line: #dde2ea;
+  --focus: #2a78d6; --good: #11764f; --good-bg: #e3f4ec;
+  --c1: #2a78d6; --c2: #1baf7a; --c3: #eb6834; --c4: #7d7d78;
+  --f-display: "Unbounded", "Onest", system-ui, sans-serif;
+  --f-body: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e121a; --surface: #161c27; --surface-2: #1e2633; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #2a3344;
+    --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --c1: #3987e5; --c2: #199e70; --c3: #d95926; --c4: #8e8d87; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e121a; --surface: #161c27; --surface-2: #1e2633; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #2a3344;
+  --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --c1: #3987e5; --c2: #199e70; --c3: #d95926; --c4: #8e8d87; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1040px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+p { margin: 0; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 8px; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+.topbar { display: flex; justify-content: flex-end; padding-top: max(16px, env(safe-area-inset-top, 0px)); }
+.lang { display: inline-flex; gap: 2px; background: var(--surface-2); padding: 3px; border-radius: 999px; }
+.lang button { font: inherit; font-size: 13px; font-weight: 600; border: 0; background: transparent; color: var(--ink-2); padding: 5px 12px; border-radius: 999px; cursor: pointer; }
+.lang button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgb(0 0 0 / .12); }
+
+.intro { padding-block: 40px 40px; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 40px; align-items: end; }
+.intro h1 { font-family: var(--f-display); font-weight: 700; font-size: clamp(36px, 6vw, 66px); line-height: 1.02; letter-spacing: -.025em; margin-top: 14px; }
+.intro h1 .alt { display: block; font-size: .42em; font-weight: 500; color: var(--muted); letter-spacing: -.01em; margin-top: 8px; }
+.intro .role { font-size: clamp(17px, 1.8vw, 21px); color: var(--ink-2); margin-top: 14px; max-width: 36ch; }
+.facts { display: grid; gap: 10px; }
+.fact { display: grid; grid-template-columns: 22px 1fr; gap: 10px; font-size: 15px; color: var(--ink-2); }
+.fact i { width: 8px; height: 8px; border-radius: 50%; margin-top: 8px; background: var(--c); }
+.focus { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px; }
+.focus span { font-size: 13px; padding: 5px 12px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); color: var(--ink-2); }
+
+.projects { padding-block: 36px 24px; border-top: 1px solid var(--line); }
+.phead { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
+.phead h2 { font-family: var(--f-display); font-size: clamp(22px, 2.6vw, 28px); font-weight: 700; letter-spacing: -.01em; }
+.filters { display: inline-flex; gap: 4px; background: var(--surface-2); padding: 4px; border-radius: 999px; flex-wrap: wrap; }
+.filters button { font: inherit; font-size: 13.5px; border: 0; background: transparent; color: var(--ink-2); padding: 6px 13px; border-radius: 999px; cursor: pointer; }
+.filters button[aria-pressed="true"] { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: 0 1px 2px rgb(0 0 0 / .12); }
+
+.list { display: grid; gap: 14px; }
+.proj { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; transition: border-color .15s, transform .15s; }
+.proj:hover { border-color: var(--ink-2); transform: translateY(-1px); }
+.proj .body { padding: 24px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.proj .meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.tag { font-family: var(--f-mono); font-size: 11px; letter-spacing: .05em; text-transform: uppercase; padding: 2px 8px; border-radius: 5px; background: var(--surface-2); color: var(--ink-2); }
+.proj h3 { font-family: var(--f-display); font-size: clamp(20px, 2.4vw, 26px); font-weight: 700; letter-spacing: -.01em; line-height: 1.15; }
+.proj h3 a { text-decoration: none; }
+.proj h3 a::after { content: " →"; color: var(--muted); }
+.proj p { color: var(--ink-2); font-size: 15px; max-width: 60ch; }
+.links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.links a { font-size: 13.5px; text-decoration: none; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink-2); }
+.links a.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); font-weight: 600; }
+.links a:hover { border-color: var(--ink-2); color: var(--ink); }
+.links a.primary:hover { color: var(--bg); }
+.results { background: var(--surface-2); padding: 24px; display: grid; gap: 14px; align-content: center; }
+.res { display: grid; gap: 2px; }
+.res b { font-family: var(--f-display); font-size: clamp(20px, 2.2vw, 26px); font-weight: 700; font-variant-numeric: tabular-nums; }
+.res span { font-size: 13px; color: var(--ink-2); }
+.res.good b { color: var(--good); }
+.strip { display: flex; height: 6px; border-radius: 3px; overflow: hidden; }
+
+.next { margin-top: 14px; border: 1.5px dashed var(--line); border-radius: 16px; padding: 22px 24px; color: var(--muted); font-size: 14.5px; }
+footer { padding-block: 32px 48px; font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+@media (max-width: 820px) {
+  .intro, .proj { grid-template-columns: minmax(0, 1fr); }
+  .intro { padding-block: 28px 28px; gap: 24px; }
+  .results { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 420px) { .results { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap topbar"><div class="lang" role="group" aria-label="Language"><button type="button" data-lang="ru">RU</button><button type="button" data-lang="en">EN</button></div></div>
+
+<header class="wrap intro">
+  <div>
+    <span class="eyebrow" data-t="eyebrow"></span>
+    <h1 data-t="name"></h1>
+    <p class="role" data-t="role"></p>
+    <div class="focus" id="focus"></div>
+  </div>
+  <div class="facts" id="facts"></div>
+</header>
+
+<main class="wrap projects" id="projects">
+  <div class="phead">
+    <h2 data-t="projects"></h2>
+    <div class="filters" role="group" aria-label="Filter" id="filters"></div>
+  </div>
+  <div class="list" id="list"></div>
+  <div class="next" data-t="next"></div>
+</main>
+
+<footer class="wrap"><span data-t="foot1"></span><span data-t="foot2"></span></footer>
+
+<script>
+/*
+  HOW TO ADD A PROJECT / КАК ДОБАВИТЬ ПРОЕКТ
+  Copy one object in PROJECTS and change the fields. Every text field has ru and en.
+  url: { ru: "page.html", en: "en/page.html" } — the case page in each language.
+  links: extra materials (PDF, Excel, dashboard). results: 2–4 key numbers. tags: filters at the top.
+  Files (PDF, Excel) go into the files/ folder.
+*/
+const PROJECTS = [
+  {
+    title: { ru: "RFM-анализ SmartFlow", en: "RFM Analysis for SmartFlow" },
+    url: { ru: "rfm-smartflow.html", en: "en/rfm-smartflow.html" },
+    year: "2026",
+    tags: [{ ru: "Retention", en: "Retention" }, { ru: "Аналитика", en: "Analytics" }, { ru: "Когорты", en: "Cohorts" }],
+    text: {
+      ru: "Сегментировала покупателей по RFM и построила стратегию удержания: как поднять повтор за 30 дней с 15,7% до 30%, сократить маркетинг на 20% и вырастить выручку на 11,7%. Стратегия опирается на CRM-дашборд с данными за 12 месяцев: динамика, когорты, диагностика падения, пороги RFM из данных, миграция сегментов и сообщения клиентам.",
+      en: "I segmented buyers with RFM and built a retention strategy: lift 30-day repeat purchase from 15.7% to 30%, cut marketing spend by 20% and grow revenue by 11.7%. The strategy is backed by a CRM-style dashboard with 12 months of data: trends, cohorts, root-cause diagnostics, data-driven RFM thresholds, segment migration and customer messaging."
+    },
+    results: [
+      { v: { ru: "15,7% → 30%", en: "15.7% → 30%" }, t: { ru: "повтор за 30 дней", en: "30-day repeat purchase" }, good: true },
+      { v: { ru: "−20%", en: "−20%" }, t: { ru: "маркетинговый бюджет", en: "marketing budget" } },
+      { v: { ru: "+11,7%", en: "+11.7%" }, t: { ru: "выручка", en: "revenue" }, good: true }
+    ],
+    links: [
+      { t: { ru: "CRM-дашборд · данные, сегменты, сообщения", en: "CRM dashboard · data, segments, messaging" }, url: { ru: "rfm-dashboard.html", en: "en/rfm-dashboard.html" } },
+      { t: { ru: "Данные и расчёты · Excel", en: "Data & calculations · Excel (RU)" }, url: { ru: "files/rfm-smartflow-dannye.xlsx", en: "files/rfm-smartflow-dannye.xlsx" } },
+      { t: { ru: "Учебный материал · PDF", en: "Study notes · PDF (RU)" }, url: { ru: "files/rfm-uchebnyi-material.pdf", en: "files/rfm-uchebnyi-material.pdf" } },
+      { t: { ru: "Рост повторных покупок · PDF", en: "Repeat purchase growth · PDF (RU)" }, url: { ru: "files/rfm-rost-povtornyh-pokupok.pdf", en: "files/rfm-rost-povtornyh-pokupok.pdf" } }
+    ]
+  }
+];
+
+const TXT = {
+  eyebrow: { ru: "Продакт-портфолио", en: "Product portfolio" },
+  name: { ru: "Томирис (Гулсара) Жайлаубеккызы", en: "Tomiris (Gulsara) Zhailaubekkyzy" },
+  role: { ru: "Продакт-менеджер: рост, удержание и lifecycle. Основатель SmartFlow.", en: "Product manager: growth, retention and lifecycle. Founder of SmartFlow." },
+  projects: { ru: "Проекты", en: "Projects" },
+  next: { ru: "Новые кейсы появятся здесь.", en: "More cases coming soon." },
+  foot1: { ru: "Томирис (Гулсара) Жайлаубеккызы · 2026", en: "Tomiris (Gulsara) Zhailaubekkyzy · 2026" },
+  foot2: { ru: "Данные в кейсах — учебные модели, если не указано иное", en: "Case data are simulated models unless stated otherwise" },
+  all: { ru: "Все", en: "All" },
+  open: { ru: "Открыть кейс", en: "Open case" }
+};
+const FOCUS = [{ ru: "Retention", en: "Retention" }, { ru: "Lifecycle-маркетинг", en: "Lifecycle marketing" }, { ru: "RFM и сегментация", en: "RFM & segmentation" }, { ru: "A/B-тесты", en: "A/B testing" }, { ru: "SQL", en: "SQL" }, { ru: "AI-продукты", en: "AI products" }];
+const FACTS = [
+  { c: "--c1", ru: "Строю SmartFlow — платформу ИИ-продавцов для экспертов и малого бизнеса, которые продают через мессенджеры", en: "Building SmartFlow — a platform of AI salespeople for experts and small businesses that sell through messengers" },
+  { c: "--c2", ru: "Грант Astana Hub", en: "Astana Hub grant recipient" },
+  { c: "--c3", ru: "Опыт в маркетинге и образовании: вела маркетинг, преподавала английский, развила репетиторство в бизнес", en: "Background in marketing and education: ran marketing, taught English, grew tutoring into a business" }
+];
+
+let L = "ru";
+try { if (location.hash === "#en") L = "en"; else if (location.hash !== "#ru" && localStorage.getItem("pf-lang") === "en") L = "en"; } catch (e) {}
+let active = null;
+const list = document.getElementById("list"), filters = document.getElementById("filters");
+
+function render() {
+  document.documentElement.lang = L;
+  document.title = L === "en" ? "Tomiris (Gulsara) Zhailaubekkyzy — Product Portfolio" : "Томирис (Гулсара) Жайлаубеккызы — продакт-портфолио";
+  document.querySelectorAll("[data-t]").forEach(e => e.textContent = TXT[e.dataset.t][L]);
+  document.querySelectorAll(".lang button").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === L));
+  document.getElementById("focus").innerHTML = FOCUS.map(f => `<span>${f[L]}</span>`).join("");
+  document.getElementById("facts").innerHTML = FACTS.map(f => `<div class="fact" style="--c: var(${f.c})"><i></i><span>${f[L]}</span></div>`).join("");
+  const tags = [TXT.all, ...PROJECTS.flatMap(p => p.tags).filter((t, i, a) => a.findIndex(x => x.en === t.en) === i)];
+  if (!active || !tags.some(t => t.en === active)) active = TXT.all.en;
+  filters.innerHTML = tags.map(t => `<button type="button" data-k="${t.en}" aria-pressed="${t.en === active}">${t[L]}</button>`).join("");
+  filters.querySelectorAll("button").forEach(b => b.addEventListener("click", () => { active = b.dataset.k; render(); }));
+  list.innerHTML = PROJECTS.filter(p => active === TXT.all.en || p.tags.some(t => t.en === active)).map(p => `
+    <article class="proj">
+      <div class="body">
+        <div class="meta">${p.tags.map(t => `<span class="tag">${t[L]}</span>`).join("")}<span class="tag">${p.year}</span></div>
+        <h3><a href="${p.url[L]}">${p.title[L]}</a></h3>
+        <p>${p.text[L]}</p>
+        <div class="links"><a class="primary" href="${p.url[L]}">${TXT.open[L]}</a>${(p.links || []).map(l => `<a href="${l.url[L]}" target="_blank" rel="noopener">${l.t[L]}</a>`).join("")}</div>
+      </div>
+      <div class="results">
+        <div class="strip"><div style="flex:20;background:var(--c1)"></div><div style="flex:35;background:var(--c2)"></div><div style="flex:25;background:var(--c3)"></div><div style="flex:20;background:var(--c4)"></div></div>
+        ${p.results.map(r => `<div class="res${r.good ? " good" : ""}"><b>${r.v[L]}</b><span>${r.t[L]}</span></div>`).join("")}
+      </div>
+    </article>`).join("");
+}
+document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => {
+  L = b.dataset.lang;
+  try { localStorage.setItem("pf-lang", L); } catch (e) {}
+  try { history.replaceState(null, "", "#" + L); } catch (e) {}
+  render();
+}));
+render();
+</script>

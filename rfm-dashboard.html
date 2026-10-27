@@ -1,0 +1,1493 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>SmartFlow RFM CRM</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: CRM shell — left sidebar of views (mirrors Excel sheets), sticky top bar with filters and search, main view, customer drawer on the right. */
+:root {
+  --bg: #f3f5f8; --surface: #ffffff; --surface-2: #edf0f4; --ink: #131a26; --ink-2: #485264; --muted: #7a8496; --line: #dde2ea;
+  --side: #121a27; --side-ink: #c9d1de; --side-muted: #7f8aa0; --side-act: #1f2a3c;
+  --focus: #2a78d6; --good: #11764f; --good-bg: #e3f4ec; --bad: #b4441a; --bad-bg: #fbe9e1; --warn: #8a5a00; --warn-bg: #fff4de;
+  --champ: #2a78d6; --loyal: #1baf7a; --risk: #eb6834; --hib: #7d7d78;
+  --champ-t: #e8f1fc; --loyal-t: #e4f6ee; --risk-t: #fdece4; --hib-t: #efefed;
+  --base-bar: #c3c8d1; --heat: 42, 120, 214; --shadow: 0 10px 40px rgb(15 23 42 / .18);
+  --f-display: "Unbounded", "Onest", system-ui, sans-serif;
+  --f-body: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1118; --surface: #151b25; --surface-2: #1d2531; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #283041;
+    --side: #0a0e14; --side-ink: #c9d1de; --side-muted: #6f7a8f; --side-act: #1a2230;
+    --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --bad: #f08a5d; --bad-bg: #3a1f14; --warn: #f0c46a; --warn-bg: #33270f;
+    --champ: #3987e5; --loyal: #199e70; --risk: #d95926; --hib: #8e8d87;
+    --champ-t: #16263d; --loyal-t: #12302a; --risk-t: #362018; --hib-t: #24262a; --base-bar: #4a5263; --heat: 57, 135, 229; --shadow: 0 10px 40px rgb(0 0 0 / .5); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1118; --surface: #151b25; --surface-2: #1d2531; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #283041;
+  --side: #0a0e14; --side-ink: #c9d1de; --side-muted: #6f7a8f; --side-act: #1a2230;
+  --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --bad: #f08a5d; --bad-bg: #3a1f14; --warn: #f0c46a; --warn-bg: #33270f;
+  --champ: #3987e5; --loyal: #199e70; --risk: #d95926; --hib: #8e8d87;
+  --champ-t: #16263d; --loyal-t: #12302a; --risk-t: #362018; --hib-t: #24262a; --base-bar: #4a5263; --heat: 57, 135, 229; --shadow: 0 10px 40px rgb(0 0 0 / .5); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 14.5px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+p { margin: 0; }
+button, select, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+.num { font-variant-numeric: tabular-nums; }
+.eyebrow { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+/* shell */
+.app { display: grid; grid-template-columns: 236px minmax(0, 1fr); min-height: 100vh; }
+.side { background: var(--side); color: var(--side-ink); position: sticky; top: 0; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; padding: 18px 12px calc(18px + env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); gap: 4px; }
+.brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 16px; }
+.brand .logo { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--champ), var(--loyal)); display: grid; place-items: center; color: #fff; font-family: var(--f-display); font-weight: 700; font-size: 14px; }
+.brand b { display: block; font-size: 14px; color: #fff; }
+.brand span { font-size: 11.5px; color: var(--side-muted); }
+.navgroup { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--side-muted); padding: 12px 10px 4px; }
+.nav-btn { display: flex; align-items: center; gap: 10px; width: 100%; border: 0; background: transparent; color: var(--side-ink); text-align: left; padding: 8px 10px; border-radius: 9px; cursor: pointer; font-size: 14px; }
+.nav-btn svg { width: 17px; height: 17px; flex: none; opacity: .85; }
+.nav-btn .cnt { margin-left: auto; font-size: 11.5px; color: var(--side-muted); font-variant-numeric: tabular-nums; }
+.nav-btn:hover { background: var(--side-act); }
+.nav-btn[aria-current="page"] { background: var(--side-act); color: #fff; box-shadow: inset 3px 0 0 var(--champ); }
+.side .foot { margin-top: auto; display: grid; gap: 6px; padding: 14px 8px 0; font-size: 12.5px; }
+.side .foot a { color: var(--side-ink); text-decoration: none; }
+.side .foot a:hover { color: #fff; }
+.side .demo { font-size: 11.5px; color: var(--side-muted); line-height: 1.4; }
+
+.main { min-width: 0; display: flex; flex-direction: column; }
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 8; background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); padding-block: 10px; padding-left: 24px; padding-right: max(24px, env(safe-area-inset-right, 0px)); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.top h1 { font-family: var(--f-display); font-size: 18px; font-weight: 700; letter-spacing: -.01em; margin-right: auto; }
+.top h1 small { font-family: var(--f-body); font-weight: 500; font-size: 13px; color: var(--muted); margin-left: 8px; }
+.ctl { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; font-size: 13.5px; }
+select.ctl { padding-right: 6px; max-width: 190px; }
+.search { position: relative; }
+.search input { width: 200px; padding-left: 30px; font-family: var(--f-mono); font-size: 13px; }
+.search svg { position: absolute; left: 9px; top: 50%; width: 15px; height: 15px; transform: translateY(-50%); color: var(--muted); }
+a.btn { text-decoration: none; font-family: var(--f-mono); font-weight: 700; }
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 7px 12px; font-size: 13.5px; cursor: pointer; }
+.btn:hover { border-color: var(--ink-2); }
+.btn.pri { background: var(--ink); color: var(--bg); border-color: var(--ink); font-weight: 600; }
+
+.view { padding: 22px 24px 48px; padding-right: max(24px, env(safe-area-inset-right, 0px)); display: grid; gap: 16px; align-content: start; }
+.vhead { display: grid; gap: 6px; max-width: 820px; }
+.vhead h2 { font-family: var(--f-display); font-size: clamp(20px, 2.4vw, 26px); font-weight: 700; letter-spacing: -.015em; line-height: 1.15; }
+.vhead p { color: var(--ink-2); }
+.sheet { display: inline-flex; align-items: center; gap: 6px; width: fit-content; font-size: 12px; color: var(--good); background: var(--good-bg); padding: 3px 10px; border-radius: 6px; font-weight: 600; }
+.sheet::before { content: ""; width: 10px; height: 10px; border-radius: 2px; background: currentColor; opacity: .8; }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; min-width: 0; }
+.card h3 { font-size: 15.5px; font-weight: 600; }
+.card .sub { font-size: 13px; color: var(--muted); margin: 2px 0 12px; }
+.g2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.g3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.g4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.g75 { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 16px; }
+.takeaway { margin-top: 12px; font-size: 13.5px; background: var(--surface-2); border-radius: 10px; padding: 10px 12px; }
+.hint { display: inline-flex; gap: 6px; align-items: center; font-size: 12px; color: var(--focus); background: color-mix(in srgb, var(--focus) 12%, transparent); padding: 3px 10px; border-radius: 999px; width: fit-content; margin-bottom: 8px; }
+
+.findings { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.finding { background: var(--ink); color: var(--bg); border-radius: 14px; padding: 16px 18px; display: grid; gap: 4px; align-content: start; }
+.finding b { font-family: var(--f-display); font-size: 21px; font-weight: 700; }
+.finding span { font-size: 13.5px; color: color-mix(in srgb, var(--bg) 80%, var(--ink)); }
+.kpis { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 13px; display: grid; gap: 3px; min-width: 0; }
+.kpi .v { font-family: var(--f-display); font-size: clamp(17px, 1.7vw, 21px); font-weight: 700; }
+.kpi .d { font-size: 12px; }
+.up { color: var(--good); } .down { color: var(--bad); } .flat { color: var(--muted); }
+.kpi svg { width: 100%; height: 30px; display: block; margin-top: 4px; }
+
+/* charts */
+svg text { font-family: var(--f-body); }
+.chart { width: 100%; height: auto; display: block; overflow: visible; }
+.ax { fill: var(--muted); font-size: 11px; }
+.gl { stroke: var(--line); }
+.lb { fill: var(--ink); font-size: 11.5px; font-weight: 600; }
+.lb2 { fill: var(--ink-2); font-size: 11px; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-2); margin-top: 8px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.legend i.o { border-radius: 50%; }
+.hov { cursor: pointer; }
+.hov:hover { filter: brightness(1.08); }
+
+/* toolbar + tables */
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 5px 12px; font-size: 13px; cursor: pointer; display: inline-flex; gap: 7px; align-items: center; }
+.chip i { width: 9px; height: 9px; border-radius: 50%; background: var(--c, var(--ink-2)); }
+.chip b { font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ink-2); font-size: 12px; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip[aria-pressed="true"] b { color: var(--bg); opacity: .8; }
+.active-filters { display: flex; gap: 6px; flex-wrap: wrap; }
+.af { font-size: 12.5px; background: var(--surface-2); border-radius: 999px; padding: 4px 6px 4px 11px; display: inline-flex; gap: 6px; align-items: center; }
+.af button { border: 0; background: var(--line); border-radius: 50%; width: 18px; height: 18px; line-height: 1; cursor: pointer; font-size: 12px; }
+.stats { display: flex; gap: 18px; flex-wrap: wrap; font-size: 13px; color: var(--ink-2); margin-bottom: 10px; }
+.stats b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.tw { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+table.crm { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 820px; }
+table.crm th { text-align: left; font-family: var(--f-mono); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding: 10px 12px; background: var(--surface-2); border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.crm th.sort { cursor: pointer; }
+table.crm th.sort:hover { color: var(--ink); }
+table.crm th.r, table.crm td.r { text-align: right; }
+table.crm td { padding: 9px 12px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; white-space: nowrap; }
+table.crm tbody tr { cursor: pointer; }
+table.crm tbody tr:hover td { background: var(--surface-2); }
+table.crm tbody tr:last-child td { border-bottom: 0; }
+.idc { display: flex; align-items: center; gap: 10px; }
+.av { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700; color: #fff; background: var(--c); flex: none; }
+.idc b { display: block; font-family: var(--f-mono); font-size: 12.5px; }
+.idc span { font-size: 12px; color: var(--muted); }
+.badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; background: var(--t); color: var(--ink); box-shadow: inset 0 0 0 1px var(--c); }
+.badge::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--c); }
+.pill { font-size: 11.5px; padding: 2px 8px; border-radius: 999px; font-weight: 600; }
+.pill.y { background: var(--good-bg); color: var(--good); } .pill.n { background: var(--surface-2); color: var(--muted); font-weight: 500; }
+.pill.new { background: var(--champ-t); color: var(--champ); }
+.pager { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; font-size: 13px; color: var(--ink-2); flex-wrap: wrap; }
+.pager div { display: flex; gap: 6px; }
+a.cid { font-family: var(--f-mono); font-size: 12.5px; color: var(--focus); text-decoration: none; cursor: pointer; }
+a.cid:hover { text-decoration: underline; }
+
+/* heat / grids */
+.scroll { overflow-x: auto; }
+table.heat { border-collapse: separate; border-spacing: 3px; font-size: 12.5px; min-width: 760px; width: 100%; }
+table.heat th { font-weight: 500; color: var(--muted); font-size: 11.5px; text-align: center; padding: 4px; white-space: nowrap; }
+table.heat th.row { text-align: left; color: var(--ink); font-weight: 600; font-size: 12.5px; cursor: pointer; }
+table.heat td { text-align: center; padding: 7px 4px; border-radius: 6px; font-variant-numeric: tabular-nums; color: var(--ink); cursor: pointer; }
+table.heat tr.sel th.row { color: var(--focus); }
+table.heat tr.sel td:not(.empty) { outline: 1.5px solid var(--focus); outline-offset: -1.5px; }
+table.heat tr.after th.row::after { content: " ●"; color: var(--risk); }
+table.heat td.empty { background: transparent; color: var(--muted); cursor: default; }
+.toggle { display: inline-flex; background: var(--surface-2); padding: 3px; border-radius: 999px; gap: 3px; margin-bottom: 12px; flex-wrap: wrap; }
+.toggle button { border: 0; background: transparent; padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: 13px; color: var(--ink-2); }
+.toggle button[aria-pressed="true"] { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: 0 1px 2px rgb(0 0 0 / .12); }
+.segcards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.segcard { text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: 14px; padding: 16px; cursor: pointer; display: grid; gap: 10px; border-top: 4px solid var(--c); transition: transform .15s; }
+.segcard:hover { transform: translateY(-2px); }
+.segcard .h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.segcard .h b { font-size: 15px; }
+.segcard .big { font-family: var(--f-display); font-size: 26px; font-weight: 700; }
+.segcard .row { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--ink-2); }
+.segcard .row b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.segcard .go { font-size: 12.5px; color: var(--focus); }
+.rf { display: grid; grid-template-columns: 74px repeat(5, minmax(0, 1fr)); gap: 4px; font-size: 12px; }
+.rf .h { color: var(--muted); text-align: center; padding: 4px 2px; font-size: 11px; }
+.rf .rh { color: var(--muted); display: flex; align-items: center; font-size: 11px; }
+.rf button { border: 0; border-radius: 7px; padding: 8px 4px; cursor: pointer; display: grid; gap: 1px; text-align: center; color: var(--ink); background: var(--t); box-shadow: inset 0 0 0 1.5px var(--c); }
+.rf button b { font-size: 13px; font-variant-numeric: tabular-nums; }
+.rf button span { font-size: 10.5px; color: var(--ink-2); }
+.rf button:hover { outline: 2px solid var(--ink); outline-offset: 1px; }
+table.mig { border-collapse: collapse; width: 100%; font-size: 13.5px; min-width: 720px; }
+table.mig th, table.mig td { padding: 10px; text-align: right; border-bottom: 1px solid var(--line); }
+table.mig th:first-child, table.mig td:first-child { text-align: left; }
+table.mig thead th { font-family: var(--f-mono); font-size: 11px; font-weight: 500; text-transform: uppercase; color: var(--muted); }
+table.mig td.cell { cursor: pointer; border-radius: 6px; }
+table.mig td.cell:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; background: var(--c); }
+
+/* sliders */
+.slider { width: 100%; accent-color: var(--champ); }
+.sliders { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.sliders label { display: flex; justify-content: space-between; font-size: 13px; color: var(--ink-2); margin-bottom: 6px; gap: 8px; }
+.sliders label b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.segbars { display: grid; gap: 10px; margin-top: 16px; }
+.sbar { display: grid; grid-template-columns: 150px minmax(0, 1fr) 200px; gap: 10px; align-items: center; font-size: 13px; }
+.sbar .tr { height: 22px; background: var(--surface-2); border-radius: 6px; overflow: hidden; position: relative; }
+.sbar .tr i { display: block; height: 100%; transition: width .4s; }
+.sbar .v { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.thr .big { font-family: var(--f-display); font-size: 24px; font-weight: 700; }
+.thr .rule { font-size: 13px; color: var(--ink-2); margin: 4px 0 8px; }
+
+/* strategy */
+.strow { display: grid; grid-template-columns: minmax(0, 1fr) 96px 120px; gap: 6px 14px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; }
+.strow:last-child { border-bottom: 0; }
+.strow .sl { grid-column: 1 / -1; order: 3; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; }
+.strow .nm b { display: block; }
+.strow .nm span { font-size: 12px; color: var(--muted); }
+.strow .r { text-align: right; font-variant-numeric: tabular-nums; }
+.strow .r b { display: block; font-size: 15px; }
+.strow .r span { font-size: 11.5px; color: var(--muted); }
+.totals { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.tot { background: var(--surface-2); border-radius: 10px; padding: 12px; }
+.tot b { display: block; font-family: var(--f-display); font-size: 20px; }
+.tot span { font-size: 12px; color: var(--ink-2); }
+.brow { display: grid; gap: 5px; padding-block: 9px; border-bottom: 1px solid var(--line); }
+.brow .t { display: flex; justify-content: space-between; gap: 10px; font-size: 13.5px; }
+.track { height: 11px; background: var(--surface-2); border-radius: 6px; overflow: hidden; }
+.fill { height: 100%; border-radius: 6px; background: var(--c); transition: width .6s cubic-bezier(.2,.8,.2,1); }
+.brow .why { font-size: 12.5px; color: var(--ink-2); }
+
+/* steps */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; counter-reset: s; }
+.steps li { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px 14px 56px; position: relative; display: grid; gap: 4px; }
+.steps li::before { counter-increment: s; content: counter(s); position: absolute; left: 16px; top: 14px; width: 28px; height: 28px; border-radius: 50%; background: var(--ink); color: var(--bg); display: grid; place-items: center; font-weight: 600; font-size: 13px; }
+.steps b { font-size: 14.5px; }
+.steps span { font-size: 13px; color: var(--ink-2); }
+.steps code { font-family: var(--f-mono); font-size: 12px; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+.steps button { width: fit-content; border: 0; background: transparent; color: var(--focus); padding: 0; cursor: pointer; font-size: 13px; font-weight: 600; }
+
+/* drawer */
+.scrim { position: fixed; inset: 0; background: rgb(10 14 20 / .35); z-index: 30; opacity: 0; pointer-events: none; transition: opacity .2s; }
+.scrim.on { opacity: 1; pointer-events: auto; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(540px, 100%); background: var(--surface); z-index: 31; box-shadow: var(--shadow); transform: translateX(105%); transition: transform .25s cubic-bezier(.2,.8,.2,1); overflow-y: auto; padding: calc(18px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) 20px; display: grid; gap: 16px; align-content: start; }
+.drawer.on { transform: none; }
+.dh { display: flex; align-items: center; gap: 12px; }
+.dh .av { width: 44px; height: 44px; font-size: 14px; }
+.dh h3 { font-family: var(--f-mono); font-size: 18px; }
+.dh .x { margin-left: auto; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; width: 34px; height: 34px; cursor: pointer; font-size: 18px; }
+.dstats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.dstats div { background: var(--surface-2); border-radius: 10px; padding: 9px 10px; }
+.dstats b { display: block; font-family: var(--f-display); font-size: 17px; }
+.dstats span { font-size: 11.5px; color: var(--ink-2); }
+.calc { display: grid; gap: 7px; font-size: 13.5px; }
+.calc .row { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 10px; background: var(--surface-2); border-radius: 10px; padding: 9px 12px; }
+.calc .n { font-family: var(--f-display); font-weight: 700; }
+.calc code { font-family: var(--f-mono); font-size: 12px; overflow-wrap: anywhere; }
+.olist { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.olist table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.olist td, .olist th { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; font-variant-numeric: tabular-nums; }
+.olist th { font-size: 11px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: .05em; background: var(--surface-2); }
+.olist tr:last-child td { border-bottom: 0; }
+.lab { font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.tools { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 6px; font-size: 13.5px; }
+.tools li { padding-left: 16px; position: relative; }
+.tools li::before { content: "→"; position: absolute; left: 0; color: var(--muted); }
+
+/* messaging */
+.demo-bar { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; background: var(--warn-bg); color: var(--warn); border-radius: 10px; padding: 9px 12px; }
+.demo-bar b { color: inherit; }
+.inbox { display: grid; grid-template-columns: 300px minmax(0, 1fr); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--surface); min-height: 520px; }
+.threads { border-right: 1px solid var(--line); overflow-y: auto; max-height: 640px; }
+.threads .empty { padding: 24px 16px; color: var(--muted); font-size: 13.5px; display: grid; gap: 10px; }
+.th { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 10px; align-items: center; width: 100%; text-align: left; border: 0; border-bottom: 1px solid var(--line); background: transparent; padding: 11px 14px; cursor: pointer; }
+.th:hover { background: var(--surface-2); }
+.th[aria-current="true"] { background: var(--surface-2); box-shadow: inset 3px 0 0 var(--focus); }
+.th .av { width: 34px; height: 34px; }
+.th > span:nth-child(2) { min-width: 0; overflow: hidden; }
+.modal select.ctl { max-width: none; width: 100%; }
+.th b { font-family: var(--f-mono); font-size: 12.5px; display: block; }
+.th .last { font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.th .meta { display: grid; justify-items: end; gap: 4px; font-size: 11px; color: var(--muted); }
+.unread { min-width: 18px; height: 18px; border-radius: 9px; background: var(--focus); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; padding: 0 5px; }
+.chat { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-width: 0; max-height: 640px; }
+.chat-h { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.chat-h .av { width: 34px; height: 34px; }
+.chat-h b { font-family: var(--f-mono); }
+.chat-h .btn { margin-left: auto; }
+.msgs { overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; background: var(--bg); min-height: 260px; }
+.msgs .none { margin: auto; color: var(--muted); font-size: 13.5px; text-align: center; max-width: 36ch; }
+.bub { max-width: 78%; padding: 8px 12px; border-radius: 14px; font-size: 14px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
+.bub.out { align-self: flex-end; background: var(--champ); color: #fff; border-bottom-right-radius: 4px; }
+.bub.in { align-self: flex-start; background: var(--surface); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+.bub .st { display: block; font-size: 11px; opacity: .8; margin-top: 3px; text-align: right; }
+.bub.in .st { text-align: left; color: var(--muted); }
+.sysmsg { align-self: center; font-size: 11.5px; color: var(--muted); background: var(--surface-2); padding: 3px 10px; border-radius: 999px; }
+.typing { align-self: flex-start; font-size: 12.5px; color: var(--muted); font-style: italic; }
+.composer { border-top: 1px solid var(--line); padding: 10px 12px; display: grid; gap: 8px; background: var(--surface); }
+.tpls { display: flex; gap: 6px; flex-wrap: wrap; }
+.tpl { border: 1px dashed var(--line); background: transparent; border-radius: 8px; padding: 4px 9px; font-size: 12.5px; cursor: pointer; color: var(--ink-2); }
+.tpl:hover { border-color: var(--focus); color: var(--focus); }
+.crow { display: flex; gap: 8px; align-items: flex-end; }
+.crow textarea { flex: 1; min-width: 0; resize: vertical; min-height: 44px; max-height: 160px; border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; background: var(--bg); font: inherit; font-size: 14px; color: var(--ink); }
+.crow .btn.pri { height: 44px; }
+.cmeta { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; font-size: 12px; color: var(--muted); }
+.cmeta select { padding: 4px 8px; font-size: 12.5px; }
+.modal { position: fixed; inset: 0; display: grid; place-items: center; z-index: 35; padding: 16px; background: rgb(10 14 20 / .4); }
+.modal[hidden] { display: none; }
+.modal .box { background: var(--surface); border-radius: 16px; box-shadow: var(--shadow); width: min(640px, 100%); max-height: calc(100vh - 32px); overflow-y: auto; padding: 20px; display: grid; gap: 14px; }
+.modal h3 { font-family: var(--f-display); font-size: 19px; }
+.field { display: grid; gap: 5px; font-size: 13px; color: var(--ink-2); }
+.field textarea { min-height: 110px; border: 1px solid var(--line); border-radius: 10px; padding: 10px; background: var(--bg); font: inherit; font-size: 14px; color: var(--ink); resize: vertical; }
+.preview { background: var(--bg); border-radius: 12px; padding: 12px; display: grid; gap: 6px; }
+.preview .bub { max-width: 100%; }
+.mix { display: flex; height: 10px; border-radius: 5px; overflow: hidden; }
+.funnel { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; align-items: end; height: 70px; }
+.funnel div { background: var(--champ); border-radius: 4px 4px 0 0; position: relative; min-height: 2px; }
+.funnel-l { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; font-size: 11px; color: var(--muted); text-align: center; }
+.funnel-l b { display: block; color: var(--ink); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+@media (max-width: 900px) {
+  .inbox { grid-template-columns: minmax(0, 1fr); }
+  .threads { max-height: 240px; border-right: 0; border-bottom: 1px solid var(--line); }
+}
+
+.tip { position: fixed; pointer-events: none; z-index: 40; background: var(--ink); color: var(--bg); font-size: 12.5px; line-height: 1.45; padding: 7px 10px; border-radius: 8px; max-width: 260px; opacity: 0; transition: opacity .12s; }
+.tip.on { opacity: 1; }
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 9px 14px; border-radius: 10px; font-size: 13px; z-index: 41; opacity: 0; transition: opacity .2s; pointer-events: none; }
+.toast.on { opacity: 1; }
+
+@media (max-width: 1100px) { .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); } .segcards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 900px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .side { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; height: auto; flex-direction: row; overflow-x: auto; padding: 8px max(10px, env(safe-area-inset-right, 0px)) 8px max(10px, env(safe-area-inset-left, 0px)); gap: 4px; scrollbar-width: none; }
+  .brand, .navgroup, .side .foot { display: none; }
+  .nav-btn { width: auto; flex: none; white-space: nowrap; padding: 7px 10px; }
+  .nav-btn .cnt { display: none; }
+  .top { position: static; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .view { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .g2, .g3, .g75, .findings, .steps, .sliders { grid-template-columns: minmax(0, 1fr); }
+  .totals { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .strow .sl { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .sbar { grid-template-columns: 110px minmax(0, 1fr); } .sbar .v { grid-column: 2; text-align: left; }
+}
+@media (max-width: 520px) {
+  .kpis, .g4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .segcards { grid-template-columns: minmax(0, 1fr); }
+  .search input { width: 150px; }
+  .dstats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .card { padding: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+
+<div class="app">
+  <aside class="side" aria-label="Разделы">
+    <div class="brand"><span class="logo">S</span><div><b>SmartFlow · RFM</b><span>CRM на демо-данных</span></div></div>
+    <div class="navgroup">Анализ</div>
+    <button class="nav-btn" data-view="overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Обзор</button>
+    <button class="nav-btn" data-view="customers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6"/><path d="M16 4a4 4 0 0 1 0 8M22 21c0-3-2-5-5-5.6"/></svg>Покупатели<span class="cnt" id="cntC"></span></button>
+    <button class="nav-btn" data-view="orders"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 9v11"/></svg>Заказы<span class="cnt" id="cntO"></span></button>
+    <button class="nav-btn" data-view="segments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6.5 6.5"/></svg>Сегменты</button>
+    <button class="nav-btn" data-view="months"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>По месяцам</button>
+    <button class="nav-btn" data-view="cohorts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h12M9 3v18M15 3v12"/></svg>Когорты</button>
+    <button class="nav-btn" data-view="diagnosis"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>Диагностика</button>
+    <div class="navgroup">Работа с клиентами</div>
+    <button class="nav-btn" data-view="messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12z"/></svg>Сообщения<span class="cnt" id="cntM"></span></button>
+    <div class="navgroup">Решения</div>
+    <button class="nav-btn" data-view="thresholds"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>Пороги RFM</button>
+    <button class="nav-btn" data-view="strategy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>Стратегия</button>
+    <button class="nav-btn" data-view="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg>Как я считала</button>
+    <div class="foot">
+      <a href="./">← Портфолио</a>
+      <a href="rfm-smartflow.html">Кейс: стратегия удержания</a>
+      <p class="demo">Демо-данные: сгенерированы моделью, которая имитирует покупки на SmartFlow. Те же расчёты — в Excel.</p>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="top">
+      <button class="btn" id="backBtn" hidden aria-label="Назад">← Назад</button>
+      <h1 id="vTitle">Обзор</h1>
+      <label class="search" for="q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input class="ctl" id="q" placeholder="Покупатель C00001" autocomplete="off" aria-label="Найти покупателя по номеру"></label>
+      <select class="ctl" id="fNiche" aria-label="Ниша"><option value="-1">Все ниши</option></select>
+      <select class="ctl" id="fChan" aria-label="Канал"><option value="-1">Все каналы</option></select>
+      <a class="btn" id="langLink" href="en/rfm-dashboard.html">EN</a>
+    </div>
+
+    <!-- OVERVIEW -->
+    <section class="view" data-view="overview">
+      <div class="vhead"><span class="eyebrow">Октябрь 2025 – сентябрь 2026 · <span id="ovStatus"></span></span><h2>Повторные покупки упали после 20 июля</h2>
+        <p>CRM собрана из тех же данных, что Excel: каждый раздел слева — лист таблицы. Графики кликабельные: нажмите на месяц, сегмент или точку — откроется список или карточка покупателя.</p></div>
+      <div class="findings" id="findings"></div>
+      <div class="kpis" id="kpis"></div>
+      <div class="g75">
+        <div class="card"><h3>Заказы по месяцам</h3><p class="sub">Первые покупки и повторные заказы</p><span class="hint">Нажмите на месяц → заказы этого месяца</span>
+          <svg class="chart" id="ovOrders" viewBox="0 0 560 250" role="img" aria-label="Заказы по месяцам"></svg>
+          <div class="legend"><span><i style="background:var(--base-bar)"></i>Первые покупки</span><span><i style="background:var(--champ)"></i>Повторные</span></div></div>
+        <div class="card"><h3>База по сегментам</h3><p class="sub">Доля людей и доля оборота за 12 месяцев</p><span class="hint">Нажмите на сегмент → его покупатели</span>
+          <svg class="chart" id="ovSeg" viewBox="0 0 400 250" role="img" aria-label="Сегменты: доли людей и оборота"></svg></div>
+      </div>
+    </section>
+
+    <!-- CUSTOMERS -->
+    <section class="view" data-view="customers" hidden>
+      <div class="vhead"><span class="sheet">Лист «Покупатели»</span><h2>Покупатели</h2><p>R — дней с последней покупки до 30.09.2026, F — заказов за 12 месяцев, M — сумма. Нажмите на строку или точку — откроется карточка покупателя.</p></div>
+      <div class="card">
+        <div class="toolbar"><div class="chips" id="cSegChips"></div></div>
+        <div class="toolbar">
+          <select class="ctl" id="cCoh" aria-label="Когорта"><option value="all">Все когорты</option></select>
+          <select class="ctl" id="cHi" aria-label="Высокий M"><option value="all">Любой M</option><option value="1">Высокий M (≥ 41 400 ₸)</option><option value="0">Обычный M</option></select>
+          <div class="active-filters" id="cAF"></div>
+          <button class="btn pri" id="cBulk" style="margin-left:auto">Написать всем в списке</button>
+        </div>
+        <div class="stats" id="cStats"></div>
+        <div class="g75">
+          <div style="min-width:0">
+            <div class="tw"><table class="crm" id="cTable"></table></div>
+            <div class="pager" id="cPager"></div>
+          </div>
+          <div style="min-width:0"><svg class="chart" id="cScatter" viewBox="0 0 420 330" role="img" aria-label="Покупатели из списка: давность и сумма"></svg>
+            <p class="sub" id="cScatNote" style="margin-top:6px"></p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ORDERS -->
+    <section class="view" data-view="orders" hidden>
+      <div class="vhead"><span class="sheet">Лист «Заказы»</span><h2>Заказы</h2><p>Исходные данные: одна строка — одна оплата. Всё остальное считается из них.</p></div>
+      <div class="card">
+        <span class="hint">Нажмите на столбец → заказы этого месяца</span>
+        <svg class="chart" id="oBars" viewBox="0 0 900 150" role="img" aria-label="Заказы по месяцам — фильтр"></svg>
+        <div class="toolbar" style="margin-top:10px">
+          <div class="chips" id="oTypeChips"></div>
+          <select class="ctl" id="oSort" aria-label="Сортировка"><option value="d-">Сначала новые</option><option value="d+">Сначала старые</option><option value="a-">Сумма ↓</option><option value="a+">Сумма ↑</option></select>
+          <div class="active-filters" id="oAF"></div>
+        </div>
+        <div class="stats" id="oStats"></div>
+        <div class="tw"><table class="crm" id="oTable"></table></div>
+        <div class="pager" id="oPager"></div>
+      </div>
+    </section>
+
+    <!-- SEGMENTS -->
+    <section class="view" data-view="segments" hidden>
+      <div class="vhead"><span class="sheet">Лист «Сегменты»</span><h2>Сегменты на 30.09.2026</h2><p>Недавно — до 60 дней, часто — от 3 покупок. Нажмите на карточку, ячейку карты или миграции — откроется список покупателей.</p></div>
+      <div class="segcards" id="segCards"></div>
+      <div class="g2">
+        <div class="card"><h3>Карта R × F</h3><p class="sub">Покупатели и средний M в каждой ячейке</p><div class="rf" id="rfGrid"></div></div>
+        <div class="card"><h3>Миграция: 31 июля → 30 сентября</h3><p class="sub">Строки — откуда, столбцы — куда</p><div class="scroll"><table class="mig" id="migTable"></table></div><p class="takeaway" id="tMig"></p></div>
+      </div>
+    </section>
+
+    <!-- MONTHS -->
+    <section class="view" data-view="months" hidden>
+      <div class="vhead"><span class="sheet">Лист «По месяцам»</span><h2>Новые приходят стабильно, повторных меньше</h2><p>Нажмите на месяц на любом графике — детали ниже.</p></div>
+      <div class="g2">
+        <div class="card"><h3>Заказы по месяцам</h3><p class="sub">Первые покупки и повторные заказы</p>
+          <svg class="chart" id="mOrders" viewBox="0 0 560 250" role="img" aria-label="Заказы по месяцам"></svg></div>
+        <div class="card"><h3>Повтор за 30 дней у новых</h3><p class="sub">По месяцу первой покупки</p>
+          <svg class="chart" id="mRep" viewBox="0 0 560 250" role="img" aria-label="Повтор за 30 дней по месяцам"></svg><p class="takeaway" id="tRep"></p></div>
+      </div>
+      <div class="card"><h3 id="mTitle"></h3><p class="sub">Новые покупатели месяца по каналам: ширина — доля, подпись — повтор за 30 дней</p>
+        <div class="g4" id="mDet"></div>
+        <svg class="chart" id="mCh" viewBox="0 0 900 96" role="img" aria-label="Новые покупатели месяца по каналам" style="margin-top:12px"></svg>
+        <div class="toolbar" style="margin-top:8px"><button class="btn" id="mToOrders">Открыть заказы месяца →</button></div>
+      </div>
+      <div class="card"><h3>Таблица по месяцам</h3><p class="sub">Как в Excel. Нажмите на строку.</p><div class="scroll"><table class="crm" id="mTable"></table></div></div>
+    </section>
+
+    <!-- COHORTS -->
+    <section class="view" data-view="cohorts" hidden>
+      <div class="vhead"><span class="sheet">Лист «Когорты»</span><h2>Падение — у тех, кто впервые купил с июля</h2><p>Когорта — все, кто впервые купил в одном месяце. Нажмите на строку — кривая удержания. Нажмите на ячейку — покупатели этой когорты.</p></div>
+      <div class="card">
+        <div class="toggle" role="group" aria-label="Показатель"><button type="button" id="hRet" aria-pressed="true">Доля вернувшихся</button><button type="button" id="hLtv" aria-pressed="false">Выручка на покупателя, накопленно</button></div>
+        <div class="scroll"><table class="heat" id="heat"></table></div>
+        <p class="sub" style="margin-top:8px">● — когорты после изменения воронки 20 июля. Месяц 0 — месяц первой покупки.</p>
+      </div>
+      <div class="g75">
+        <div class="card"><h3>Кривая удержания: <span id="curveName"></span></h3><p class="sub">Против средней по когортам октябрь–июнь</p>
+          <svg class="chart" id="cCurve" viewBox="0 0 560 230" role="img" aria-label="Кривые удержания"></svg>
+          <div class="legend"><span><i class="o" style="background:var(--muted)"></i>Среднее окт–июн</span><span><i class="o" style="background:var(--risk)"></i>Выбранная когорта</span></div></div>
+        <div class="card"><h3>Что видно</h3><div id="cohText" style="display:grid;gap:10px;font-size:14px;margin-top:8px"></div></div>
+      </div>
+    </section>
+
+    <!-- DIAGNOSIS -->
+    <section class="view" data-view="diagnosis" hidden>
+      <div class="vhead"><span class="eyebrow">Почему упало</span><h2>Упало везде — значит, дело не в аудитории</h2><p>Повтор за 30 дней у когорт март–июнь (до) и август (после). Если бы упал один канал, причина была бы в нём.</p></div>
+      <div class="g2">
+        <div class="card"><h3>По каналам</h3><p class="sub">Нажмите на строку → покупатели канала</p><svg class="chart" id="dCh" viewBox="0 0 520 200" role="img" aria-label="Повтор по каналам до и после"></svg></div>
+        <div class="card"><h3>По нишам</h3><p class="sub">Нажмите на строку → покупатели ниши</p><svg class="chart" id="dNi" viewBox="0 0 520 200" role="img" aria-label="Повтор по нишам до и после"></svg></div>
+      </div>
+      <div class="legend"><span><i class="o" style="background:var(--base-bar)"></i>До: когорты март–июнь</span><span><i class="o" style="background:var(--risk)"></i>После: когорта август</span></div>
+      <div class="card"><h3>Через сколько дней приходит вторая покупка</h3><p class="sub">Доля когорты по интервалам</p>
+        <svg class="chart" id="dTts" viewBox="0 0 900 220" role="img" aria-label="Дни до второй покупки"></svg><p class="takeaway" id="tTts"></p></div>
+    </section>
+
+    <!-- THRESHOLDS -->
+    <section class="view" data-view="thresholds" hidden>
+      <div class="vhead"><span class="sheet">Лист «Пороги»</span><h2>Пороги из данных, а не на глаз</h2><p>Пороги посчитаны по всей базе. Ниже можно подвигать их и посмотреть, как меняются сегменты.</p></div>
+      <div class="g3">
+        <div class="card thr"><span class="eyebrow">R · давность</span><div class="big">60 дней</div><p class="rule" id="rRule"></p><svg class="chart" id="tR" viewBox="0 0 300 130" role="img" aria-label="Интервалы до второй покупки"></svg></div>
+        <div class="card thr"><span class="eyebrow">F · частота</span><div class="big">от 3 покупок</div><p class="rule">После 3-й покупки доля следующей перестаёт расти — человек стал постоянным.</p><svg class="chart" id="tF" viewBox="0 0 300 130" role="img" aria-label="Доля следующей покупки"></svg></div>
+        <div class="card thr"><span class="eyebrow">M · деньги</span><div class="big">от 41 400 ₸</div><p class="rule" id="mRule"></p><svg class="chart" id="tM" viewBox="0 0 300 130" role="img" aria-label="Высокий M"></svg></div>
+      </div>
+      <div class="card"><h3>Попробуйте другие пороги</h3><p class="sub">Пунктир — сегменты при моих порогах</p>
+        <div class="sliders">
+          <div><label for="sR">Недавно — до <b id="vR"></b></label><input class="slider" type="range" id="sR" min="20" max="150" step="10" value="60"></div>
+          <div><label for="sF">Часто — от <b id="vF"></b></label><input class="slider" type="range" id="sF" min="2" max="6" step="1" value="3"></div>
+          <div><label for="sM">Высокий M — от <b id="vM"></b></label><input class="slider" type="range" id="sM" min="20000" max="100000" step="100" value="41400"></div>
+        </div>
+        <div class="segbars" id="segBars"></div>
+        <div class="toolbar" style="margin-top:12px"><button class="btn" id="thReset">Вернуть мои пороги</button></div>
+        <p class="takeaway" id="thInfo"></p>
+      </div>
+    </section>
+
+    <!-- MESSAGES -->
+    <section class="view" data-view="messages" hidden>
+      <div class="vhead"><span class="eyebrow">Касания по стратегии</span><h2>Сообщения и рассылки</h2><p>Пишите покупателю из карточки или сразу всему отфильтрованному списку. Шаблоны — из стратегии для каждого сегмента.</p></div>
+      <div class="demo-bar"><span>⚠</span><span><b>Демо-режим.</b> Покупатели вымышленные, сообщения никуда не уходят, ответы имитируются. В рабочей версии отправка шла бы через Telegram-бота SmartFlow, а ответы приходили бы сюда же.</span></div>
+      <div class="inbox">
+        <div class="threads" id="mThreads"></div>
+        <div class="chat" id="mChat"></div>
+      </div>
+      <div class="card"><h3>Рассылки</h3><p class="sub">Отправлено → доставлено → прочитано → ответили → ожидаемые покупки (по доле сегмента в стратегии)</p>
+        <div class="toolbar"><button class="btn pri" id="mNewCamp">Новая рассылка</button></div>
+        <div class="tw"><table class="crm" id="campTable"></table></div></div>
+    </section>
+
+    <!-- STRATEGY -->
+    <section class="view" data-view="strategy" hidden>
+      <div class="vhead"><span class="sheet">Лист «Стратегия»</span><h2>Как выводы превращаются в деньги</h2><p>Сегменты на 31 августа и их покупки в сентябре. Подвигайте цели — выручка пересчитается. Мои цели: вернуть уровень до 20 июля и 3% для At Risk.</p></div>
+      <div class="totals" id="stTot"></div>
+      <div class="g75">
+        <div class="card"><h3>Цели по сегментам</h3><p class="sub">Доля сегмента, которая покупает в месяц: сейчас → цель</p><div id="stRows"></div>
+          <div class="toolbar" style="margin-top:10px"><button class="btn" id="stReset">Вернуть мои цели</button></div></div>
+        <div class="card"><h3>Откуда рост выручки</h3><p class="sub">Сентябрь + прирост по сегментам, млн ₸</p><svg class="chart" id="stWf" viewBox="0 0 420 280" role="img" aria-label="Водопад выручки"></svg></div>
+      </div>
+      <div class="g2">
+        <div class="card"><h3>Маркетинговый бюджет</h3><p class="sub">Раньше удержание делилось по числу людей — 68% уходило на Hibernating</p>
+          <div class="toggle" role="group" aria-label="Бюджет"><button type="button" id="bB" aria-pressed="false">Было · 11 млн ₸</button><button type="button" id="bA" aria-pressed="true">Стало · 8,8 млн ₸</button></div>
+          <div id="bRows"></div></div>
+        <div class="card"><h3>Сценарий для новых покупателей</h3><p class="sub">Если поднять повтор за 30 дней у новых</p>
+          <label for="scR" class="sliders" style="display:block"><span style="display:flex;justify-content:space-between;font-size:13px;color:var(--ink-2)">Целевой повтор за 30 дней <b id="scVal" class="num" style="color:var(--ink)"></b></span></label>
+          <input class="slider" type="range" id="scR" min="15" max="35" step="0.5" value="23">
+          <div class="g3" style="margin-top:12px" id="scOut"></div>
+          <p class="takeaway" id="tScen"></p></div>
+      </div>
+    </section>
+
+    <!-- METHOD -->
+    <section class="view" data-view="method" hidden>
+      <div class="vhead"><span class="eyebrow">Шаг за шагом</span><h2>Как я считала, с нуля</h2><p>Каждый шаг — лист в Excel и раздел здесь. Нажмите, чтобы открыть.</p></div>
+      <ol class="steps">
+        <li><b>Данные → «Заказы»</b><span>Все оплаты за 01.10.2025–30.09.2026. Одна строка — одна оплата: покупатель, дата, сумма. В реальной работе — выгрузка SQL из таблицы оплат.</span><button data-go="orders">Открыть заказы →</button></li>
+        <li><b>По месяцам</b><span>Заказы, выручка, новые и повторные. Новые стабильны → проблема после первой покупки.</span><button data-go="months">Открыть →</button></li>
+        <li><b>Когорты</b><span>Покупатели по месяцу первой покупки: какая доля вернулась через 1, 2, 3… месяца. Падение — у когорт с июля.</span><button data-go="cohorts">Открыть →</button></li>
+        <li><b>Диагностика</b><span>Повтор до и после по каналам и нишам. Упало везде → причина в продукте: 20 июля убрали сообщение после первой оплаты.</span><button data-go="diagnosis">Открыть →</button></li>
+        <li><b>R, F, M → «Покупатели»</b><span>R = <code>30.09.2026 − последняя покупка</code>, F = <code>число заказов</code>, M = <code>сумма заказов</code>.</span><button data-go="customers">Открыть покупателей →</button></li>
+        <li><b>Пороги</b><span>R — 90-й перцентиль интервала до второй покупки, вверх до 10 дней. F — где доля следующей покупки выходит на плато. M — верхние 25%.</span><button data-go="thresholds">Открыть →</button></li>
+        <li><b>Сегменты и миграция</b><span>4 сегмента и переходы между ними с 31 июля по 30 сентября — видно, кого теряем.</span><button data-go="segments">Открыть →</button></li>
+        <li><b>Стратегия</b><span>Сколько людей покупает в месяц сейчас и при цели → доп. покупатели × выручка на покупателя. Бюджет — туда, где есть прирост.</span><button data-go="strategy">Открыть →</button></li>
+      </ol>
+    </section>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Карточка покупателя" aria-hidden="true"></aside>
+<div class="modal" id="campModal" hidden role="dialog" aria-modal="true" aria-labelledby="campH">
+  <div class="box">
+    <div class="dh"><h3 id="campH" style="font-family:var(--f-display)">Рассылка</h3><button class="x" id="campX" aria-label="Закрыть">×</button></div>
+    <div id="campWho"></div>
+    <div class="g2">
+      <label class="field">Шаблон<select class="ctl" id="campTpl"></select></label>
+      <label class="field">Канал<select class="ctl" id="campCh"></select></label>
+    </div>
+    <label class="field">Текст · переменные {номер}, {тема}, {дней}, {сумма}<textarea id="campText"></textarea></label>
+    <div><div class="lab" style="margin-bottom:6px">Как увидит первый получатель</div><div class="preview" id="campPrev"></div></div>
+    <div class="totals" id="campCalc"></div>
+    <p class="sub" id="campNote" style="margin:0"></p>
+    <div class="toolbar" style="margin:0;justify-content:flex-end"><button class="btn" id="campCancel">Отмена</button><button class="btn pri" id="campSend">Отправить</button></div>
+  </div>
+</div>
+<div class="tip" id="tip" role="tooltip"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* Demo data generator for the SmartFlow RFM dashboard.
+   Deterministic: same seed → same 12 months of data. Simulates 24 months (12 warm-up + 12 shown). */
+function simulate() {
+  let s = 20261023;
+  const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  const gauss = () => { let u = 0, v = 0; while (u === 0) u = rnd(); v = rnd(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+  const DAY = 86400000;
+  const START = Date.UTC(2024, 9, 1);
+  const END = Date.UTC(2026, 8, 30, 23, 59);
+  const CHANGE = Date.UTC(2026, 6, 20);
+  const NICHES = [
+    { id: "edu", name: "Онлайн-образование", w: .35, check: 22000, gap: 26 },
+    { id: "health", name: "Здоровье и спорт", w: .25, check: 15000, gap: 20 },
+    { id: "biz", name: "Бизнес и маркетинг", w: .25, check: 29000, gap: 33 },
+    { id: "hobby", name: "Творчество и хобби", w: .15, check: 12000, gap: 22 }
+  ];
+  const CHANNELS = [
+    { id: "ig", name: "Instagram", w: .40, k: 1.0 },
+    { id: "tg", name: "Telegram", w: .30, k: 1.12 },
+    { id: "tt", name: "TikTok", w: .20, k: .72 },
+    { id: "ref", name: "Рекомендации", w: .10, k: 1.3 }
+  ];
+  const TYPES = [{ w: .16, p: .8, c: 1.15 }, { w: .34, p: .45, c: 1 }, { w: .5, p: .2, c: .92 }];
+  const SEASON = [1.06, 1.02, 1.0, 1.08, 1.03, 1.0, .98, .97, .94, .92, .95, 1.06]; // Jan..Dec
+  const pick = arr => { let r = rnd(), a = 0; for (let i = 0; i < arr.length; i++) { a += arr[i].w; if (r < a) return i; } return arr.length - 1; };
+
+  const customers = [];
+  for (let mi = 0; mi < 24; mi++) {
+    const y = 2024 + Math.floor((9 + mi) / 12), mo = (9 + mi) % 12;
+    const m0 = Date.UTC(y, mo, 1), m1 = Date.UTC(y, mo + 1, 1);
+    const n = Math.round(3300 * SEASON[mo] * (1 + .03 * (rnd() * 2 - 1)));
+    for (let i = 0; i < n; i++) {
+      const ni = pick(NICHES), ch = pick(CHANNELS), ty = pick(TYPES);
+      const N = NICHES[ni], T = TYPES[ty];
+      let t = m0 + rnd() * (m1 - m0);
+      const orders = [];
+      for (let k = 0; k < 40; k++) {
+        const amt = Math.round(N.check * T.c * Math.exp(.35 * gauss() - .06) / 100) * 100;
+        orders.push([t, amt]);
+        let p = T.p * CHANNELS[ch].k * Math.pow(.93, k);
+        if (t >= CHANGE) p *= (k === 0 ? .66 : .88);
+        if (rnd() > Math.min(p, .95)) break;
+        t += N.gap * Math.exp(.6 * gauss()) * DAY;
+        if (t > END) break;
+      }
+      customers.push({ ni, ch, ty, orders });
+    }
+  }
+  return { customers, NICHES, CHANNELS, START, END, CHANGE, DAY };
+}
+if (typeof module !== "undefined") module.exports = { simulate };
+
+/* Analytics for the dashboard. Same definitions as the Excel workbook. */
+function buildBase(D) {
+  const DAY = 86400000, dayOf = t => Math.floor(t / DAY);
+  const W0 = dayOf(Date.UTC(2025, 9, 1)), W1 = dayOf(Date.UTC(2026, 8, 30));
+  const MONTHS = [];
+  for (let k = 0; k < 12; k++) MONTHS.push({ start: dayOf(Date.UTC(2025, 9 + k, 1)), end: dayOf(Date.UTC(2025, 10 + k, 1)) - 1, y: 2025 + Math.floor((9 + k) / 12), m: (9 + k) % 12 });
+  const monthIdx = d => { for (let i = 0; i < 12; i++) if (d >= MONTHS[i].start && d <= MONTHS[i].end) return i; return -1; };
+  const people = [];
+  for (const c of D.customers) {
+    const all = c.orders.map(o => [dayOf(o[0]), o[1]]);
+    people.push({ ni: c.ni, ch: c.ch, all, first: all[0][0], win: all.filter(o => o[0] >= W0 && o[0] <= W1) });
+  }
+  return { people, W0, W1, MONTHS, monthIdx, CHANGE: dayOf(Date.UTC(2026, 6, 20)), NICHES: D.NICHES, CHANNELS: D.CHANNELS };
+}
+
+const TH = { R: 60, F: 3, M: 41400 };
+const SEGS = ["champ", "loyal", "risk", "hib"];
+function segOf(R, F) { return R <= TH.R ? (F >= TH.F ? "champ" : "loyal") : (F >= TH.F ? "risk" : "hib"); }
+
+function analyze(B, filt) {
+  const P = B.people.filter(p => (filt.ni < 0 || p.ni === filt.ni) && (filt.ch < 0 || p.ch === filt.ch));
+  const { W0, W1, MONTHS, monthIdx } = B;
+  // monthly
+  const mon = MONTHS.map(() => ({ orders: 0, rev: 0, nw: 0, buyers: 0, cohort: 0, rep30n: 0, rep30d: 0 }));
+  // cohorts
+  const coh = MONTHS.map(() => ({ size: 0, act: new Array(12).fill(0), rev: new Array(12).fill(0) }));
+  const seg = {}; SEGS.forEach(s => seg[s] = { n: 0, M: 0, F: 0, R: 0, hi: 0, hiM: 0 });
+  const gaps = [], Fs = [], Ms = [];
+  const grid = {}; // R bin x F bin
+  const RB = [30, 60, 120, 240, 365], FB = [1, 2, 4, 7, 999];
+  const rbin = r => RB.findIndex(x => r <= x), fbin = f => FB.findIndex(x => f <= x);
+  const diag = { ch: {}, ni: {} };
+  const ttsBefore = new Array(19).fill(0), ttsAfter = new Array(19).fill(0);
+  let totalRev = 0;
+  for (const p of P) {
+    const w = p.win;
+    // monthly
+    let lastM = -1;
+    w.forEach(o => {
+      const mi = monthIdx(o[0]); const M = mon[mi];
+      M.orders++; M.rev += o[1]; totalRev += o[1];
+      if (o[0] === p.first && o === w[0]) M.nw++;
+      if (mi !== lastM) { M.buyers++; lastM = mi; }
+    });
+    // cohort
+    if (p.first >= W0) {
+      const c = monthIdx(p.first); const C = coh[c]; C.size++;
+      const seen = new Set();
+      w.forEach(o => { const k = monthIdx(o[0]) - c; C.rev[k] += o[1]; if (!seen.has(k)) { seen.add(k); C.act[k]++; } });
+      if (p.first <= W1 - 30) {
+        const r = w.length >= 2 && w[1][0] - w[0][0] <= 30 ? 1 : 0;
+        mon[c].rep30d++; mon[c].rep30n += r;
+        const per = (c >= 5 && c <= 8) ? "before" : c === 10 ? "after" : null; // Mar–Jun vs Aug
+        if (per) {
+          for (const [key, v] of [["ch", p.ch], ["ni", p.ni]]) {
+            const o = diag[key][v] || (diag[key][v] = { before: [0, 0], after: [0, 0] });
+            o[per][0] += r; o[per][1]++;
+          }
+        }
+      }
+      if (w.length >= 2) {
+        const g = w[1][0] - w[0][0], b = Math.min(18, Math.floor(g / 5));
+        if (c >= 5 && c <= 8) ttsBefore[b]++; else if (c === 10) ttsAfter[b]++;
+      }
+    }
+    // RFM at W1
+    if (w.length) {
+      const R = W1 - w[w.length - 1][0], F = w.length, M = w.reduce((a, o) => a + o[1], 0);
+      const s = segOf(R, F); const S = seg[s];
+      S.n++; S.M += M; S.F += F; S.R += R; if (M >= TH.M) { S.hi++; S.hiM += M; }
+      Fs.push(F); Ms.push(M); if (F >= 2) gaps.push(w[1][0] - w[0][0]);
+      const key = rbin(R) + "_" + fbin(F); const g = grid[key] || (grid[key] = { n: 0, M: 0 }); g.n++; g.M += M;
+    }
+  }
+  // migration Jul 31 → Sep 30
+  const T0 = W1 - 61; // 2026-07-31
+  const mig = {};
+  const st0 = p => {
+    if (p.first > T0) return "new";
+    const w = p.all.filter(o => o[0] > T0 - 365 && o[0] <= T0);
+    if (!w.length) return null;
+    return segOf(T0 - w[w.length - 1][0], w.length);
+  };
+  for (const p of P) {
+    const a = st0(p); if (!a) continue;
+    const b = p.win.length ? segOf(W1 - p.win[p.win.length - 1][0], p.win.length) : "gone";
+    const k = a + ">" + b; mig[k] = (mig[k] || 0) + 1;
+  }
+  Fs.sort((a, b) => a - b); Ms.sort((a, b) => a - b); gaps.sort((a, b) => a - b);
+  const q = (arr, p) => arr.length ? arr[Math.min(arr.length - 1, Math.floor((arr.length - 1) * p))] : 0;
+  const fCond = []; for (let n = 1; n <= 7; n++) { const a = Fs.filter(f => f >= n).length, b = Fs.filter(f => f >= n + 1).length; fCond.push({ n, a, b, p: a ? b / a : 0 }); }
+  const gapHist = new Array(25).fill(0); gaps.forEach(g => gapHist[Math.min(24, Math.floor(g / 5))]++);
+  return { gapHist, n: P.length, mon, coh, seg, totalRev, grid, RB, FB, diag, ttsBefore, ttsAfter, mig,
+    gapMed: q(gaps, .5), gapP90: q(gaps, .9), mMed: q(Ms, .5), mP75: q(Ms, .75), fCond, buyers: Fs.length };
+}
+if (typeof module !== "undefined") module.exports = { buildBase, analyze, TH, SEGS };
+
+(function () {
+  const NS = "http://www.w3.org/2000/svg";
+  const MN = ["янв", "фев", "мар", "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"];
+  const SEGN = { champ: "Champions", loyal: "Potential Loyalists", risk: "At Risk", hib: "Hibernating" };
+  const SEGRU = { champ: "лучшие покупатели", loyal: "потенциально лояльные", risk: "под угрозой ухода", hib: "неактивные" };
+  const nf = n => Math.round(n).toLocaleString("ru-RU");
+  const pf = (x, d = 1) => (x * 100).toFixed(d).replace(".", ",") + "%";
+  const mln = x => (x / 1e6).toFixed(1).replace(".", ",") + " млн ₸";
+  const col = k => `var(--${k})`;
+  const avg = a => a.reduce((s, v) => s + v, 0) / (a.length || 1);
+  function el(tag, a = {}, parent) { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); if (parent) parent.appendChild(e); return e; }
+  function txt(parent, x, y, s, cls, anchor = "start", extra = {}) { const t = el("text", Object.assign({ x, y, class: cls, "text-anchor": anchor }, extra), parent); t.textContent = s; return t; }
+  const clear = svg => { while (svg.firstChild) svg.removeChild(svg.firstChild); };
+  const $ = id => document.getElementById(id);
+
+  /* tooltip + toast */
+  const tip = $("tip");
+  const showTip = (e, t) => { tip.innerHTML = t.getAttribute("data-tip"); tip.style.left = Math.max(8, Math.min(e.clientX + 14, innerWidth - tip.offsetWidth - 8)) + "px"; tip.style.top = (e.clientY + 14) + "px"; tip.classList.add("on"); };
+  document.addEventListener("pointermove", e => { const t = e.target.closest && e.target.closest("[data-tip]"); if (!t) { tip.classList.remove("on"); return; } showTip(e, t); });
+  document.addEventListener("pointerdown", e => { const t = e.target.closest && e.target.closest("[data-tip]"); if (t && e.pointerType !== "mouse") showTip(e, t); else if (!t) tip.classList.remove("on"); });
+  let toastT; const toast = s => { const t = $("toast"); t.textContent = s; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2200); };
+
+  /* data */
+  const B = buildBase(simulate());
+  const DAYMS = 86400000;
+  const dstr = d => { const x = new Date(d * DAYMS); return String(x.getUTCDate()).padStart(2, "0") + "." + String(x.getUTCMonth() + 1).padStart(2, "0") + "." + x.getUTCFullYear(); };
+  const mLabel = i => MN[B.MONTHS[i].m] + (B.MONTHS[i].m === 0 || i === 0 ? " " + String(B.MONTHS[i].y).slice(2) : "");
+  const mFull = i => MN[B.MONTHS[i].m] + " " + B.MONTHS[i].y;
+  const LIST = B.people.filter(p => p.win.length).sort((a, b) => a.first - b.first);
+  const ORDERS = [];
+  const T0 = B.W1 - 61;
+  LIST.forEach((p, i) => {
+    p.id = "C" + String(i + 1).padStart(5, "0");
+    const w = p.win; p.R = B.W1 - w[w.length - 1][0]; p.F = w.length; p.M = w.reduce((a, o) => a + o[1], 0);
+    p.seg = segOf(p.R, p.F); p.hi = p.M >= TH.M;
+    p.coh = p.first >= B.W0 ? B.monthIdx(p.first) : -1;
+    p.gap = p.F >= 2 ? w[1][0] - w[0][0] : null;
+    p.rep30 = p.coh >= 0 && p.first <= B.W1 - 30 ? (p.gap !== null && p.gap <= 30 ? 1 : 0) : null;
+    if (p.first > T0) p.mig0 = "new"; else { const w0 = p.all.filter(o => o[0] > T0 - 365 && o[0] <= T0); p.mig0 = w0.length ? segOf(T0 - w0[w0.length - 1][0], w0.length) : null; }
+    w.forEach((o, k) => ORDERS.push({ id: "O" + String(ORDERS.length + 1).padStart(6, "0"), p, d: o[0], a: o[1], nw: k === 0 && o[0] === p.first, mi: B.monthIdx(o[0]) }));
+  });
+  const BYID = new Map(LIST.map(p => [p.id, p]));
+  const fN = $("fNiche"), fC = $("fChan");
+  B.NICHES.forEach((n, i) => fN.add(new Option(n.name, i)));
+  B.CHANNELS.forEach((c, i) => fC.add(new Option(c.name, i)));
+  const passG = p => (+fN.value < 0 || p.ni === +fN.value) && (+fC.value < 0 || p.ch === +fC.value);
+
+  let A;
+  const rep = i => A.mon[i].rep30d ? A.mon[i].rep30n / A.mon[i].rep30d : NaN;
+  const BEFORE = [5, 6, 7, 8];
+
+  /* state */
+  const CF = { seg: "all", coh: "all", hi: "all", rf: null, mig: null, ch: null, ni: null, sort: "M", dir: -1, page: 0 };
+  const OF = { month: null, type: "all", q: null, sort: "d-", page: 0 };
+  let selMonth = 10, selCoh = 10, heatMode = "ret", TH2 = { R: 60, F: 3, M: 41400 };
+  const TGT0 = { loyal: 18, risk: 3, champ: null };
+  let TGT = { ...TGT0 }, budIdx = 1;
+
+  /* router */
+  const VIEWS = ["overview", "customers", "orders", "segments", "months", "cohorts", "diagnosis", "messages", "thresholds", "strategy", "method"];
+  const TITLES = { overview: "Обзор", customers: "Покупатели", orders: "Заказы", segments: "Сегменты", months: "По месяцам", cohorts: "Когорты", diagnosis: "Диагностика", messages: "Сообщения", thresholds: "Пороги RFM", strategy: "Стратегия", method: "Как я считала" };
+  let view = "overview";
+  const STACK = [];
+  function back() { if (!drawer.classList.contains("on") && STACK.length) { try { history.back(); } catch (e) { go(STACK.pop(), false); } } else closeDrawer(); }
+  window.addEventListener("popstate", () => { if (drawer.classList.contains("on")) closeDrawer(); const h = location.hash.replace("#", ""); STACK.pop(); go(VIEWS.includes(h) ? h : (STACK[STACK.length - 1] || "overview"), false); });
+  document.addEventListener("keydown", e => { if (e.altKey && e.key === "ArrowLeft") { e.preventDefault(); back(); } });
+  function go(v, push = true) {
+    if (!VIEWS.includes(v)) v = "overview";
+    if (push && v !== view) { STACK.push(view); try { history.pushState({ v }, "", "#" + v); } catch (e) {} push = false; }
+    view = v;
+    $("backBtn").hidden = !STACK.length;
+    document.querySelectorAll(".view").forEach(s => s.hidden = s.dataset.view !== v);
+    document.querySelectorAll(".nav-btn").forEach(b => b.setAttribute("aria-current", b.dataset.view === v ? "page" : "false"));
+    $("vTitle").innerHTML = TITLES[v] + (+fN.value >= 0 || +fC.value >= 0 ? `<small>${[+fN.value >= 0 ? B.NICHES[+fN.value].name : "", +fC.value >= 0 ? B.CHANNELS[+fC.value].name : ""].filter(Boolean).join(" · ")}</small>` : "");
+    if (push) { try { history.replaceState(null, "", "#" + v); } catch (e) {} }
+    renderView();
+    window.scrollTo({ top: 0 });
+  }
+  document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.view)));
+  document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => go(b.dataset.go)));
+  function renderView() {
+    const r = { overview: renderOverview, customers: renderCustomers, orders: renderOrders, segments: renderSegments, months: renderMonths, cohorts: renderCohorts, diagnosis: renderDiag, messages: renderMessages, thresholds: renderThresholds, strategy: renderStrategy, method: () => {} }[view];
+    r();
+  }
+  function recompute() {
+    A = analyze(B, { ni: +fN.value, ch: +fC.value });
+    const nC = LIST.filter(passG).length, nO = ORDERS.filter(o => passG(o.p)).length;
+    $("cntC").textContent = nf(nC); $("cntO").textContent = nf(nO);
+    $("ovStatus").textContent = `${nf(nC)} покупателей · ${nf(nO)} заказов · ${mln(A.totalRev)}`;
+    computeStrat();
+    go(view, false);
+  }
+  fN.addEventListener("change", recompute); fC.addEventListener("change", recompute);
+  $("q").addEventListener("keydown", e => { if (e.key === "Enter") openCustomer(e.target.value); });
+
+  /* ---------- shared charts ---------- */
+  function axesY(svg, L, R, T, H, Bm, max, ticks, fmt) {
+    const y = v => T + (H - T - Bm) * (1 - v / max);
+    ticks.forEach(t => { el("line", { x1: L, x2: R, y1: y(t), y2: y(t), class: "gl" }, svg); txt(svg, L - 6, y(t) + 4, fmt(t), "ax", "end"); });
+    return y;
+  }
+  function monthBars(svg, W, H, sel, onClick, compact) {
+    clear(svg);
+    const L = 46, R = 8, T = compact ? 10 : 22, Bm = 26;
+    const max = Math.ceil(Math.max(...A.mon.map(m => m.orders)) / 1000) * 1000 || 1000;
+    const step = max <= 2000 ? 500 : max <= 4000 ? 1000 : 2000;
+    const ticks = []; for (let t = 0; t <= max; t += step) ticks.push(t);
+    const y = axesY(svg, L, W - R, T, H, Bm, max, compact ? [0, max] : ticks, nf);
+    const slot = (W - L - R) / 12, bw = slot * .62;
+    A.mon.forEach((m, i) => {
+      const x = L + i * slot + (slot - bw) / 2, rp = m.orders - m.nw;
+      const g = el("g", { class: "hov", opacity: sel === null || sel === i ? 1 : .45 }, svg);
+      el("rect", { x: x - 3, y: T - 4, width: bw + 6, height: H - Bm - T + 4, fill: sel === i ? "var(--surface-2)" : "transparent", rx: 6 }, g);
+      el("rect", { x, y: y(m.nw), width: bw, height: y(0) - y(m.nw), fill: "var(--base-bar)", rx: 2, "data-tip": `<b>${mFull(i)}</b><br>Первые покупки: ${nf(m.nw)}<br>Повторные: ${nf(rp)} (${pf(rp / m.orders)})<br>Выручка: ${mln(m.rev)}` }, g);
+      el("rect", { x, y: y(m.orders), width: bw, height: Math.max(0, y(m.nw) - y(m.orders) - 2), fill: "var(--champ)", rx: 2, "data-tip": `<b>${mFull(i)}</b><br>Первые покупки: ${nf(m.nw)}<br>Повторные: ${nf(rp)} (${pf(rp / m.orders)})<br>Выручка: ${mln(m.rev)}` }, g);
+      txt(svg, x + bw / 2, H - 8, mLabel(i), "ax", "middle");
+      g.addEventListener("click", () => onClick(i));
+    });
+    const cx = L + 9 * slot + slot * (19 / 31);
+    el("line", { x1: cx, x2: cx, y1: T, y2: H - Bm, stroke: "var(--risk)", "stroke-dasharray": "4 3" }, svg);
+    if (!compact) txt(svg, cx - 4, T - 6, "20 июл: новая воронка", "lb2", "end");
+  }
+  function spark(vals, color) {
+    const w = 120, h = 30, v2 = vals.filter(v => !isNaN(v)), mx = Math.max(...v2), mn = Math.min(...v2);
+    const x = i => 2 + i * (w - 4) / (vals.length - 1), y = v => h - 3 - (v - mn) / ((mx - mn) || 1) * (h - 6);
+    const pts = vals.map((v, i) => isNaN(v) ? null : [x(i), y(v)]).filter(Boolean);
+    const last = pts[pts.length - 1];
+    return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"><path d="${pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join("")}" fill="none" stroke="${color}" stroke-width="1.8" vector-effect="non-scaling-stroke"/><circle cx="${last[0]}" cy="${last[1]}" r="2.6" fill="${color}"/></svg>`;
+  }
+
+  /* ---------- OVERVIEW ---------- */
+  function renderOverview() {
+    const nw = A.mon.map(m => m.nw), rb = avg(BEFORE.map(rep)), ra = rep(10);
+    const lt = ["champ", "loyal", "risk", "hib", "gone"].reduce((a, k) => a + (A.mig["loyal>" + k] || 0), 0) || 1;
+    $("findings").innerHTML = `
+      <div class="finding"><span>Новых покупателей в месяц</span><b class="num">${nf(Math.min(...nw))}–${nf(Math.max(...nw))}</b><span>Стабильно весь год — проблема не в привлечении.</span></div>
+      <div class="finding"><span>Повтор за 30 дней у новых</span><b class="num">${pf(rb)} → ${pf(ra)}</b><span>Март–июнь против августа: падение после 20 июля.</span></div>
+      <div class="finding"><span>Potential Loyalists → Hibernating</span><b class="num">${pf((A.mig["loyal>hib"] || 0) / lt, 0)}</b><span>недавних покупателей ушли в «спящие» за 2 месяца.</span></div>`;
+    const M = A.mon, base = f => avg(BEFORE.map(f));
+    const items = [
+      ["Выручка, сен", mln(M[11].rev), M[11].rev / base(j => M[j].rev) - 1, M.map(m => m.rev), "months"],
+      ["Заказы, сен", nf(M[11].orders), M[11].orders / base(j => M[j].orders) - 1, M.map(m => m.orders), "orders"],
+      ["Новые, сен", nf(M[11].nw), M[11].nw / base(j => M[j].nw) - 1, M.map(m => m.nw), "months"],
+      ["Повторные заказы, сен", pf((M[11].orders - M[11].nw) / M[11].orders), (M[11].orders - M[11].nw) / M[11].orders - base(j => (M[j].orders - M[j].nw) / M[j].orders), M.map(m => (m.orders - m.nw) / m.orders), "months", 1],
+      ["Повтор 30 дней, авг", pf(rep(10)), rep(10) - base(rep), M.map((m, i) => rep(i)), "cohorts", 1],
+      ["Средний чек, сен", nf(M[11].rev / M[11].orders) + " ₸", (M[11].rev / M[11].orders) / base(j => M[j].rev / M[j].orders) - 1, M.map(m => m.rev / m.orders), "orders"]
+    ];
+    $("kpis").innerHTML = items.map(([t, v, d, s, to, pp], i) => {
+      const cls = Math.abs(d) < (pp ? .005 : .02) ? "flat" : d > 0 ? "up" : "down";
+      const ds = pp ? (d > 0 ? "+" : "−") + (Math.abs(d) * 100).toFixed(1).replace(".", ",") + " п.п." : (d > 0 ? "+" : "−") + (Math.abs(d) * 100).toFixed(0) + "%";
+      return `<button class="kpi hov" data-go2="${to}" style="text-align:left;cursor:pointer"><span class="eyebrow">${t}</span><span class="v num">${v}</span><span class="d ${cls}">${ds} к мар–июн</span>${spark(s, cls === "down" ? "var(--bad)" : cls === "up" ? "var(--good)" : "var(--muted)")}</button>`;
+    }).join("");
+    $("kpis").querySelectorAll("[data-go2]").forEach(b => b.addEventListener("click", () => go(b.dataset.go2)));
+    monthBars($("ovOrders"), 560, 250, null, i => { OF.month = i; OF.page = 0; go("orders"); });
+    // segment bars
+    const svg = $("ovSeg"); clear(svg);
+    const tot = SEGS.reduce((a, k) => a + A.seg[k].n, 0) || 1, totM = SEGS.reduce((a, k) => a + A.seg[k].M, 0) || 1;
+    txt(svg, 130, 14, "люди", "lb2"); txt(svg, 265, 14, "оборот", "lb2");
+    SEGS.forEach((k, i) => {
+      const y0 = 26 + i * 56, s = A.seg[k], a = s.n / tot, b = s.M / totM;
+      const g = el("g", { class: "hov" }, svg);
+      el("rect", { x: 0, y: y0 - 4, width: 400, height: 50, fill: "transparent" }, g);
+      txt(g, 0, y0 + 14, SEGN[k], "lb"); txt(g, 0, y0 + 30, nf(s.n) + " чел.", "lb2");
+      el("rect", { x: 130, y: y0 + 4, width: 125, height: 16, rx: 4, fill: "var(--surface-2)" }, g);
+      el("rect", { x: 130, y: y0 + 4, width: 125 * a, height: 16, rx: 4, fill: col(k), opacity: .55, "data-tip": `${SEGN[k]}: ${pf(a, 0)} людей` }, g);
+      txt(g, 130, y0 + 36, pf(a, 0), "lb2");
+      el("rect", { x: 265, y: y0 + 4, width: 125, height: 16, rx: 4, fill: "var(--surface-2)" }, g);
+      el("rect", { x: 265, y: y0 + 4, width: 125 * b, height: 16, rx: 4, fill: col(k), "data-tip": `${SEGN[k]}: ${pf(b, 0)} оборота` }, g);
+      txt(g, 265, y0 + 36, pf(b, 0), "lb");
+      g.addEventListener("click", () => { resetCF(); CF.seg = k; go("customers"); });
+    });
+  }
+
+  /* ---------- CUSTOMERS ---------- */
+  function resetCF() { Object.assign(CF, { seg: "all", coh: "all", hi: "all", rf: null, mig: null, ch: null, ni: null, page: 0 }); $("cCoh").value = "all"; $("cHi").value = "all"; }
+  const cohSel = $("cCoh");
+  cohSel.add(new Option("Покупали до окт 2025", "-1"));
+  B.MONTHS.forEach((m, i) => cohSel.add(new Option("Когорта " + mFull(i), i)));
+  cohSel.addEventListener("change", () => { CF.coh = cohSel.value; CF.page = 0; renderCustomers(); });
+  $("cHi").addEventListener("change", () => { CF.hi = $("cHi").value; CF.page = 0; renderCustomers(); });
+  const RL = ["0–30", "31–60", "61–120", "121–240", "241–365"], FL = ["1", "2", "3–4", "5–7", "8+"];
+  const rbin = r => [30, 60, 120, 240, 365].findIndex(x => r <= x), fbin = f => [1, 2, 4, 7, 999].findIndex(x => f <= x);
+  function custFiltered(ignoreSeg) {
+    return LIST.filter(p => passG(p)
+      && (ignoreSeg || CF.seg === "all" || p.seg === CF.seg)
+      && (CF.coh === "all" || p.coh === +CF.coh)
+      && (CF.hi === "all" || (CF.hi === "1") === p.hi)
+      && (!CF.rf || (rbin(p.R) + "_" + fbin(p.F)) === CF.rf)
+      && (!CF.mig || (p.mig0 === CF.mig[0] && p.seg === CF.mig[1]))
+      && (CF.ch === null || p.ch === CF.ch) && (CF.ni === null || p.ni === CF.ni));
+  }
+  function renderCustomers() {
+    const base = custFiltered(true);
+    const cnt = { all: base.length }; SEGS.forEach(k => cnt[k] = 0); base.forEach(p => cnt[p.seg]++);
+    $("cSegChips").innerHTML = [["all", "Все", "var(--ink-2)"], ...SEGS.map(k => [k, SEGN[k], col(k)])].map(([k, n, c]) => `<button class="chip" data-s="${k}" aria-pressed="${CF.seg === k}" style="--c:${c}"><i></i>${n} <b>${nf(cnt[k])}</b></button>`).join("");
+    $("cSegChips").querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => { CF.seg = b.dataset.s; CF.page = 0; renderCustomers(); }));
+    const af = [];
+    if (CF.rf) { const [r, f] = CF.rf.split("_").map(Number); af.push(["rf", `R ${RL[r]} дн. · F ${FL[f]}`]); }
+    if (CF.mig) af.push(["mig", `${CF.mig[0] === "new" ? "Новые (авг–сен)" : SEGN[CF.mig[0]]} → ${SEGN[CF.mig[1]]}`]);
+    if (CF.ch !== null) af.push(["ch", "Канал: " + B.CHANNELS[CF.ch].name]);
+    if (CF.ni !== null) af.push(["ni", "Ниша: " + B.NICHES[CF.ni].name]);
+    $("cAF").innerHTML = af.map(([k, t]) => `<span class="af">${t}<button data-k="${k}" aria-label="Убрать фильтр">×</button></span>`).join("");
+    $("cAF").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { CF[b.dataset.k] = b.dataset.k === "ch" || b.dataset.k === "ni" ? null : null; CF.page = 0; renderCustomers(); }));
+    const rows = custFiltered(false);
+    const key = { id: p => p.id, R: p => p.R, F: p => p.F, M: p => p.M, last: p => -p.R, first: p => p.first }[CF.sort];
+    rows.sort((a, b) => (key(a) > key(b) ? 1 : key(a) < key(b) ? -1 : 0) * CF.dir);
+    const sumM = rows.reduce((a, p) => a + p.M, 0);
+    $("cBulk").textContent = `Написать всем в списке · ${nf(rows.filter(p => !MSG.off[p.id]).length)}`;
+    $("cStats").innerHTML = `<span>Покупателей: <b>${nf(rows.length)}</b></span><span>Оборот: <b>${mln(sumM)}</b></span><span>Средний M: <b>${nf(sumM / (rows.length || 1))} ₸</b></span><span>Средний F: <b>${(rows.reduce((a, p) => a + p.F, 0) / (rows.length || 1)).toFixed(2).replace(".", ",")}</b></span>`;
+    const PS = 20, pages = Math.max(1, Math.ceil(rows.length / PS)); CF.page = Math.min(CF.page, pages - 1);
+    const pg = rows.slice(CF.page * PS, CF.page * PS + PS);
+    const th = (k, t, r) => `<th class="sort ${r ? "r" : ""}" data-k="${k}">${t}${CF.sort === k ? (CF.dir > 0 ? " ↑" : " ↓") : ""}</th>`;
+    $("cTable").innerHTML = `<thead><tr>${th("id", "Покупатель")}<th>Канал</th><th>Сегмент</th>${th("R", "R, дн.", 1)}${th("F", "F", 1)}${th("M", "M", 1)}<th>Последняя</th>${th("first", "Первая покупка")}<th>Повтор 30 дн.</th></tr></thead><tbody>` +
+      (pg.length ? pg.map(p => `<tr data-id="${p.id}"><td><div class="idc"><span class="av" style="--c:${col(p.seg)}">${p.id.slice(-2)}</span><div><b>${p.id}</b><span>${B.NICHES[p.ni].name}</span></div></div></td><td>${B.CHANNELS[p.ch].name}</td><td><span class="badge" style="--c:${col(p.seg)};--t:var(--${p.seg}-t)">${SEGN[p.seg]}</span></td><td class="r">${p.R}</td><td class="r">${p.F}</td><td class="r">${nf(p.M)} ₸${p.hi ? ' <span class="pill y">M↑</span>' : ""}</td><td>${dstr(p.win[p.win.length - 1][0])}</td><td>${dstr(p.first)}</td><td>${p.rep30 === null ? '<span class="pill n">—</span>' : p.rep30 ? '<span class="pill y">да</span>' : '<span class="pill n">нет</span>'}</td></tr>`).join("") : `<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:24px">Нет покупателей с такими фильтрами</td></tr>`) + "</tbody>";
+    $("cTable").querySelectorAll("th.sort").forEach(h => h.addEventListener("click", () => { const k = h.dataset.k; CF.dir = CF.sort === k ? -CF.dir : (k === "id" || k === "first" ? 1 : -1); CF.sort = k; renderCustomers(); }));
+    $("cTable").querySelectorAll("tbody tr[data-id]").forEach(r => r.addEventListener("click", () => openCustomer(r.dataset.id)));
+    pager($("cPager"), CF, pages, rows.length, PS, renderCustomers);
+    // scatter
+    const svg = $("cScatter"); clear(svg);
+    const W = 420, H = 330, L = 44, Rr = 10, T = 12, Bm = 34;
+    const sx = v => L + Math.min(v, 365) / 365 * (W - L - Rr), sy = v => T + (H - T - Bm) * (1 - Math.min(v, 200000) / 200000);
+    [0, 50000, 100000, 150000, 200000].forEach(t => { el("line", { x1: L, x2: W - Rr, y1: sy(t), y2: sy(t), class: "gl" }, svg); txt(svg, L - 6, sy(t) + 4, t ? t / 1000 + "к" : "0", "ax", "end"); });
+    [0, 60, 120, 240, 365].forEach(t => txt(svg, sx(t), H - Bm + 15, t, "ax", "middle"));
+    txt(svg, (L + W) / 2, H - 4, "R — дней с последней покупки", "lb2", "middle");
+    el("line", { x1: sx(60), x2: sx(60), y1: T, y2: H - Bm, stroke: "var(--ink-2)", "stroke-dasharray": "4 3" }, svg);
+    el("line", { x1: L, x2: W - Rr, y1: sy(TH.M), y2: sy(TH.M), stroke: "var(--muted)", "stroke-dasharray": "2 4" }, svg);
+    const step = Math.max(1, Math.ceil(rows.length / 900));
+    const sample = rows.filter((_, i) => i % step === 0);
+    sample.forEach(p => {
+      const c = el("circle", { cx: sx(p.R), cy: sy(p.M), r: 3.6, fill: col(p.seg), opacity: .8, class: "hov", "data-tip": `<b>${p.id}</b> · ${SEGN[p.seg]}<br>R ${p.R} · F ${p.F} · M ${nf(p.M)} ₸` }, svg);
+      c.addEventListener("click", () => openCustomer(p.id));
+    });
+    $("cScatNote").textContent = step > 1 ? `На графике каждый ${step}-й покупатель из списка (${nf(sample.length)} точек). Нажмите на точку — карточка.` : "Нажмите на точку — карточка покупателя.";
+  }
+  function pager(box, st, pages, total, PS, rerender) {
+    box.innerHTML = `<span>${nf(st.page * PS + 1)}–${nf(Math.min(total, st.page * PS + PS))} из ${nf(total)}</span><div><button class="btn" data-d="-1" ${st.page === 0 ? "disabled" : ""}>← Назад</button><button class="btn" data-d="1" ${st.page >= pages - 1 ? "disabled" : ""}>Вперёд →</button></div>`;
+    box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => { st.page += +b.dataset.d; rerender(); }));
+  }
+
+  /* ---------- ORDERS ---------- */
+  $("oSort").addEventListener("change", () => { OF.sort = $("oSort").value; OF.page = 0; renderOrders(); });
+  function renderOrders() {
+    monthBars($("oBars"), 900, 150, OF.month, i => { OF.month = OF.month === i ? null : i; OF.page = 0; renderOrders(); }, true);
+    const base = ORDERS.filter(o => passG(o.p) && (OF.month === null || o.mi === OF.month) && (!OF.q || o.p.id === OF.q));
+    const nNew = base.filter(o => o.nw).length;
+    $("oTypeChips").innerHTML = [["all", "Все", base.length], ["new", "Первые покупки", nNew], ["rep", "Повторные", base.length - nNew]].map(([k, t, n]) => `<button class="chip" data-t="${k}" aria-pressed="${OF.type === k}">${t} <b>${nf(n)}</b></button>`).join("");
+    $("oTypeChips").querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => { OF.type = b.dataset.t; OF.page = 0; renderOrders(); }));
+    const af = [];
+    if (OF.month !== null) af.push(["month", mFull(OF.month)]);
+    if (OF.q) af.push(["q", "Покупатель " + OF.q]);
+    $("oAF").innerHTML = af.map(([k, t]) => `<span class="af">${t}<button data-k="${k}" aria-label="Убрать фильтр">×</button></span>`).join("");
+    $("oAF").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { OF[b.dataset.k] = null; OF.page = 0; renderOrders(); }));
+    const rows = base.filter(o => OF.type === "all" || (OF.type === "new") === o.nw);
+    const [k, d] = [OF.sort[0], OF.sort[1] === "+" ? 1 : -1];
+    rows.sort((a, b) => ((k === "d" ? a.d - b.d || a.id.localeCompare(b.id) : a.a - b.a)) * d);
+    const sum = rows.reduce((s, o) => s + o.a, 0);
+    $("oStats").innerHTML = `<span>Заказов: <b>${nf(rows.length)}</b></span><span>Сумма: <b>${mln(sum)}</b></span><span>Средний чек: <b>${nf(sum / (rows.length || 1))} ₸</b></span><span>Покупателей: <b>${nf(new Set(rows.map(o => o.p)).size)}</b></span>`;
+    const PS = 20, pages = Math.max(1, Math.ceil(rows.length / PS)); OF.page = Math.min(OF.page, pages - 1);
+    $("oTable").innerHTML = `<thead><tr><th>Заказ</th><th>Покупатель</th><th>Дата</th><th class="r">Сумма</th><th>Тип</th><th>Месяц</th><th>Ниша</th><th>Канал</th><th>Когорта</th></tr></thead><tbody>` +
+      rows.slice(OF.page * PS, OF.page * PS + PS).map(o => `<tr data-id="${o.p.id}"><td style="font-family:var(--f-mono);font-size:12.5px">${o.id}</td><td><a class="cid">${o.p.id}</a></td><td>${dstr(o.d)}</td><td class="r">${nf(o.a)} ₸</td><td>${o.nw ? '<span class="pill new">первая</span>' : '<span class="pill n">повторная</span>'}</td><td>${mFull(o.mi)}</td><td>${B.NICHES[o.p.ni].name}</td><td>${B.CHANNELS[o.p.ch].name}</td><td>${o.p.coh >= 0 ? mFull(o.p.coh) : "до окт 2025"}</td></tr>`).join("") + "</tbody>";
+    $("oTable").querySelectorAll("tbody tr").forEach(r => r.addEventListener("click", () => openCustomer(r.dataset.id)));
+    pager($("oPager"), OF, pages, rows.length, PS, renderOrders);
+  }
+
+  /* ---------- SEGMENTS ---------- */
+  function renderSegments() {
+    const tot = SEGS.reduce((a, k) => a + A.seg[k].n, 0) || 1, totM = SEGS.reduce((a, k) => a + A.seg[k].M, 0) || 1;
+    $("segCards").innerHTML = SEGS.map(k => { const s = A.seg[k]; return `<button class="segcard" data-s="${k}" style="--c:${col(k)}">
+      <div class="h"><b>${SEGN[k]}</b><span class="eyebrow">${SEGRU[k]}</span></div>
+      <div class="big num">${nf(s.n)}</div>
+      <div class="row"><span>Доля людей</span><b>${pf(s.n / tot, 0)}</b></div>
+      <div class="row"><span>Доля оборота</span><b>${pf(s.M / totM, 0)}</b></div>
+      <div class="row"><span>Средние R · F · M</span><b>${Math.round(s.R / (s.n || 1))} · ${(s.F / (s.n || 1)).toFixed(1).replace(".", ",")} · ${nf(s.M / (s.n || 1) / 1000)}к</b></div>
+      <div class="row"><span>С высоким M</span><b>${nf(s.hi)}</b></div>
+      <span class="go">Открыть покупателей →</span></button>`; }).join("");
+    $("segCards").querySelectorAll(".segcard").forEach(b => b.addEventListener("click", () => { resetCF(); CF.seg = b.dataset.s; go("customers"); }));
+    const segCell = (ri, fi) => (ri <= 1 ? (fi >= 2 ? "champ" : "loyal") : (fi >= 2 ? "risk" : "hib"));
+    let h = `<div class="h">F ↓ R →</div>` + RL.map(r => `<div class="h">${r} дн.</div>`).join("");
+    for (let fi = 4; fi >= 0; fi--) {
+      h += `<div class="rh">${FL[fi]} пок.</div>`;
+      for (let ri = 0; ri < 5; ri++) { const c = A.grid[ri + "_" + fi] || { n: 0, M: 0 }, s = segCell(ri, fi); h += `<button data-k="${ri}_${fi}" style="--c:${col(s)};--t:var(--${s}-t)" data-tip="R ${RL[ri]} дн., F ${FL[fi]}: ${nf(c.n)} чел. · ${SEGN[s]}"><b>${nf(c.n)}</b><span>${c.n ? nf(c.M / c.n / 1000) + "к ₸" : "—"}</span></button>`; }
+    }
+    $("rfGrid").innerHTML = h;
+    $("rfGrid").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { resetCF(); CF.rf = b.dataset.k; go("customers"); }));
+    const rows = [["new", "Новые (авг–сен)"], ["champ", "Champions"], ["loyal", "Potential Loyalists"], ["risk", "At Risk"], ["hib", "Hibernating"]];
+    const cols = [["champ", "Champions"], ["loyal", "Pot. Loyalists"], ["risk", "At Risk"], ["hib", "Hibernating"], ["gone", "Год без покупок"]];
+    let m = `<thead><tr><th>31.07 ↓ 30.09 →</th>${cols.map(c => `<th>${c[1]}</th>`).join("")}</tr></thead><tbody>`;
+    rows.forEach(([rk, rn]) => {
+      const tot = cols.reduce((a, [ck]) => a + (A.mig[rk + ">" + ck] || 0), 0); if (!tot) return;
+      m += `<tr><td><span class="dot" style="--c:${rk === "new" ? "var(--ink-2)" : col(rk)}"></span>${rn}</td>`;
+      cols.forEach(([ck]) => { const v = A.mig[rk + ">" + ck] || 0, sh = v / tot; m += v ? `<td class="cell num" data-m="${rk}>${ck}" style="background:rgba(var(--heat),${Math.min(.85, sh * .9).toFixed(3)});color:${sh > .6 ? "#fff" : "var(--ink)"}" data-tip="${rn} → ${cols.find(c => c[0] === ck)[1]}: ${nf(v)} чел. (${pf(sh, 0)})">${nf(v)}<br><small>${pf(sh, 0)}</small></td>` : `<td style="color:var(--muted)">—</td>`; });
+      m += "</tr>";
+    });
+    $("migTable").innerHTML = m + "</tbody>";
+    $("migTable").querySelectorAll("td.cell").forEach(td => td.addEventListener("click", () => { const [a, b] = td.dataset.m.split(">"); if (b === "gone") { toast("Эти покупатели не покупали больше года — их нет в списке за 12 месяцев"); return; } resetCF(); CF.mig = [a, b]; go("customers"); }));
+    const lt = cols.reduce((a, [ck]) => a + (A.mig["loyal>" + ck] || 0), 0) || 1;
+    $("tMig").innerHTML = `<b>${pf((A.mig["loyal>hib"] || 0) / lt, 0)} Potential Loyalists ушли в Hibernating</b>, только ${pf((A.mig["loyal>champ"] || 0) / lt, 0)} стали Champions. Нажмите на ячейку — список этих людей.`;
+  }
+
+  /* ---------- MONTHS ---------- */
+  $("mToOrders").addEventListener("click", () => { OF.month = selMonth; OF.page = 0; go("orders"); });
+  function renderMonths() {
+    const pick = i => { selMonth = i; renderMonths(); };
+    monthBars($("mOrders"), 560, 250, selMonth, pick);
+    // repeat line
+    const svg = $("mRep"); clear(svg);
+    const W = 560, H = 250, L = 46, R = 14, T = 22, Bm = 26;
+    const y = axesY(svg, L, W - R, T, H, Bm, .3, [0, .1, .2, .3], v => v * 100 + "%");
+    const slot = (W - L - R) / 12, x = i => L + i * slot + slot / 2;
+    const base = avg(BEFORE.map(rep));
+    el("line", { x1: L, x2: W - R, y1: y(base), y2: y(base), stroke: "var(--muted)", "stroke-dasharray": "2 4" }, svg);
+    txt(svg, L + 4, y(base) - 6, "среднее мар–июн " + pf(base), "lb2");
+    const pts = A.mon.map((m, i) => [x(i), y(rep(i)), rep(i), i]).filter(p => !isNaN(p[2]));
+    el("path", { d: pts.map((p, k) => (k ? "L" : "M") + p[0] + " " + p[1]).join(""), fill: "none", stroke: "var(--champ)", "stroke-width": 2.2 }, svg);
+    pts.forEach(p => { const c = el("circle", { cx: p[0], cy: p[1], r: p[3] === selMonth ? 7 : 5, fill: p[3] >= 9 ? "var(--risk)" : "var(--champ)", stroke: "var(--surface)", "stroke-width": 2, class: "hov", "data-tip": `Впервые купили в ${mFull(p[3])}: <b>${pf(p[2])}</b> купили снова за 30 дней` }, svg); c.addEventListener("click", () => pick(p[3])); });
+    for (let i = 0; i < 12; i++) txt(svg, x(i), H - 8, mLabel(i), "ax", "middle");
+    txt(svg, x(11), y(.02), "считается", "lb2", "middle");
+    $("tRep").innerHTML = `<b>Было ${pf(base)}, стало ${pf(rep(10))}.</b> Падение начинается с июльской когорты (${pf(rep(9))}).`;
+    // detail
+    const m = A.mon[selMonth], rp = m.orders - m.nw;
+    $("mTitle").textContent = "Месяц: " + mFull(selMonth);
+    $("mDet").innerHTML = [[nf(m.orders), "заказов"], [mln(m.rev), "выручка"], [nf(m.nw), "новых"], [pf(rp / m.orders), "повторных заказов"]].map(([v, t]) => `<div class="tot"><b class="num">${v}</b><span>${t}</span></div>`).join("");
+    const sv = $("mCh"); clear(sv);
+    const byCh = B.CHANNELS.map(() => [0, 0, 0]), M0 = B.MONTHS[selMonth];
+    for (const p of LIST) { if (!passG(p) || p.coh !== selMonth) continue; byCh[p.ch][0]++; if (p.rep30 !== null) { byCh[p.ch][2]++; byCh[p.ch][1] += p.rep30; } }
+    const tot = byCh.reduce((a, b) => a + b[0], 0) || 1; let xx = 0;
+    const shades = ["var(--champ)", "var(--loyal)", "var(--risk)", "var(--hib)"];
+    byCh.forEach(([v, r1, r2], i) => {
+      const w = 900 * v / tot; if (!w) return; const r = r2 ? r1 / r2 : NaN;
+      const g = el("g", { class: "hov" }, sv);
+      el("rect", { x: xx, y: 4, width: Math.max(0, w - 3), height: 40, rx: 7, fill: shades[i], "data-tip": `${B.CHANNELS[i].name}: ${nf(v)} новых (${pf(v / tot, 0)})${isNaN(r) ? "" : `<br>Повтор за 30 дней: <b>${pf(r)}</b>`}<br>Нажмите — покупатели` }, g);
+      if (w > 110) txt(g, xx + 10, 29, `${B.CHANNELS[i].name} · ${nf(v)}`, "lb", "start", { style: "fill:#fff" });
+      txt(sv, xx + 4, 66, isNaN(r) ? "повтор считается" : "повтор " + pf(r), "lb2");
+      g.addEventListener("click", () => { resetCF(); CF.coh = String(selMonth); $("cCoh").value = String(selMonth); CF.ch = i; go("customers"); });
+      xx += w;
+    });
+    let h = `<thead><tr><th>Месяц</th><th class="r">Заказы</th><th class="r">Выручка</th><th class="r">Новые</th><th class="r">Покупатели</th><th class="r">Повторные</th><th class="r">Доля повт.</th><th class="r">Средний чек</th><th class="r">Повтор 30 дн.</th></tr></thead><tbody>`;
+    A.mon.forEach((m, i) => { h += `<tr data-i="${i}" style="${i === selMonth ? "font-weight:700" : ""}"><td>${mFull(i)}</td><td class="r">${nf(m.orders)}</td><td class="r">${nf(m.rev)} ₸</td><td class="r">${nf(m.nw)}</td><td class="r">${nf(m.buyers)}</td><td class="r">${nf(m.orders - m.nw)}</td><td class="r">${pf((m.orders - m.nw) / m.orders)}</td><td class="r">${nf(m.rev / m.orders)} ₸</td><td class="r">${isNaN(rep(i)) ? "считается" : pf(rep(i))}</td></tr>`; });
+    $("mTable").innerHTML = h + "</tbody>";
+    $("mTable").querySelectorAll("tbody tr").forEach(r => r.addEventListener("click", () => pick(+r.dataset.i)));
+  }
+
+  /* ---------- COHORTS ---------- */
+  $("hRet").addEventListener("click", () => { heatMode = "ret"; $("hRet").setAttribute("aria-pressed", true); $("hLtv").setAttribute("aria-pressed", false); renderCohorts(); });
+  $("hLtv").addEventListener("click", () => { heatMode = "ltv"; $("hLtv").setAttribute("aria-pressed", true); $("hRet").setAttribute("aria-pressed", false); renderCohorts(); });
+  function renderCohorts() {
+    const ret = heatMode === "ret";
+    let h = `<thead><tr><th class="row" style="cursor:default;color:var(--muted)">Когорта</th><th>Людей</th>${Array.from({ length: 12 }, (_, k) => `<th>Мес. ${k}</th>`).join("")}</tr></thead><tbody>`;
+    const maxLtv = Math.max(...A.coh.map(c => c.size ? c.rev.reduce((a, v) => a + v, 0) / c.size : 0)) || 1;
+    A.coh.forEach((c, i) => {
+      h += `<tr class="${i === selCoh ? "sel" : ""} ${i >= 9 ? "after" : ""}" data-i="${i}"><th class="row" scope="row">${mLabel(i)}</th><td style="color:var(--ink-2)">${nf(c.size)}</td>`;
+      let cum = 0;
+      for (let k = 0; k < 12; k++) {
+        if (i + k > 11 || !c.size) { h += `<td class="empty">·</td>`; continue; }
+        cum += c.rev[k];
+        if (ret) { const v = c.act[k] / c.size, a = k === 0 ? .08 : Math.min(1, v / .28); h += `<td data-c="${i}" style="background:rgba(var(--heat),${a.toFixed(3)});color:${a > .62 ? "#fff" : "var(--ink)"}" data-tip="${mFull(i)}, месяц ${k}: ${nf(c.act[k])} из ${nf(c.size)} купили">${k === 0 ? "100%" : Math.round(v * 100) + "%"}</td>`; }
+        else { const v = cum / c.size, a = Math.min(1, v / maxLtv); h += `<td data-c="${i}" style="background:rgba(var(--heat),${(a * .9).toFixed(3)});color:${a > .7 ? "#fff" : "var(--ink)"}" data-tip="${mFull(i)}: за месяцы 0–${k} в среднем ${nf(v)} ₸ на покупателя">${(v / 1000).toFixed(0)}к</td>`; }
+      }
+      h += "</tr>";
+    });
+    const tb = $("heat"); tb.innerHTML = h + "</tbody>";
+    tb.querySelectorAll("th.row[scope]").forEach(t => t.addEventListener("click", () => { selCoh = +t.parentNode.dataset.i; renderCohorts(); }));
+    tb.querySelectorAll("td[data-c]").forEach(t => t.addEventListener("click", () => { resetCF(); CF.coh = t.dataset.c; $("cCoh").value = t.dataset.c; go("customers"); }));
+    // curve
+    const svg = $("cCurve"); clear(svg); $("curveName").textContent = mFull(selCoh);
+    const W = 560, H = 230, L = 40, R = 14, T = 14, Bm = 26;
+    const y = axesY(svg, L, W - R, T, H, Bm, .3, [0, .1, .2, .3], v => v * 100 + "%");
+    const x = k => L + (k - 1) * (W - L - R) / 10;
+    const avgC = []; for (let k = 1; k <= 11; k++) { const cs = A.coh.slice(0, 9).filter((c, i) => i + k <= 11 && c.size); avgC.push(cs.length ? avg(cs.map(c => c.act[k] / c.size)) : NaN); }
+    const sel = A.coh[selCoh], selC = []; for (let k = 1; k <= 11; k++) selC.push(selCoh + k <= 11 && sel.size ? sel.act[k] / sel.size : NaN);
+    const line = (vals, color, w, name) => { const pts = vals.map((v, i) => [x(i + 1), y(v), v, i + 1]).filter(p => !isNaN(p[2])); if (!pts.length) return; el("path", { d: pts.map((p, k) => (k ? "L" : "M") + p[0] + " " + p[1]).join(""), fill: "none", stroke: color, "stroke-width": w }, svg); pts.forEach(p => el("circle", { cx: p[0], cy: p[1], r: 4, fill: color, stroke: "var(--surface)", "stroke-width": 1.5, "data-tip": `${name}, месяц ${p[3]}: <b>${pf(p[2])}</b>` }, svg)); };
+    line(avgC, "var(--muted)", 2, "Среднее окт–июн"); line(selC, "var(--risk)", 2.4, mFull(selCoh));
+    for (let k = 1; k <= 11; k++) txt(svg, x(k), H - 8, "М" + k, "ax", "middle");
+    if (selCoh === 11) txt(svg, (L + W) / 2, H / 2, "Для сентября ещё нет данных", "lb2", "middle");
+    const m1 = i => A.coh[i].size ? A.coh[i].act[1] / A.coh[i].size : 0, m1b = avg([0, 1, 2, 3, 4, 5, 6, 7, 8].map(m1));
+    $("cohText").innerHTML = `<p><b>Месяц 1 до изменения:</b> в среднем ${pf(m1b)} когорты покупают снова.</p><p><b>Июль:</b> ${pf(m1(9))}. <b>Август:</b> ${pf(m1(10))} — на ${((1 - m1(10) / (m1b || 1)) * 100).toFixed(0)}% меньше.</p><p><b>Старые когорты</b> в июле–сентябре покупают как обычно — сезон ни при чём. Изменилось то, что происходит сразу после первой оплаты.</p>`;
+  }
+
+  /* ---------- DIAGNOSIS ---------- */
+  function dumbbell(svg, rows, onClick) {
+    clear(svg);
+    const W = 520, H = 200, L = 130, R = 56, T = 12, Bm = 22, x = v => L + (W - L - R) * v / .35;
+    [0, .1, .2, .3].forEach(t => { el("line", { x1: x(t), x2: x(t), y1: T, y2: H - Bm, class: "gl" }, svg); txt(svg, x(t), H - 6, t * 100 + "%", "ax", "middle"); });
+    const rh = (H - T - Bm) / rows.length;
+    rows.forEach((r, i) => {
+      const cy = T + rh * i + rh / 2, g = el("g", { class: "hov" }, svg);
+      el("rect", { x: 0, y: cy - rh / 2, width: W, height: rh, fill: "transparent" }, g);
+      txt(g, L - 10, cy + 4, r.name, "lb2", "end");
+      el("line", { x1: x(r.b), x2: x(r.a), y1: cy, y2: cy, stroke: "var(--risk)", "stroke-width": 3, opacity: .35 }, g);
+      el("circle", { cx: x(r.b), cy, r: 6.5, fill: "var(--base-bar)", stroke: "var(--surface)", "stroke-width": 1.5, "data-tip": `${r.name}, до: <b>${pf(r.b)}</b> (${nf(r.n1)} чел.)` }, g);
+      el("circle", { cx: x(r.a), cy, r: 6.5, fill: "var(--risk)", stroke: "var(--surface)", "stroke-width": 1.5, "data-tip": `${r.name}, после: <b>${pf(r.a)}</b> (${nf(r.n2)} чел.)` }, g);
+      txt(g, Math.max(x(r.b), x(r.a)) + 10, cy + 4, (r.a - r.b > 0 ? "+" : "−") + Math.abs((r.a - r.b) * 100).toFixed(1).replace(".", ",") + " п.п.", "lb");
+      g.addEventListener("click", () => onClick(r.i));
+    });
+  }
+  function renderDiag() {
+    const mk = (key, names) => names.map((n, i) => { const d = A.diag[key][i]; return d && d.before[1] ? { i, name: n, b: d.before[0] / d.before[1], a: d.after[0] / (d.after[1] || 1), n1: d.before[1], n2: d.after[1] } : null; }).filter(Boolean);
+    dumbbell($("dCh"), mk("ch", B.CHANNELS.map(c => c.name)), i => { resetCF(); CF.ch = i; go("customers"); });
+    dumbbell($("dNi"), mk("ni", B.NICHES.map(c => c.name)), i => { resetCF(); CF.ni = i; go("customers"); });
+    const svg = $("dTts"); clear(svg);
+    const W = 900, H = 220, L = 46, R = 10, T = 16, Bm = 28;
+    const nb = BEFORE.reduce((a, i) => a + A.coh[i].size, 0), na = A.coh[10].size;
+    const b = A.ttsBefore.map(v => v / (nb || 1)), a = A.ttsAfter.map(v => v / (na || 1)), max = Math.max(.06, ...b, ...a) * 1.15;
+    const y = axesY(svg, L, W - R, T, H, Bm, max, [0, .02, .04, .06].filter(t => t <= max), v => v * 100 + "%");
+    const slot = (W - L - R) / 18, bw = slot * .36;
+    for (let i = 0; i < 18; i++) {
+      const x0 = L + i * slot + slot * .12;
+      el("rect", { x: x0, y: y(b[i]), width: bw, height: y(0) - y(b[i]), fill: "var(--base-bar)", rx: 2, "data-tip": `${i * 5}–${i * 5 + 4} дней, до: <b>${pf(b[i])}</b>` }, svg);
+      el("rect", { x: x0 + bw + 2, y: y(a[i]), width: bw, height: y(0) - y(a[i]), fill: "var(--risk)", rx: 2, "data-tip": `${i * 5}–${i * 5 + 4} дней, после: <b>${pf(a[i])}</b>` }, svg);
+      if (i % 2 === 0) txt(svg, L + i * slot + slot / 2, H - 10, `${i * 5}–${i * 5 + 4}`, "ax", "middle");
+    }
+    txt(svg, W - R, T + 4, "дней до 2-й покупки →", "lb2", "end");
+    const early = arr => arr.slice(0, 6).reduce((s, v) => s + v, 0);
+    $("tTts").innerHTML = `<b>Сильнее всего просели ранние повторы:</b> в первые 30 дней вторую покупку делали ${pf(early(b))} когорты, теперь ${pf(early(a))}. Именно в эти дни раньше приходили сообщения Smart консультанта.`;
+  }
+
+  /* ---------- THRESHOLDS ---------- */
+  function renderThresholds() {
+    let svg = $("tR"); clear(svg);
+    const tot = A.gapHist.reduce((a, b) => a + b, 0) || 1, mx = Math.max(...A.gapHist) / tot, bw = 280 / 25;
+    A.gapHist.forEach((v, i) => { const h = (v / tot) / mx * 92; el("rect", { x: 10 + i * bw, y: 104 - h, width: bw - 1.5, height: h, rx: 1.5, fill: i * 5 < 60 ? "var(--champ)" : "var(--base-bar)", "data-tip": `${i * 5}${i === 24 ? "+" : "–" + (i * 5 + 4)} дней: ${pf(v / tot)}` }, svg); });
+    const xr = 10 + 12 * bw; el("line", { x1: xr, x2: xr, y1: 6, y2: 106, stroke: "var(--ink)", "stroke-dasharray": "3 3" }, svg);
+    txt(svg, xr + 4, 14, "60 дней", "lb"); txt(svg, 10, 122, "0", "ax"); txt(svg, 290, 122, "120+ дней", "ax", "end");
+    $("rRule").textContent = `Медиана интервала до второй покупки — ${A.gapMed} дн., 90% — в пределах ${A.gapP90} дн. Округляю вверх до 60.`;
+    svg = $("tF"); clear(svg); const fw = 280 / 7;
+    A.fCond.forEach((c, i) => { const h = c.p / .7 * 92; el("rect", { x: 12 + i * fw, y: 104 - h, width: fw - 8, height: h, rx: 3, fill: c.n >= 3 ? "var(--champ)" : "var(--base-bar)", "data-tip": `Из ${nf(c.a)} с ${c.n}+ покупками следующую сделали ${nf(c.b)} — <b>${pf(c.p)}</b>` }, svg); txt(svg, 12 + i * fw + (fw - 8) / 2, 100 - h, Math.round(c.p * 100) + "%", "lb2", "middle"); txt(svg, 12 + i * fw + (fw - 8) / 2, 122, c.n + "→" + (c.n + 1), "ax", "middle"); });
+    svg = $("tM"); clear(svg);
+    const all = Object.values(A.seg), hi = all.reduce((a, s) => a + s.hi, 0), n = all.reduce((a, s) => a + s.n, 0) || 1, hiM = all.reduce((a, s) => a + s.hiM, 0), totM = all.reduce((a, s) => a + s.M, 0) || 1;
+    $("mRule").textContent = `Медиана суммы за год — ${nf(A.mMed)} ₸. Верхние 25% тратят от ${nf(A.mP75)} ₸.`;
+    [["Доля покупателей", hi / n, "var(--base-bar)"], ["Доля оборота", hiM / totM, "var(--champ)"]].forEach(([lab, v, c], i) => { const y0 = 22 + i * 46; txt(svg, 10, y0, lab, "lb2"); txt(svg, 290, y0, pf(v, 0), "lb", "end"); el("rect", { x: 10, y: y0 + 8, width: 280, height: 14, rx: 4, fill: "var(--surface-2)" }, svg); el("rect", { x: 10, y: y0 + 8, width: 280 * v, height: 14, rx: 4, fill: c }, svg); });
+    txt(svg, 10, 122, "у покупателей с высоким M", "ax");
+    renderPlay();
+  }
+  function renderPlay() {
+    $("vR").textContent = TH2.R + " дней"; $("vF").textContent = TH2.F + " покупок"; $("vM").textContent = nf(TH2.M) + " ₸";
+    const sg = (R, F, t) => R <= t.R ? (F >= t.F ? "champ" : "loyal") : (F >= t.F ? "risk" : "hib");
+    const cur = {}, base = {}, money = {}, hi = {}; SEGS.forEach(k => { cur[k] = base[k] = money[k] = hi[k] = 0; });
+    let n = 0, moved = 0, totM = 0;
+    for (const p of LIST) { if (!passG(p)) continue; const a = sg(p.R, p.F, TH2), b = p.seg; cur[a]++; base[b]++; money[a] += p.M; totM += p.M; n++; if (a !== b) moved++; if (p.M >= TH2.M) hi[a]++; }
+    $("segBars").innerHTML = SEGS.map(k => `<div class="sbar"><span><b style="color:${col(k)}">●</b> ${SEGN[k]}</span><div class="tr" data-tip="${SEGN[k]}: ${nf(cur[k])} чел., ${pf(money[k] / (totM || 1), 0)} оборота, высокий M — ${nf(hi[k])}"><i style="width:${cur[k] / (n || 1) * 100}%;background:${col(k)}"></i><span style="position:absolute;top:-3px;bottom:-3px;left:${base[k] / (n || 1) * 100}%;border-left:2px dashed var(--ink)"></span></div><span class="v">${nf(cur[k])} · ${pf(cur[k] / (n || 1), 0)} людей · ${pf(money[k] / (totM || 1), 0)} оборота</span></div>`).join("");
+    const same = TH2.R === TH.R && TH2.F === TH.F;
+    $("thInfo").innerHTML = same ? "Сейчас мои пороги R и F. Попробуйте «недавно — до 30 дней»: Champions станет меньше, At Risk — больше. Поэтому пороги я беру из данных." : `<b>${nf(moved)} покупателей (${pf(moved / (n || 1), 0)})</b> сменили сегмент по сравнению с моими порогами.`;
+  }
+  ["sR", "sF", "sM"].forEach(id => $(id).addEventListener("input", () => { TH2 = { R: +$("sR").value, F: +$("sF").value, M: +$("sM").value }; renderPlay(); }));
+  $("thReset").addEventListener("click", () => { TH2 = { R: 60, F: 3, M: 41400 }; $("sR").value = 60; $("sF").value = 3; $("sM").value = 41400; renderPlay(); });
+
+  /* ---------- STRATEGY ---------- */
+  let ST = null;
+  function computeStrat() {
+    const T = B.W1 - 30, Tb = B.W1 - 122; // 31.08 and 31.05
+    const r = {}, b = {}; SEGS.forEach(k => { r[k] = { n: 0, buy: 0, orders: 0, rev: 0 }; b[k] = { n: 0, buy: 0 }; });
+    for (const p of B.people) {
+      if (!passG(p)) continue;
+      for (const [TT, tgt, full] of [[T, r, 1], [Tb, b, 0]]) {
+        let last = -1, F = 0; for (const o of p.all) { if (o[0] > TT - 365 && o[0] <= TT) { F++; last = o[0]; } }
+        if (!F) continue;
+        const s = segOf(TT - last, F), o = tgt[s]; o.n++;
+        let bought = 0, ords = 0, rv = 0; for (const x of p.all) if (x[0] > TT && x[0] <= TT + 30) { bought = 1; ords++; rv += x[1]; }
+        o.buy += bought; if (full) { o.orders += ords; o.rev += rv; }
+      }
+    }
+    ST = { r, b };
+  }
+  const STR = [["loyal", "главный рычаг: вернуть сообщения после оплаты"], ["risk", "персональные предложения под новую задачу"], ["champ", "вернуть уровень до 20 июля"], ["hib", "не закладываю"]];
+  function stratNums() {
+    const out = {};
+    let extra = 0, extraO = 0;
+    STR.forEach(([k]) => {
+      const o = ST.r[k], now = o.n ? o.buy / o.n : 0, bef = ST.b[k].n ? ST.b[k].buy / ST.b[k].n : 0;
+      const t = k === "hib" ? now : (TGT[k] === null ? bef : TGT[k] / 100);
+      const add = Math.max(0, o.n * (t - now)), rpb = o.buy ? o.rev / o.buy : 0, opb = o.buy ? o.orders / o.buy : 1;
+      out[k] = { n: o.n, now, bef, t, add, rev: add * rpb, rpb };
+      extra += add * rpb; extraO += add * opb;
+    });
+    return { out, extra, extraO };
+  }
+  $("stReset").addEventListener("click", () => { TGT = { ...TGT0 }; renderStrategy(); });
+  $("bB").addEventListener("click", () => { budIdx = 0; renderBudget(); });
+  $("bA").addEventListener("click", () => { budIdx = 1; renderBudget(); });
+  function renderStrategy() {
+    const { out } = stratNums();
+    $("stRows").innerHTML = STR.map(([k, why]) => {
+      const o = out[k], isH = k === "hib";
+      const val = isH ? o.now * 100 : (TGT[k] === null ? o.bef * 100 : TGT[k]);
+      const max = k === "risk" ? 15 : k === "champ" ? 45 : 35;
+      return `<div class="strow"><div class="nm"><b style="color:${col(k)}">${SEGN[k]}</b><span>${nf(o.n)} чел. · ${why}</span></div>
+        <div class="sl">${isH ? `<span style="font-size:12.5px;color:var(--muted)">Сейчас ${pf(o.now)} — платные касания не окупаются</span>` : `<input class="slider" type="range" min="0" max="${max}" step="0.1" value="${val.toFixed(1)}" data-k="${k}" aria-label="Цель ${SEGN[k]}" style="accent-color:${col(k)}"><span style="font-size:12px;color:var(--muted)">сейчас ${pf(o.now)} · до 20 июля ${pf(o.bef)}</span>`}</div>
+        <div class="r"><b data-v="${k}">${pf(o.t)}</b><span>цель в месяц</span></div>
+        <div class="r"><b data-r="${k}">+${(o.rev / 1e6).toFixed(1).replace(".", ",")} млн</b><span data-a="${k}">+${nf(o.add)} покупателей</span></div></div>`;
+    }).join("");
+    $("stRows").querySelectorAll("input[data-k]").forEach(s => s.addEventListener("input", () => { TGT[s.dataset.k] = +s.value; updStrat(); }));
+    updStrat(); renderBudget(); renderScen();
+  }
+  function updStrat() {
+    const { out, extra, extraO } = stratNums();
+    STR.forEach(([k]) => { const o = out[k]; const v = document.querySelector(`[data-v="${k}"]`); if (v) { v.textContent = pf(o.t); document.querySelector(`[data-r="${k}"]`).textContent = "+" + (o.rev / 1e6).toFixed(1).replace(".", ",") + " млн"; document.querySelector(`[data-a="${k}"]`).textContent = "+" + nf(o.add) + " покупателей"; } });
+    const base = A.mon[11].rev, ordersSep = A.mon[11].orders, budB = 11e6, budA = 8.8e6;
+    const cB = budB / ordersSep, cA = budA / (ordersSep + extraO);
+    $("stTot").innerHTML = [[mln(base) + " → " + mln(base + extra), "выручка в месяц"], ["+" + pf(extra / base), "рост выручки (цель задания: +10%)"], ["−20%", "маркетинг: 11 → 8,8 млн ₸"], [nf(cB) + " → " + nf(cA) + " ₸", "маркетинг на заказ"]]
+      .map(([v, t], i) => `<div class="tot"><b class="num" style="${i === 1 ? `color:${extra / base >= .1 ? "var(--good)" : "var(--bad)"}` : ""}">${v}</b><span>${t}</span></div>`).join("");
+    // waterfall
+    const svg = $("stWf"); clear(svg);
+    const steps = [["Сен", base, "base"], ["Loyalists", out.loyal.rev, "loyal"], ["At Risk", out.risk.rev, "risk"], ["Champions", out.champ.rev, "champ"], ["Цель", base + extra, "total"]];
+    const lo = Math.floor(base / 1e6 / 10) * 10 * 1e6 - 10e6, hi = base + Math.max(extra, 15e6) + 4e6;
+    const W = 420, H = 280, L = 40, R = 8, T = 20, Bm = 30, y = v => T + (H - T - Bm) * (1 - (v - lo) / (hi - lo));
+    const ticks = []; for (let t = Math.ceil(lo / 10e6) * 10e6; t <= hi; t += 10e6) ticks.push(t);
+    ticks.forEach(t => { el("line", { x1: L, x2: W - R, y1: y(t), y2: y(t), class: "gl" }, svg); txt(svg, L - 6, y(t) + 4, t / 1e6, "ax", "end"); });
+    const slot = (W - L - R) / 5, bw = slot * .6; let cum = 0;
+    steps.forEach(([n, v, k], i) => {
+      const cx = L + i * slot + slot / 2; let y0, y1;
+      if (k === "base") { y0 = lo; y1 = v; cum = v; } else if (k === "total") { y0 = lo; y1 = v; } else { y0 = cum; y1 = cum + v; cum = y1; }
+      el("rect", { x: cx - bw / 2, y: y(y1), width: bw, height: Math.max(1.5, y(y0) - y(y1)), rx: 4, fill: k === "base" ? "var(--base-bar)" : k === "total" ? "var(--ink)" : col(k), "data-tip": `${n}: ${k === "base" || k === "total" ? mln(v) : "+" + mln(v)}` }, svg);
+      txt(svg, cx, y(y1) - 6, (k === "base" || k === "total" ? "" : "+") + (v / 1e6).toFixed(1).replace(".", ","), "lb", "middle");
+      txt(svg, cx, H - 10, n, "ax", "middle");
+    });
+  }
+  const BUD = [["acq", "Привлечение новых", 5.5, 4.4, "var(--ink-2)", "Сокращаю TikTok: его покупатели повторяют реже всех. Часть денег — в look-alike по Champions."],
+    ["loyal", "Potential Loyalists", .88, 2.3, col("loyal"), "Главный рычаг: цепочка ко второй покупке и баллы."],
+    ["risk", "At Risk", .64, 1.5, col("risk"), "Персональные предложения; SMS — только высокому M."],
+    ["champ", "Champions", .24, .3, col("champ"), "Статус и рекомендации вместо скидок."],
+    ["hib", "Hibernating", 3.74, .3, col("hib"), "Было 68% бюджета удержания. Покупают 0,3% в месяц — одно бесплатное сообщение."]];
+  function renderBudget() {
+    $("bB").setAttribute("aria-pressed", budIdx === 0); $("bA").setAttribute("aria-pressed", budIdx === 1);
+    $("bRows").innerHTML = BUD.map(([k, n, b, a, c, w]) => { const v = budIdx ? a : b, d = a - b; return `<div class="brow"><div class="t"><b>${n}</b><span class="num">${v.toFixed(2).replace(".", ",")} млн ₸${budIdx ? ` <span class="${d > 0 ? "up" : "flat"}">(${d > 0 ? "+" : "−"}${Math.abs(d).toFixed(2).replace(".", ",")})</span>` : ""}</span></div><div class="track"><div class="fill" style="--c:${c};width:${v / 5.5 * 100}%"></div></div><div class="why">${w}</div></div>`; }).join("") +
+      `<div class="brow" style="border:0"><div class="t"><b>Итого</b><b class="num">${budIdx ? "8,8 млн ₸ · −20%" : "11,0 млн ₸"}</b></div></div>`;
+  }
+  function renderScen() {
+    const cur = rep(10), nw = avg(A.mon.map(m => m.nw)), check = A.mon.reduce((a, m) => a + m.rev, 0) / A.mon.reduce((a, m) => a + m.orders, 0);
+    const s = $("scR"); s.min = (Math.floor(cur * 200) / 2).toFixed(1);
+    const upd = () => { const t = +s.value / 100, ex = Math.max(0, (t - cur) * nw); $("scVal").textContent = (+s.value).toFixed(1).replace(".", ",") + "%";
+      $("scOut").innerHTML = [["+" + nf(ex), "повторных покупателей в месяц"], ["+" + mln(ex * check), "выручки в месяц"], ["+" + mln(ex * check * 12), "за год"]].map(([v, t]) => `<div class="tot"><b class="num">${v}</b><span>${t}</span></div>`).join("");
+      $("tScen").innerHTML = `Сейчас ${pf(cur)}. Расчёт: ${nf(nw)} новых в месяц × прирост доли × средний чек ${nf(check)} ₸. Уровень до 20 июля — ${pf(avg(BEFORE.map(rep)))}.`; };
+    s.oninput = upd; upd();
+  }
+
+  /* ---------- CUSTOMER DRAWER ---------- */
+  const drawer = $("drawer"), scrim = $("scrim");
+  function closeDrawer() { drawer.classList.remove("on"); scrim.classList.remove("on"); drawer.setAttribute("aria-hidden", "true"); }
+  scrim.addEventListener("click", closeDrawer);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(); });
+  const TOOLS = { champ: ["Предложение следующего онлайн-продукта в момент результата", "Уровень лояльности вместо скидки"], loyal: ["Сообщение Smart консультанта на 3-й, 7-й и 14-й день", "Баллы на вторую покупку"], risk: ["Личное сообщение: «Над чем вы работаете сейчас?»", "Подборка экспертов под новую задачу"], hib: ["Одно сообщение с бесплатным уроком", "Нет реакции — исключить из платных аудиторий"] };
+  function openCustomer(id) {
+    id = String(id || "").trim().toUpperCase();
+    if (/^C?\d+$/.test(id)) id = "C" + id.replace("C", "").padStart(5, "0");
+    const p = BYID.get(id);
+    if (!p) { toast("Покупатель не найден. Номера: C00001–C" + String(LIST.length).padStart(5, "0")); return; }
+    const s = p.seg, last = p.win[p.win.length - 1][0];
+    drawer.innerHTML = `
+      <div class="dh"><span class="av" style="--c:${col(s)}">${p.id.slice(-2)}</span><div><h3>${p.id}</h3><span class="badge" style="--c:${col(s)};--t:var(--${s}-t)">${SEGN[s]}</span></div><button class="x" id="dClose" aria-label="Закрыть">×</button></div>
+      <p style="color:var(--ink-2);font-size:13.5px">${B.NICHES[p.ni].name} · ${B.CHANNELS[p.ch].name} · первая покупка ${dstr(p.first)}${p.first < B.W0 ? " (до окна анализа)" : ""}</p>
+      <div class="dstats"><div><b class="num">${p.R}</b><span>R, дней</span></div><div><b class="num">${p.F}</b><span>F, заказов</span></div><div><b class="num">${nf(p.M / 1000)}к</b><span>M, ₸${p.hi ? " · высокий" : ""}</span></div><div><b>${p.rep30 === null ? "—" : p.rep30 ? "да" : "нет"}</b><span>повтор за 30 дн.</span></div></div>
+      <svg class="chart" id="dTl" viewBox="0 0 500 104" role="img" aria-label="Заказы на шкале 12 месяцев"></svg>
+      <div><div class="lab" style="margin-bottom:6px">Как посчитан сегмент</div><div class="calc">
+        <div class="row"><span class="n">F</span><div>Число заказов за 12 месяцев: <code>СЧЁТ = ${p.F}</code></div></div>
+        <div class="row"><span class="n">R</span><div><code>30.09.2026 − ${dstr(last)} = ${p.R} дн.</code></div></div>
+        <div class="row"><span class="n">M</span><div><code>${p.win.length <= 8 ? p.win.map(o => nf(o[1])).join(" + ") + " = " : "сумма " + p.F + " заказов = "}${nf(p.M)} ₸</code></div></div>
+        <div class="row"><span class="n">→</span><div>R ≤ 60? <b>${p.R <= 60 ? "да" : "нет"}</b>. F ≥ 3? <b>${p.F >= 3 ? "да" : "нет"}</b>. Сегмент — <b style="color:${col(s)}">${SEGN[s]}</b>.</div></div>
+      </div></div>
+      <div><div class="lab">Что делаем по стратегии</div><ul class="tools">${TOOLS[s].map(t => `<li>${t}</li>`).join("")}</ul></div>
+      <div><div class="lab" style="margin-bottom:6px">Переписка</div><div class="inbox" style="min-height:0;grid-template-columns:minmax(0,1fr)"><div class="chat" id="dChat" style="max-height:460px"></div></div></div>
+      <div><div class="lab" style="margin-bottom:6px">Заказы</div><div class="olist"><table><thead><tr><th>#</th><th>Дата</th><th>Сумма</th><th>Месяц</th></tr></thead><tbody>${p.win.map((o, i) => `<tr><td>${i + 1}</td><td>${dstr(o[0])}</td><td>${nf(o[1])} ₸</td><td>${mFull(B.monthIdx(o[0]))}</td></tr>`).join("")}</tbody></table></div></div>
+      <button class="btn" id="dOrders">Показать в списке заказов →</button>`;
+    const svg = $("dTl"), L = 8, Rr = 492, x = d => L + (d - B.W0) / (B.W1 - B.W0) * (Rr - L);
+    el("line", { x1: L, x2: Rr, y1: 46, y2: 46, stroke: "var(--line)", "stroke-width": 2 }, svg);
+    for (let i = 0; i < 12; i++) { const mx = x(B.MONTHS[i].start); el("line", { x1: mx, x2: mx, y1: 40, y2: 52, stroke: "var(--line)" }, svg); txt(svg, mx + 2, 68, MN[B.MONTHS[i].m], "ax"); }
+    el("rect", { x: x(B.W1 - 60), y: 26, width: Rr - x(B.W1 - 60), height: 40, fill: "var(--good)", opacity: .1 }, svg);
+    txt(svg, Rr, 20, "последние 60 дней", "lb2", "end");
+    const mxA = Math.max(...p.win.map(o => o[1]));
+    p.win.forEach((o, i) => el("circle", { cx: x(o[0]), cy: 46, r: 5 + 6 * o[1] / mxA, fill: col(s), stroke: "var(--surface)", "stroke-width": 1.5, "data-tip": `Заказ ${i + 1}: ${dstr(o[0])} · ${nf(o[1])} ₸` }, svg));
+    el("line", { x1: x(last), x2: Rr, y1: 88, y2: 88, stroke: "var(--ink-2)", "stroke-dasharray": "3 3" }, svg);
+    txt(svg, (x(last) + Rr) / 2, 101, `R = ${p.R} дн.`, "lb", "middle");
+    chatUI($("dChat"), p, true);
+    $("dClose").addEventListener("click", closeDrawer);
+    $("dOrders").addEventListener("click", () => { closeDrawer(); OF.q = p.id; OF.month = null; OF.type = "all"; OF.page = 0; go("orders"); });
+    drawer.classList.add("on"); scrim.classList.add("on"); drawer.setAttribute("aria-hidden", "false"); drawer.scrollTop = 0;
+    $("dClose").focus();
+  }
+
+  /* ---------- MESSAGING (demo: nothing leaves the page) ---------- */
+  const TEMA = ["обучению", "здоровью и спорту", "бизнесу и маркетингу", "творчеству"];
+  const fill = (t, p) => t.replace(/\{номер\}/g, p.id).replace(/\{тема\}/g, TEMA[p.ni]).replace(/\{дней\}/g, p.R).replace(/\{сумма\}/g, nf(p.M) + " ₸");
+  const TPL = [
+    { k: "loyal", n: "Вторая покупка", t: "Здравствуйте! Как успехи после первого продукта по {тема}? Подобрали для вас следующий шаг — и начислили 1 000 баллов на вторую покупку. Они сгорят через 7 дней." },
+    { k: "loyal", n: "Проверка результата", t: "Здравствуйте! Прошло немного времени после покупки — получилось применить? Если что-то не понятно, ответьте сюда, подскажем." },
+    { k: "risk", n: "Новая задача", t: "Здравствуйте! Давно не виделись. Над чем вы работаете сейчас? Подберём эксперта по {тема} под вашу новую задачу." },
+    { k: "champ", n: "Статус", t: "Спасибо, что вы с нами! Вы в числе самых активных покупателей — открыли вам ранний доступ к новым продуктам по {тема}." },
+    { k: "champ", n: "Рекомендация", t: "Поделитесь ссылкой с другом: ему −10% на первую покупку, вам — 2 000 баллов." },
+    { k: "hib", n: "Бесплатный урок", t: "Здравствуйте! Подготовили бесплатный урок по {тема}. Заберите, если тема ещё актуальна." },
+    { k: "any", n: "Ссылка на оплату", t: "Вот ссылка на оплату: smartflow.kz/pay/{номер}. Если будут вопросы — пишите сюда." },
+    { k: "any", n: "Спасибо", t: "Спасибо за ответ! Если понадобится помощь — мы на связи." }
+  ];
+  const CHN = [{ id: "tg", n: "Telegram-бот", cost: 0, del: .97, read: .82 }, { id: "wa", n: "WhatsApp", cost: 25, del: .98, read: .86 }, { id: "sms", n: "SMS", cost: 12, del: .99, read: .45 }];
+  const REPLY_P = { champ: .7, loyal: .6, risk: .45, hib: .25 }, REPLY_CAMP = { champ: .12, loyal: .08, risk: .05, hib: .015 };
+  const REPLIES = {
+    loyal: ["Спасибо! А когда старт следующего потока?", "Да, интересно, пришлите ссылку", "Пока не успела пройти первый, но спасибо 🙏"],
+    risk: ["Сейчас хочу разобраться с продажами в Instagram", "Пока не до этого, напишите через месяц", "О, а есть что-то посложнее по {тема}?"],
+    champ: ["Ура, спасибо! Что за новые продукты?", "Супер, беру следующий модуль — пришлите ссылку", "Порекомендую подруге 🙂"],
+    hib: ["Спасибо, посмотрю", "Отпишите меня, пожалуйста"]
+  };
+  const KEY = "sf-crm-msg-v1";
+  let MSG = { th: {}, un: {}, camps: [], off: {} };
+  try { const raw = localStorage.getItem(KEY); if (raw) MSG = Object.assign(MSG, JSON.parse(raw)); } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(MSG)); } catch (e) {} };
+  let curThread = null;
+  const tstr = ts => { const d = new Date(ts); return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); };
+  const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const STL = { sent: "отправлено ✓", del: "доставлено ✓✓", read: "прочитано ✓✓" };
+  function updCnt() { const u = Object.values(MSG.un).reduce((a, b) => a + b, 0); $("cntM").textContent = u ? u + " новых" : (Object.keys(MSG.th).length || ""); }
+  function refreshChats(id) {
+    document.querySelectorAll("[data-chat]").forEach(c => { if (c.dataset.chat === id) drawMsgs(c.querySelector(".msgs"), id); });
+    if (view === "messages") drawThreads();
+    updCnt();
+  }
+  function drawMsgs(box, id) {
+    if (!box) return;
+    const th = MSG.th[id] || [];
+    box.innerHTML = th.length ? th.map(m => m.t === "sys" ? `<span class="sysmsg">${esc(m.x)}</span>` : `<div class="bub ${m.t}">${esc(m.x)}<span class="st">${m.ch ? CHN.find(c => c.id === m.ch).n + " · " : ""}${tstr(m.ts)}${m.t === "out" ? " · " + STL[m.st] : ""}</span></div>`).join("") + (MSG.typing === id ? `<span class="typing">печатает…</span>` : "")
+      : `<p class="none">Переписки пока нет. Выберите шаблон ниже — он подставит данные покупателя.</p>`;
+    box.scrollTop = box.scrollHeight;
+  }
+  function sendTo(p, text, ch, silent) {
+    const th = MSG.th[p.id] || (MSG.th[p.id] = []);
+    const m = { t: "out", x: text, ts: Date.now(), st: "sent", ch };
+    th.push(m); save(); refreshChats(p.id);
+    if (silent) { m.st = "read"; return m; }
+    setTimeout(() => { m.st = "del"; save(); refreshChats(p.id); }, 700);
+    setTimeout(() => { m.st = "read"; save(); refreshChats(p.id); }, 1800);
+    if (!MSG.off[p.id] && Math.random() < REPLY_P[p.seg]) {
+      setTimeout(() => { MSG.typing = p.id; refreshChats(p.id); }, 2400);
+      setTimeout(() => { MSG.typing = null; addReply(p, true); }, 4200);
+    }
+    return m;
+  }
+  function addReply(p, live) {
+    const pool = REPLIES[p.seg], x = fill(pool[Math.floor(Math.random() * pool.length)], p);
+    const th = MSG.th[p.id] || (MSG.th[p.id] = []);
+    th.push({ t: "in", x, ts: Date.now() });
+    if (/Отпишите/.test(x)) { MSG.off[p.id] = 1; th.push({ t: "sys", x: "Покупатель отписался — исключён из рассылок", ts: Date.now() }); }
+    if (/ссылк|беру/i.test(x)) th.push({ t: "sys", x: "Похоже на покупку — отправьте ссылку на оплату", ts: Date.now() });
+    if (!(live && curThread === p.id && view === "messages") && !(live && drawer.classList.contains("on") && $("dChat") && $("dChat").dataset.chat === p.id)) MSG.un[p.id] = (MSG.un[p.id] || 0) + 1;
+    save(); refreshChats(p.id);
+    if (live) toast(`${p.id} ответил(а)`);
+  }
+  function chatUI(box, p, compact) {
+    box.dataset.chat = p.id; MSG.un[p.id] = 0; save(); updCnt();
+    const tpls = TPL.filter(t => t.k === p.seg || t.k === "any");
+    box.innerHTML = `${compact ? "" : `<div class="chat-h"><span class="av" style="--c:${col(p.seg)}">${p.id.slice(-2)}</span><div><b>${p.id}</b><br><span class="badge" style="--c:${col(p.seg)};--t:var(--${p.seg}-t)">${SEGN[p.seg]}</span></div><span style="font-size:12.5px;color:var(--muted)">R ${p.R} · F ${p.F} · M ${nf(p.M)} ₸</span><button class="btn" data-card>Карточка</button></div>`}
+      <div class="msgs"></div>
+      <div class="composer">
+        ${MSG.off[p.id] ? `<div class="demo-bar" style="padding:6px 10px">Покупатель отписался. Рассылки ему не уходят; личный ответ — можно.</div>` : ""}
+        <div class="tpls">${tpls.map((t, i) => `<button class="tpl" data-i="${TPL.indexOf(t)}">${t.n}</button>`).join("")}</div>
+        <div class="crow"><textarea rows="2" placeholder="Сообщение для ${p.id}…" aria-label="Текст сообщения"></textarea><button class="btn pri" data-send>Отправить</button></div>
+        <div class="cmeta"><span>Канал</span><select class="ctl" data-ch aria-label="Канал">${CHN.map(c => `<option value="${c.id}">${c.n}${c.cost ? " · " + c.cost + " ₸" : " · бесплатно"}</option>`).join("")}</select><span>Ctrl+Enter — отправить</span></div>
+      </div>`;
+    drawMsgs(box.querySelector(".msgs"), p.id);
+    const ta = box.querySelector("textarea");
+    box.querySelectorAll(".tpl").forEach(b => b.addEventListener("click", () => { ta.value = fill(TPL[+b.dataset.i].t, p); ta.focus(); }));
+    const send = () => { const x = ta.value.trim(); if (!x) { ta.focus(); return; } sendTo(p, x, box.querySelector("[data-ch]").value); ta.value = ""; };
+    box.querySelector("[data-send]").addEventListener("click", send);
+    ta.addEventListener("keydown", e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) send(); });
+    const c = box.querySelector("[data-card]"); if (c) c.addEventListener("click", () => openCustomer(p.id));
+  }
+  function drawThreads() {
+    const ids = Object.keys(MSG.th).filter(id => BYID.has(id) && MSG.th[id].length).sort((a, b) => MSG.th[b][MSG.th[b].length - 1].ts - MSG.th[a][MSG.th[a].length - 1].ts);
+    const box = $("mThreads");
+    if (!ids.length) { box.innerHTML = `<div class="empty"><b style="color:var(--ink)">Пока нет переписок</b><span>Откройте любого покупателя или отправьте рассылку — диалоги появятся здесь.</span><button class="btn" id="mRand">Написать случайному Potential Loyalist</button></div>`; $("mRand").addEventListener("click", () => { const l = LIST.filter(p => p.seg === "loyal" && passG(p)); openThread(l[Math.floor(Math.random() * l.length)].id); }); return; }
+    box.innerHTML = ids.map(id => { const p = BYID.get(id), th = MSG.th[id], last = [...th].reverse().find(m => m.t !== "sys") || th[th.length - 1], u = MSG.un[id] || 0;
+      return `<button class="th" data-id="${id}" aria-current="${curThread === id}"><span class="av" style="--c:${col(p.seg)}">${id.slice(-2)}</span><span style="min-width:0"><b>${id}</b><span class="last">${last.t === "out" ? "Вы: " : ""}${esc(last.x)}</span></span><span class="meta">${tstr(last.ts)}${u ? `<span class="unread">${u}</span>` : ""}</span></button>`; }).join("");
+    box.querySelectorAll(".th").forEach(b => b.addEventListener("click", () => openThread(b.dataset.id)));
+  }
+  function openThread(id) { curThread = id; if (view !== "messages") go("messages"); else { drawThreads(); chatUI($("mChat"), BYID.get(id)); } }
+  function renderMessages() {
+    if (!curThread || !BYID.has(curThread)) { const ids = Object.keys(MSG.th); curThread = ids.length ? ids[ids.length - 1] : null; }
+    drawThreads();
+    if (curThread) chatUI($("mChat"), BYID.get(curThread)); else { $("mChat").innerHTML = `<div class="msgs"><p class="none">Выберите диалог слева или начните новый из карточки покупателя.</p></div>`; delete $("mChat").dataset.chat; }
+    drawThreads();
+    renderCamps();
+  }
+  function renderCamps() {
+    const t = $("campTable");
+    if (!MSG.camps.length) { t.innerHTML = `<tbody><tr><td style="text-align:center;color:var(--muted);padding:22px;cursor:default">Рассылок пока нет. Откройте «Покупатели», отфильтруйте сегмент и нажмите «Написать всем в списке».</td></tr></tbody>`; return; }
+    t.innerHTML = `<thead><tr><th>Рассылка</th><th>Аудитория</th><th>Канал</th><th class="r">Отправлено</th><th class="r">Доставлено</th><th class="r">Прочитано</th><th class="r">Ответили</th><th class="r">Ожид. покупки</th><th class="r">Ожид. выручка</th><th class="r">Стоимость</th></tr></thead><tbody>` +
+      [...MSG.camps].reverse().map(c => `<tr style="cursor:default"><td><b>${esc(c.name)}</b><br><span style="font-size:12px;color:var(--muted)">${new Date(c.ts).toLocaleString("ru-RU", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</span></td><td>${esc(c.aud)}</td><td>${CHN.find(x => x.id === c.ch).n}</td><td class="r">${nf(c.n)}</td><td class="r">${nf(c.del)}</td><td class="r">${nf(c.read)}</td><td class="r">${nf(c.rep)}</td><td class="r">${nf(c.buy)}</td><td class="r">${mln(c.rev)}</td><td class="r">${c.cost ? nf(c.cost) + " ₸" : "0 ₸"}</td></tr>`).join("") + "</tbody>";
+  }
+  /* campaign modal */
+  let campList = [];
+  const cm = $("campModal");
+  function audLabel() {
+    const parts = [CF.seg === "all" ? "Все сегменты" : SEGN[CF.seg]];
+    if (CF.coh !== "all") parts.push(CF.coh === "-1" ? "до окт 2025" : "когорта " + mFull(+CF.coh));
+    if (CF.hi !== "all") parts.push(CF.hi === "1" ? "высокий M" : "обычный M");
+    if (CF.rf) parts.push("ячейка R×F"); if (CF.mig) parts.push("миграция"); if (CF.ch !== null) parts.push(B.CHANNELS[CF.ch].name); if (CF.ni !== null) parts.push(B.NICHES[CF.ni].name);
+    if (+fN.value >= 0) parts.push(B.NICHES[+fN.value].name); if (+fC.value >= 0) parts.push(B.CHANNELS[+fC.value].name);
+    return parts.join(" · ");
+  }
+  function openCamp(list) {
+    campList = list.filter(p => !MSG.off[p.id]);
+    if (!campList.length) { toast("В списке нет покупателей для рассылки"); return; }
+    const mix = {}; SEGS.forEach(k => mix[k] = 0); campList.forEach(p => mix[p.seg]++);
+    const main = SEGS.reduce((a, k) => mix[k] > mix[a] ? k : a, SEGS[0]);
+    $("campWho").innerHTML = `<div class="stats" style="margin:0"><span>Аудитория: <b>${esc(audLabel())}</b></span><span>Получателей: <b>${nf(campList.length)}</b></span>${list.length > campList.length ? `<span>Отписались, исключены: <b>${nf(list.length - campList.length)}</b></span>` : ""}</div>
+      <div class="mix" style="margin-top:8px">${SEGS.map(k => mix[k] ? `<i style="flex:${mix[k]};background:${col(k)}" data-tip="${SEGN[k]}: ${nf(mix[k])}"></i>` : "").join("")}</div>`;
+    $("campTpl").innerHTML = TPL.filter(t => t.k !== "any").map(t => `<option value="${TPL.indexOf(t)}" ${t.k === main ? "" : ""}>${SEGN[t.k]} — ${t.n}</option>`).join("");
+    $("campTpl").value = TPL.findIndex(t => t.k === main);
+    $("campCh").innerHTML = CHN.map(c => `<option value="${c.id}">${c.n}${c.cost ? " · " + c.cost + " ₸/сообщ." : " · бесплатно"}</option>`).join("");
+    $("campText").value = TPL[+$("campTpl").value].t;
+    cm.hidden = false; updCamp(); $("campText").focus();
+  }
+  function campCalc() {
+    const ch = CHN.find(c => c.id === $("campCh").value), { out } = stratNums();
+    const n = campList.length, del = Math.round(n * ch.del), read = Math.round(del * ch.read);
+    let rep = 0, buy = 0, rev = 0;
+    campList.forEach(p => { const o = out[p.seg], up = p.seg === "hib" ? .002 : Math.max(0, o.t - o.now); rep += REPLY_CAMP[p.seg]; buy += up * ch.read / .82; rev += up * ch.read / .82 * (o.rpb || 0); });
+    rep = Math.round(rep * del / n); return { ch, n, del, read, rep, buy: Math.round(buy), rev, cost: n * ch.cost };
+  }
+  function updCamp() {
+    const p = campList[0], c = campCalc();
+    $("campPrev").innerHTML = `<div class="bub out">${esc(fill($("campText").value || "…", p))}<span class="st">${c.ch.n} · ${p.id}</span></div>`;
+    $("campCalc").innerHTML = [[nf(c.del), "доставят"], [nf(c.read), "прочитают"], [nf(c.buy), "ожидаемых покупок"], [c.cost ? nf(c.cost) + " ₸" : "0 ₸", "стоимость"]].map(([v, t]) => `<div class="tot"><b class="num">${v}</b><span>${t}</span></div>`).join("");
+    const hi = campList.filter(p => p.hi).length;
+    $("campNote").innerHTML = `Покупки — по приросту доли сегмента из «Стратегии» (цель − сейчас), поправка на долю прочитавших. Тарифы WhatsApp и SMS условные.${c.ch.id === "sms" && hi < campList.length ? ` <b>По стратегии SMS — только высокому M: в списке таких ${nf(hi)}.</b>` : ""}`;
+    $("campSend").textContent = `Отправить ${nf(c.n)} ${c.n === 1 ? "сообщение" : "сообщений"}`;
+  }
+  $("campTpl").addEventListener("change", () => { $("campText").value = TPL[+$("campTpl").value].t; updCamp(); });
+  $("campCh").addEventListener("change", updCamp); $("campText").addEventListener("input", updCamp);
+  const closeCamp = () => { cm.hidden = true; };
+  $("campX").addEventListener("click", closeCamp); $("campCancel").addEventListener("click", closeCamp);
+  cm.addEventListener("click", e => { if (e.target === cm) closeCamp(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeCamp(); });
+  $("campSend").addEventListener("click", () => {
+    const c = campCalc(), text = $("campText").value.trim(); if (!text) return;
+    MSG.camps.push({ name: TPL[+$("campTpl").value].n, aud: audLabel(), ch: c.ch.id, n: c.n, del: c.del, read: c.read, rep: c.rep, buy: c.buy, rev: c.rev, cost: c.cost, ts: Date.now() });
+    // a few recipients reply, so their dialogs appear in the inbox
+    const pool = campList.slice(); const k = Math.min(pool.length, Math.max(1, Math.min(5, c.rep)));
+    for (let i = 0; i < k; i++) { const j = Math.floor(Math.random() * pool.length), p = pool.splice(j, 1)[0]; sendTo(p, fill(text, p), c.ch.id, true); addReply(p, false); }
+    save(); closeCamp(); toast(`Рассылка ушла: ${nf(c.n)} получателей · ${k} уже ответили`);
+    curThread = null; go("messages");
+  });
+  $("cBulk").addEventListener("click", () => openCamp(custFiltered(false)));
+  $("mNewCamp").addEventListener("click", () => { resetCF(); CF.seg = "loyal"; go("customers"); toast("Выберите аудиторию фильтрами и нажмите «Написать всем в списке»"); });
+  updCnt();
+
+  $("backBtn").addEventListener("click", back);
+  $("langLink").addEventListener("click", e => { e.currentTarget.href = e.currentTarget.getAttribute("href").split("#")[0] + location.hash; });
+  /* boot */
+  let start = "overview";
+  try { const h = location.hash.replace("#", ""); if (VIEWS.includes(h)) start = h; } catch (e) {}
+  view = start;
+  try { recompute(); } catch (e) { $("ovStatus").textContent = "Ошибка расчёта: " + e.message; console.error(e); }
+})();
+</script>
+
+</body>
+</html>
