@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Retention BookLover</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Продуктовый кейс: почему 30-дневное удержание читательского приложения упало с 45% до 28%, три гипотезы и план экспериментов.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column of numbered steps (the case brief's own five tasks), each answered with evidence; method and resources close the page. Same tokens as the RFM case. */
+:root {
+  --bg: #f4f6f9; --surface: #ffffff; --surface-2: #eceff4; --ink: #131a26; --ink-2: #485264; --muted: #7a8496; --line: #dde2ea;
+  --focus: #2a78d6; --good: #11764f; --good-bg: #e3f4ec; --warn: #8a5a00; --warn-bg: #fff4de;
+  --c1: #2a78d6; --c1-t: #e8f1fc; --c2: #1baf7a; --c3: #eb6834; --c3-t: #fdece4; --base-bar: #c3c8d1;
+  --f-display: "Unbounded", "Onest", system-ui, sans-serif;
+  --f-body: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e121a; --surface: #161c27; --surface-2: #1e2633; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #2a3344;
+    --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --warn: #f0c46a; --warn-bg: #33270f;
+    --c1: #3987e5; --c1-t: #16263d; --c2: #199e70; --c3: #d95926; --c3-t: #362018; --base-bar: #4a5263; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e121a; --surface: #161c27; --surface-2: #1e2633; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #2a3344;
+  --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --warn: #f0c46a; --warn-bg: #33270f;
+  --c1: #3987e5; --c1-t: #16263d; --c2: #199e70; --c3: #d95926; --c3-t: #362018; --base-bar: #4a5263; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: inherit; }
+.num { font-variant-numeric: tabular-nums; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.nav .wrap { display: flex; gap: 6px; overflow-x: auto; padding-block: 10px; scrollbar-width: none; }
+.nav a { flex: none; text-decoration: none; color: var(--ink-2); font-size: 14px; padding: 6px 12px; border-radius: 999px; }
+.nav a.back { color: var(--ink); font-weight: 600; }
+.nav a.lang { margin-left: auto; font-weight: 700; font-family: var(--f-mono); font-size: 13px; border: 1px solid var(--line); }
+.nav a:hover { background: var(--surface-2); color: var(--ink); }
+
+.hero { padding-block: 56px 32px; display: grid; gap: 22px; }
+.hero h1 { font-family: var(--f-display); font-weight: 700; font-size: clamp(34px, 6vw, 64px); line-height: 1.04; letter-spacing: -.02em; }
+.hero h1 span { color: var(--muted); font-weight: 500; }
+.lead { font-size: clamp(16px, 1.6vw, 19px); color: var(--ink-2); max-width: 66ch; }
+.note { display: inline-flex; align-items: center; gap: 8px; width: fit-content; max-width: 100%; font-size: 13px; color: var(--warn); background: var(--warn-bg); padding: 6px 12px; border-radius: 999px; }
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 8px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px 18px 16px; display: grid; gap: 6px; align-content: start; }
+.kpi .v { font-family: var(--f-display); font-size: clamp(22px, 2.6vw, 30px); font-weight: 700; letter-spacing: -.01em; }
+.kpi .v.bad { color: var(--c3); }
+.kpi .d { font-size: 13.5px; color: var(--ink-2); }
+
+section.band { padding-block: 44px; border-top: 1px solid var(--line); scroll-margin-top: 56px; }
+.sec-head { display: grid; gap: 10px; margin-bottom: 26px; max-width: 760px; }
+.sec-head h2 { font-family: var(--f-display); font-weight: 700; font-size: clamp(24px, 3vw, 34px); letter-spacing: -.015em; line-height: 1.15; }
+.sec-head p { color: var(--ink-2); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 22px; min-width: 0; }
+.card h3 { font-size: 17px; font-weight: 600; margin-bottom: 4px; }
+.card .sub { font-size: 13.5px; color: var(--muted); margin-bottom: 14px; }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.stack { display: grid; gap: 16px; }
+
+/* summary */
+.summary { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 16px; align-items: start; }
+.word { background: var(--ink); color: var(--bg); border-radius: var(--r); padding: 26px; display: grid; gap: 14px; }
+.word .eyebrow { color: color-mix(in srgb, var(--bg) 70%, var(--ink)); }
+.word .big { font-family: var(--f-display); font-weight: 700; font-size: clamp(36px, 5vw, 56px); line-height: 1; letter-spacing: -.02em; }
+.word p { font-size: 15px; }
+.sumlist { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.sumlist li { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: grid; gap: 6px; align-content: start; font-size: 15px; color: var(--ink-2); }
+.sumlist b { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; font-weight: 500; color: var(--muted); }
+
+/* charts */
+svg text { font-family: var(--f-body); }
+.chart { width: 100%; height: auto; display: block; }
+.axis { fill: var(--muted); font-size: 11px; }
+.gridl { stroke: var(--line); }
+.lbl { fill: var(--ink); font-size: 12px; font-weight: 600; }
+.lbl-2 { fill: var(--ink-2); font-size: 11.5px; }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--ink-2); margin-top: 10px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.hit { cursor: default; }
+.hit:hover + .bar, .bar.on { opacity: .82; }
+
+/* table */
+.tbl-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 620px; }
+th, td { text-align: right; padding: 9px 10px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 600; color: var(--muted); font-size: 12.5px; }
+tr.bad td.mr, tr.bad td.r { color: var(--c3); font-weight: 600; }
+.funnel { display: grid; gap: 14px; }
+.frow { display: grid; grid-template-columns: minmax(0, 1fr) 56px; gap: 4px 12px; align-items: center; }
+.frow .fl { grid-column: 1 / -1; font-size: 14px; color: var(--ink-2); }
+.ftrack { height: 26px; background: var(--surface-2); border-radius: 4px; overflow: hidden; }
+.fbar { height: 100%; border-radius: 4px; }
+.frow b { font-size: 15px; font-weight: 600; }
+.hint { font-size: 13.5px; color: var(--ink-2); margin-top: 12px; }
+
+/* diagnosis */
+.diag { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.diag .card { display: grid; gap: 8px; align-content: start; }
+.diag .n { font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.diag p { font-size: 15px; color: var(--ink-2); }
+.insight { background: var(--c1-t); border-radius: var(--r); padding: 16px 18px; font-size: 15px; color: var(--ink); margin-top: 14px; }
+
+/* factors */
+.buckets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.bucket { display: grid; gap: 12px; align-content: start; }
+.bucket h3 { font-family: var(--f-display); font-size: 18px; font-weight: 700; }
+.fac { display: grid; gap: 6px; padding-top: 12px; border-top: 1px solid var(--line); }
+.fac:first-of-type { border-top: 0; padding-top: 0; }
+.fac b { font-weight: 600; font-size: 15px; }
+.fac span { font-size: 13.5px; color: var(--ink-2); }
+.pill { width: fit-content; font-size: 11.5px; font-weight: 600; padding: 2px 9px; border-radius: 999px; }
+.pill.data { background: var(--good-bg); color: var(--good); }
+.pill.guess { background: var(--surface-2); color: var(--ink-2); }
+.aside { margin-top: 16px; font-size: 15px; color: var(--ink-2); max-width: 760px; }
+
+/* hypotheses */
+.hyp { display: grid; gap: 16px; }
+.h-card { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 22px; }
+.h-card h3 { font-family: var(--f-display); font-size: 20px; font-weight: 700; margin-bottom: 14px; }
+.h-num { font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.chain { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.chain li { display: grid; grid-template-columns: 104px minmax(0, 1fr); gap: 10px; font-size: 14px; color: var(--ink-2); }
+.chain li b { font-family: var(--f-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; font-weight: 500; color: var(--muted); padding-top: 2px; }
+.stmt { background: var(--surface-2); border-radius: 10px; padding: 16px 18px; font-size: 16px; line-height: 1.6; }
+.stmt em { font-style: normal; font-family: var(--f-mono); font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; color: var(--c1); margin-right: 4px; }
+.h-more { display: grid; gap: 10px; margin-top: 14px; font-size: 14px; color: var(--ink-2); }
+.h-more b { color: var(--ink); font-weight: 600; }
+
+/* metrics */
+.ns { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 16px; margin-bottom: 16px; }
+.ns .word .big { font-size: clamp(24px, 3vw, 32px); line-height: 1.15; }
+.tree { font-family: var(--f-mono); font-size: 13.5px; line-height: 1.7; color: var(--ink); }
+.type { font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.type.p { background: var(--c1-t); color: var(--c1); }
+.type.s { background: var(--surface-2); color: var(--ink-2); }
+.type.g { background: var(--c3-t); color: var(--c3); }
+td.l { text-align: left; }
+.ss { margin: 10px 0 0; padding-left: 18px; display: grid; gap: 6px; font-size: 14.5px; color: var(--ink-2); }
+
+/* plan */
+.weeks { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; counter-reset: w; }
+.weeks li { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: grid; gap: 8px; align-content: start; font-size: 14px; color: var(--ink-2); }
+.weeks b { color: var(--ink); font-weight: 600; font-size: 15px; }
+pre { margin: 0; background: var(--surface-2); border-radius: 10px; padding: 16px; overflow-x: auto; font-family: var(--f-mono); font-size: 12.5px; line-height: 1.6; color: var(--ink); }
+.filelink { display: inline-block; margin-top: 12px; font-size: 14px; font-weight: 600; color: var(--c1); }
+
+/* method */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; counter-reset: s; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; }
+.steps li::before { content: counter(s); font-family: var(--f-display); font-weight: 700; font-size: 22px; color: var(--c1); line-height: 1.1; }
+.steps b { display: block; font-weight: 600; margin-bottom: 4px; }
+.steps span { font-size: 14px; color: var(--ink-2); }
+.traps { margin: 0; padding-left: 18px; display: grid; gap: 8px; font-size: 14.5px; color: var(--ink-2); }
+
+/* resources */
+.res { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.res li { display: grid; gap: 2px; }
+.res a { font-weight: 600; color: var(--c1); text-decoration: none; }
+.res a:hover { text-decoration: underline; }
+.res span { font-size: 13.5px; color: var(--ink-2); }
+
+footer { padding-block: 28px 48px; font-size: 13px; color: var(--muted); }
+.tip { position: fixed; pointer-events: none; z-index: 20; background: var(--ink); color: var(--bg); font-size: 12.5px; line-height: 1.4; padding: 7px 10px; border-radius: 8px; max-width: 240px; opacity: 0; transform: translateY(4px); transition: opacity .12s, transform .12s; }
+.tip.on { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .tip { transition: none; } }
+
+@media (max-width: 900px) {
+  .kpis, .weeks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .summary, .ns, .h-card, .two, .diag, .buckets, .steps { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 520px) {
+  .kpis, .weeks, .sumlist { grid-template-columns: minmax(0, 1fr); }
+  .chain li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .card { padding: 18px; }
+}
+</style>
+</head>
+<body>
+
+
+<nav class="nav" aria-label="Разделы">
+  <div class="wrap">
+    <a href="./" class="back">← Все проекты</a>
+    <a href="#summary">Итог</a>
+    <a href="#cohorts">Когорты</a>
+    <a href="#diagnosis">Диагноз</a>
+    <a href="#factors">Факторы</a>
+    <a href="#hypotheses">Гипотезы</a>
+    <a href="#metrics">Метрики</a>
+    <a href="#plan">План</a>
+    <a href="#method">Как думает продакт</a>
+    <a href="#learn">Материалы</a>
+    <a href="en/booklover-retention.html" class="lang">EN</a>
+  </div>
+</nav>
+
+<header class="wrap hero">
+  <span class="eyebrow">Продуктовый кейс · Retention и отток</span>
+  <h1>Retention <span>BookLover</span></h1>
+  <p class="lead">BookLover — мобильное приложение для чтения книг, запущено 6 месяцев назад. Привлечение растёт каждый месяц, но с апреля 30-дневное удержание падает: с 45% до 28%. Я нашла, когда и где ломается удержание, разделила причины на «кто пришёл» и «что увидел», и предложила три гипотезы с метриками и планом проверки.</p>
+  <span class="note">Учебный кейс курса по продукт-менеджменту: данные из условия задачи, не реального продукта</span>
+  <div class="kpis">
+    <div class="kpi"><span class="eyebrow">Retention D30</span><span class="v bad num">45% → 28%</span><span class="d">январская и июньская когорты</span></div>
+    <div class="kpi"><span class="eyebrow">Удержано из прироста</span><span class="v bad num">6,5%</span><span class="d">дополнительных пользователей апреля к марту (норма — 45%)</span></div>
+    <div class="kpi"><span class="eyebrow">Дошли до второй книги</span><span class="v num">19,5%</span><span class="d">всех пользователей: 65% × 30%</span></div>
+    <div class="kpi"><span class="eyebrow">Потеряно за 3 месяца</span><span class="v num">≈ 9 900</span><span class="d">активных, если бы retention держался на 45%</span></div>
+  </div>
+</header>
+
+<section class="band" id="summary">
+  <div class="wrap">
+    <div class="summary">
+      <div class="word">
+        <span class="eyebrow">Итог за 30 секунд</span>
+        <span class="big">3 ставки</span>
+        <p>Проблема двойная: рост покупает не тех людей, а продукт не ведёт читателя ко второй книге</p>
+      </div>
+      <ul class="sumlist">
+        <li><b>Что случилось</b>С апрельской когорты retention D30 падает и не восстанавливается: 45 → 38 → 30 → 28%. Это устойчивый сдвиг, а не разовый сбой.</li>
+        <li><b>Где</b>Число удержанных застыло около 8 000 в месяц, хотя новых стало на 50% больше. Почти весь прирост уходит. В мае ушла и часть «ядра».</li>
+        <li><b>Хроническое</b>Только каждый пятый доходит до второй книги. Дочитанная книга — момент успеха и одновременно точка выхода.</li>
+        <li><b>Что делаю</b>Мост ко второй книге, чистка каналов привлечения, привычка чтения в первую неделю. Каждая ставка — с метрикой, порогом успеха и guardrail.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="cohorts">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Шаг 1 · Когорты</span>
+      <h2>Retention держался на 45% три месяца, потом сломался</h2>
+      <p>Retention D30 = активные на 30-й день после регистрации ÷ пришедшие в этом месяце. Общее число активных росло всё время, поэтому по нему проблему не видно: рост привлечения её маскирует. Когорты отделяют качество продукта от силы маркетинга.</p>
+    </div>
+    <div class="two">
+      <div class="card">
+        <h3>Retention D30 по когортам</h3>
+        <p class="sub">Пунктир — уровень первых трёх месяцев. Наведите на столбец.</p>
+        <svg class="chart" id="cRet" viewBox="0 0 520 300" role="img" aria-label="Столбчатая диаграмма: retention D30 по месячным когортам с января по июнь"></svg>
+      </div>
+      <div class="card">
+        <h3>Пришли и остались, тыс. человек</h3>
+        <p class="sub">Новых всё больше, удержанных — нет: с марта их около 8 000.</p>
+        <svg class="chart" id="cAbs" viewBox="0 0 520 300" role="img" aria-label="Сгруппированные столбцы: новые и удержанные пользователи по месяцам"></svg>
+        <div class="legend"><span><i style="background: var(--base-bar)"></i>Пришли</span><span><i style="background: var(--c1)"></i>Активны на 30-й день</span></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top: 16px">
+      <h3>Таблица когорт</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Когорта</th><th>Пришли</th><th>Активны D30</th><th>Retention</th><th>Δ новых</th><th>Δ удержанных</th><th>Удержано из прироста</th></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <p class="hint">«Удержано из прироста» — какая доля дополнительных пользователей месяца осталась: Δ удержанных ÷ Δ новых. В январе–марте каждый новый поток удерживался как основной (45%). В апреле из 4 000 дополнительных людей остались 260.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="diagnosis">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Шаг 2 · Диагноз</span>
+      <h2>Три вывода из формы кривой</h2>
+      <p>Падение видно сразу. Важнее понять его форму: она подсказывает тип причины.</p>
+    </div>
+    <div class="diag">
+      <div class="card"><span class="n">01</span><h3>Сдвиг устойчивый, это не сбой</h3><p>Технический сбой обычно чинят за дни: когорта проседает, следующие возвращаются к 45%. Здесь май и июнь не вернулись, а июнь закрепился на 28%. Значит, изменилось что-то постоянное: аудитория, продукт или рынок.</p></div>
+      <div class="card"><span class="n">02</span><h3>Прирост почти не удерживается</h3><p>Удержанных около 8 000 в месяц с марта, хотя пришедших стало на 50% больше. Из дополнительных 4 000 человек апреля остались 6,5%. Это главный сигнал, что маркетинг масштабировался в менее целевую аудиторию.</p></div>
+      <div class="card"><span class="n">03</span><h3>В мае пострадало и «ядро»</h3><p>Если бы проблема была только в новых каналах, майская когорта удержала бы минимум столько же, сколько мартовская: 8 100 человек от тех же 18 000 «старых» источников. Удержала 7 500. Значит, хуже стало и тем, кто пришёл бы и раньше. Это указывает на изменение в продукте: релиз, каталог, цены. Рейтинг 4,5 → 4,2 это поддерживает, но не доказывает.</p></div>
+    </div>
+    <div class="card" style="margin-top: 16px">
+      <h3>Где теряем читателя внутри продукта</h3>
+      <p class="sub">Данные 65% и 30% даны общей цифрой за полгода, без разбивки по когортам. Поэтому это хроническая проблема, а не причина апрельского спада.</p>
+      <div class="funnel" id="cFun" role="img" aria-label="Воронка: все пользователи, дочитали первую книгу, начали вторую"></div>
+      <p class="insight"><b>Инсайт.</b> 45% пользователей дочитали книгу и остановились. Человек пришёл прочитать книгу, прочитал, задача решена. Приложение хорошо помогает читать, но не помогает выбрать, что читать дальше. Момент самой большой удовлетворённости становится точкой выхода.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="factors">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Шаг 3 · Факторы</span>
+      <h2>Причины по трём корзинам: что видно в данных и что нужно проверить</h2>
+      <p>Каждая причина помечена: опирается на данные кейса или это предположение. Для каждой — как проверить.</p>
+    </div>
+    <div class="buckets">
+      <div class="card bucket">
+        <h3>Кто пришёл</h3>
+        <div class="fac"><span class="pill data">Есть в данных</span><b>Новые каналы привели менее целевую аудиторию</b><span>Как проверить: retention когорт в разбивке по каналу и кампании</span></div>
+        <div class="fac"><span class="pill guess">Предположение</span><b>Оффер в рекламе не совпал с продуктом (например, «бесплатные книги»)</b><span>Как проверить: креативы апреля–мая, retention по креативу, отзывы 1–2★ о «обмане»</span></div>
+        <div class="fac"><span class="pill guess">Предположение</span><b>Сменилась география или платформа (Android/iOS)</b><span>Как проверить: доля стран и платформ по когортам</span></div>
+      </div>
+      <div class="card bucket">
+        <h3>Что увидели</h3>
+        <div class="fac"><span class="pill data">Есть в данных</span><b>Релиз в апреле ухудшил опыт: баги, скорость, новый интерфейс</b><span>Как проверить: retention по версии приложения, crash rate, время загрузки книги</span></div>
+        <div class="fac"><span class="pill guess">Предположение</span><b>Изменились каталог, цены или пейвол</b><span>Как проверить: журнал изменений, доля «не нашёл книгу» в поиске, конверсия в оплату</span></div>
+        <div class="fac"><span class="pill data">Есть в данных</span><b>Нет моста ко второй книге (хронически)</b><span>Как проверить: переход ко второй книге по когортам и что видит человек на последней странице</span></div>
+      </div>
+      <div class="card bucket">
+        <h3>Что вокруг</h3>
+        <div class="fac"><span class="pill guess">Предположение</span><b>Сезонность: экзамены и отпуска в мае–июне</b><span>Как проверить: время чтения по дням недели и неделям, данные прошлого года у конкурентов</span></div>
+        <div class="fac"><span class="pill guess">Предположение</span><b>Конкурент запустил акцию или бесплатный доступ</b><span>Как проверить: мониторинг конкурентов, вопрос «чем пользуетесь вместо нас» в интервью</span></div>
+      </div>
+    </div>
+    <p class="aside"><b>Про рейтинг 4,5 → 4,2.</b> Совпадение по времени не доказывает причину. Рейтинг может упасть потому, что продукт стал хуже, или потому, что пришли люди, которым он изначально не подходил. Проверка: рейтинг по версии приложения и по каналу привлечения.</p>
+  </div>
+</section>
+
+<section class="band" id="hypotheses">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Шаг 4 · Гипотезы</span>
+      <h2>Три ставки в формате «Если… то… потому что…»</h2>
+      <p>Каждая гипотеза построена по цепочке: наблюдение → инсайт → решение → метрика. В «потому что» — предположение о поведении людей. Именно его проверяет тест.</p>
+    </div>
+    <div class="hyp">
+      <article class="card h-card">
+        <div>
+          <span class="h-num">H1</span>
+          <h3>Мост ко второй книге</h3>
+          <ol class="chain">
+            <li><b>Наблюдение</b><span>65% дочитали, но только 30% из них начали вторую: 45% всех пользователей остановились после первой книги.</span></li>
+            <li><b>Инсайт</b><span>Выбор следующей книги — отдельная работа, которую приложение перекладывает на человека в момент, когда его задача уже решена.</span></li>
+            <li><b>Решение</b><span>Экран на последней странице: 3 персональные рекомендации (тот же автор, жанр, «читатели этой книги выбрали») и первая глава одним нажатием.</span></li>
+            <li><b>Метрика</b><span>Доля дочитавших, начавших вторую книгу за 7 дней.</span></li>
+          </ol>
+        </div>
+        <div>
+          <p class="stmt"><em>Если</em>на последней странице показать 3 персональные книги и открыть первую главу в одно нажатие, <em>то</em>переход ко второй книге за 7 дней вырастет с 30% до 40%, а retention D30 — на 2–3 п.п., <em>потому что</em>человек готов читать дальше, но не хочет тратить силы на выбор, когда задача уже решена.</p>
+          <div class="h-more"><p><b>Как проверяю.</b> A/B-тест на новых пользователях, дошедших до конца книги. Нужно ≈ 360 дочитавших в каждой группе для +10 п.п. (α = 0,05, мощность 80%). Длительность — пока все участники не проживут 30 дней.</p><p><b>Что опровергнет.</b> Переход вырос, а время чтения второй книги и D30 — нет: люди открывают рекомендацию, но не читают. Тогда проблема в качестве рекомендаций, а не в моменте.</p></div>
+        </div>
+      </article>
+      <article class="card h-card">
+        <div>
+          <span class="h-num">H2</span>
+          <h3>Привлечение ради читателей, а не установок</h3>
+          <ol class="chain">
+            <li><b>Наблюдение</b><span>С апреля удержанных около 8 000 при растущем привлечении. Из прироста апреля удержано 6,5%, в январе–марте — 45%.</span></li>
+            <li><b>Инсайт</b><span>Маркетинг оптимизируется на установки и масштабируется в людей, которые не планировали читать. Дешёвая установка оборачивается дорогим читателем.</span></li>
+            <li><b>Решение</b><span>Считать стоимость удержанного читателя по каналу, урезать каналы с D30 ниже 20%, выровнять креативы с тем, что реально есть в приложении.</span></li>
+            <li><b>Метрика</b><span>Retention D30 по каналам и стоимость удержанного пользователя (CAC ÷ D30).</span></li>
+          </ol>
+        </div>
+        <div>
+          <p class="stmt"><em>Если</em>перераспределить бюджет из каналов с D30 ниже 20% в каналы с D30 выше 40% и убрать офферы, которые обещают то, чего нет в продукте, <em>то</em>средний retention D30 вернётся к 38–40%, а стоимость удержанного читателя снизится на 25%, <em>потому что</em>падение началось вместе с ускорением привлечения, и почти весь прирост ушёл в первые 30 дней.</p>
+          <div class="h-more"><p><b>Как проверяю.</b> Не A/B, а перераспределение бюджета на 4 недели с контрольной группой каналов. Сначала диагностика: разбивка когорт апреля–июня по каналам. Если плохо удерживают все каналы, гипотеза отпадает и фокус уходит на продукт.</p><p><b>Что опровергнет.</b> Органика и старые каналы тоже упали до 30%. Тогда причина в продукте, а не в аудитории.</p></div>
+        </div>
+      </article>
+      <article class="card h-card">
+        <div>
+          <span class="h-num">H3</span>
+          <h3>Привычка чтения в первую неделю</h3>
+          <ol class="chain">
+            <li><b>Наблюдение</b><span>35% пользователей не дочитывают даже первую книгу.</span></li>
+            <li><b>Инсайт</b><span>Человек начинает книгу на эмоции, но без ритма чтение срывается на 2–3 день, и книга остаётся брошенной.</span></li>
+            <li><b>Решение</b><span>Онбординг: 3 любимых жанра, цель «10 минут в день», напоминание в выбранное время и видимый прогресс книги.</span></li>
+            <li><b>Метрика</b><span>Доля дочитавших первую книгу, retention D7 и D30.</span></li>
+          </ol>
+        </div>
+        <div>
+          <p class="stmt"><em>Если</em>при регистрации предложить цель 10 минут в день с напоминанием в удобное время и подбор книги по 3 жанрам, <em>то</em>доля дочитавших первую книгу вырастет с 65% до 70%, а retention D7 — на 3 п.п., <em>потому что</em>привычку формируют повтор в одно и то же время и маленькая цель, а не мотивация в первый день.</p>
+          <div class="h-more"><p><b>Как проверяю.</b> A/B-тест на новых пользователях: ≈ 1 400 человек в группе для +5 п.п. дочитывания. Guardrail — отписки от уведомлений и удаления приложения.</p><p><b>Что опровергнет.</b> Дочитывание выросло, а D30 — нет. Тогда первая книга не главный рычаг, и важнее мост ко второй (гипотеза 1).</p></div>
+        </div>
+      </article>
+      <div class="card">
+        <h3>Приоритизация ICE</h3>
+        <p class="sub">Impact × Confidence × Ease, каждая оценка от 1 до 10. Порядок запуска: сначала дешёвая диагностика для гипотезы 2, параллельно разработка гипотезы 1.</p>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Гипотеза</th><th>I</th><th>C</th><th>E</th><th>ICE</th><th style="text-align:left">Почему так</th></tr></thead>
+            <tbody>
+              <tr><td>H1 · Мост ко второй книге</td><td>8</td><td>7</td><td>7</td><td><b>392</b></td><td class="l">Бьёт в 45% пользователей, понятный механизм, средний объём разработки</td></tr>
+              <tr><td>H2 · Привлечение ради читателей, а не установок</td><td>8</td><td>6</td><td>8</td><td><b>384</b></td><td class="l">Объясняет апрельский спад, почти без разработки; уверенность ниже, пока нет разбивки по каналам</td></tr>
+              <tr><td>H3 · Привычка чтения в первую неделю</td><td>6</td><td>5</td><td>6</td><td><b>180</b></td><td class="l">Меньший сегмент, уведомления могут раздражать</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="metrics">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Шаг 5 · Метрики</span>
+      <h2>Что отслеживаю и где остановлюсь</h2>
+      <p>У каждой гипотезы одна главная метрика, вспомогательные для понимания механизма и guardrail-метрики, которые не должны ухудшиться. Пороги записываю до запуска теста.</p>
+    </div>
+    <div class="ns">
+      <div class="word">
+        <span class="eyebrow">North Star</span>
+        <span class="big">Еженедельные читатели</span>
+        <p>пользователи, которые читали не меньше 15 минут за неделю. Не «открыли приложение», а получили ценность.</p>
+      </div>
+      <div class="card">
+        <h3>Дерево метрик</h3>
+        <p class="tree">Еженедельные читатели = новые пользователи × дочитали первую книгу × начали вторую × вернулись через 30 дней + вернувшиеся старые читатели</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Метрика</th><th style="text-align:left">Тип</th><th>Сейчас</th><th>Цель</th><th>Гипотеза</th></tr></thead>
+          <tbody>
+            <tr><td>Начали вторую книгу за 7 дней, % дочитавших</td><td class="l"><span class="type p">Главная</span></td><td>30%</td><td>40%</td><td>H1</td></tr>
+            <tr><td>Минут чтения второй книги в первую неделю</td><td class="l"><span class="type s">Вспомогательная</span></td><td>замерить</td><td>рост</td><td>H1</td></tr>
+            <tr><td>Retention D30 по каналам</td><td class="l"><span class="type p">Главная</span></td><td>28%</td><td>38–40%</td><td>H2</td></tr>
+            <tr><td>Стоимость удержанного читателя, CAC ÷ D30</td><td class="l"><span class="type s">Вспомогательная</span></td><td>замерить</td><td>−25%</td><td>H2</td></tr>
+            <tr><td>Дочитали первую книгу, %</td><td class="l"><span class="type p">Главная</span></td><td>65%</td><td>70%</td><td>H3</td></tr>
+            <tr><td>Retention D7</td><td class="l"><span class="type s">Вспомогательная</span></td><td>замерить</td><td>+3 п.п.</td><td>H3</td></tr>
+            <tr><td>Retention D30, все новые</td><td class="l"><span class="type s">Вспомогательная</span></td><td>28%</td><td>рост</td><td>все</td></tr>
+            <tr><td>Отписки от уведомлений и удаления</td><td class="l"><span class="type g">Guardrail</span></td><td>замерить</td><td>не хуже контроля</td><td>H1, H3</td></tr>
+            <tr><td>Рейтинг в сторе по версии</td><td class="l"><span class="type g">Guardrail</span></td><td>4,2</td><td>вернуть ≥ 4,4</td><td>все</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card" style="margin-top: 16px">
+      <h3>Сколько нужно людей для теста</h3>
+      <p class="sub">Чем меньше ожидаемый эффект, тем больше выборка. Расчёт для двустороннего теста, α = 0,05, мощность 80%:</p>
+      <ul class="ss"><li>Вторая книга 30% → 40%: ≈ 360 дочитавших в группе</li><li>Вторая книга 30% → 36%: ≈ 960 в группе</li><li>Дочитывание 65% → 70%: ≈ 1 400 в группе</li><li>Retention D30 28% → 31%: ≈ 3 600 в группе</li></ul>
+      <p class="hint">При 27 000 новых в месяц любой из тестов набирает выборку за 1–2 недели. Ограничение — время: D30 можно посчитать только через 30 дней после последнего участника.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="plan">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">План</span>
+      <h2>Сначала дешёвое знание, потом дорогая разработка</h2>
+    </div>
+    <ol class="weeks">
+      <li><b>Неделя 1 · Диагностика</b>SQL: когорты по каналам, кампаниям, платформам и версиям приложения. Параллельно 6–8 интервью с теми, кто дочитал и остановился, и с ушедшими из апрельской когорты. Разбор отзывов 1–3★ с апреля.</li>
+      <li><b>Неделя 2 · Решение по каналам</b>Если виноваты каналы: перераспределить бюджет (гипотеза 2). Если продукт: найти апрельское изменение и откатить или исправить. Дизайн экрана последней страницы.</li>
+      <li><b>Недели 3–4 · Запуск тестов</b>A/B-тест моста ко второй книге (гипотеза 1). Подготовка онбординга с привычкой (гипотеза 3).</li>
+      <li><b>Недели 5–9 · Решения</b>Читаю D7 и D30, проверяю guardrails, решаю: масштабировать, доработать или закрыть. Записываю, что узнали о пользователях, даже если тест не выиграл.</li>
+    </ol>
+    <div class="card" style="margin-top: 16px">
+      <h3>SQL: retention по когортам и каналам</h3>
+      <p class="sub">Первый запрос недели 1. Таблицы users (id, created_at, channel) и events (user_id, event_time).</p>
+<pre>-- D30 retention by monthly cohort and channel
+WITH cohort AS (
+  SELECT id AS user_id,
+         DATE_TRUNC('month', created_at) AS cohort_month,
+         channel,
+         created_at
+  FROM users
+),
+active_d30 AS (
+  SELECT DISTINCT c.user_id
+  FROM cohort c
+  JOIN events e ON e.user_id = c.user_id
+  WHERE e.event_time &gt;= c.created_at + INTERVAL '28 days'
+    AND e.event_time &lt;  c.created_at + INTERVAL '31 days'
+)
+SELECT c.cohort_month,
+       c.channel,
+       COUNT(*)                                       AS new_users,
+       COUNT(a.user_id)                               AS active_d30,
+       ROUND(100.0 * COUNT(a.user_id) / COUNT(*), 1)  AS retention_d30
+FROM cohort c
+LEFT JOIN active_d30 a ON a.user_id = c.user_id
+GROUP BY 1, 2
+ORDER BY 1, retention_d30;</pre>
+      <a class="filelink" href="files/booklover-retention.sql" target="_blank" rel="noopener">Все запросы кейса · SQL →</a>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="method">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Как думает продакт</span>
+      <h2>Метод, по которому собран этот кейс</h2>
+      <p>Восемь шагов, которые повторяются в любой задаче про удержание. Порядок важен: каждый шаг сужает поле для следующего.</p>
+    </div>
+    <ol class="steps">
+      <li><div><b>Сформулировать задачу</b><span>Какая метрика, на сколько упала, с какого момента, для кого. «Удержание падает» — не задача. «D30 новых пользователей упал с 45% до 28% с апрельской когорты» — задача.</span></div></li>
+      <li><div><b>Проверить данные</b><span>Как определён «активный»? Полный ли у последней когорты 30-дневный период? Не поменялась ли аналитика? Не путать агрегат с разбивкой: 65% и 30% здесь общие, без когорт.</span></div></li>
+      <li><div><b>Посчитать масштаб</b><span>Перевести проценты в людей и деньги: ≈ 9 900 потерянных активных за 3 месяца. Масштаб решает, сколько ресурсов задача заслуживает.</span></div></li>
+      <li><div><b>Разложить на части</b><span>Микс или ядро? Удержание = кто пришёл × что увидел. Сравнить старые и новые каналы, версии приложения, этапы воронки.</span></div></li>
+      <li><div><b>Наблюдение → инсайт → решение → метрика</b><span>Факт из данных, объяснение через поведение человека, изменение в продукте, цифра для проверки. Инсайт — не пересказ цифры, а ответ на «почему».</span></div></li>
+      <li><div><b>Записать гипотезу</b><span>Если [действие], то [метрика] изменится на [величину], потому что [поведение]. Плюс что её опровергнет. Без цифры и порога гипотезу нельзя проверить.</span></div></li>
+      <li><div><b>Приоритизировать</b><span>ICE или RICE. Сначала то, что дёшево и даёт больше знания: SQL и интервью стоят дни, разработка — недели.</span></div></li>
+      <li><div><b>Спроектировать эксперимент и решить</b><span>Главная метрика, guardrails, размер выборки, длительность, правило остановки — до запуска. После — масштабировать, доработать или закрыть, и записать, что узнали.</span></div></li>
+    </ol>
+    <div class="two" style="margin-top: 16px">
+      <div class="card">
+        <h3>Ловушки, которые я обхожу</h3>
+        <ul class="traps"><li>Смотреть на общее число активных вместо когорт</li><li>Додумывать данные под гипотезу: «по-любому снизилось»</li><li>Путать совпадение по времени с причиной (рейтинг и retention)</li><li>Масштабировать поведение активных без эксперимента: они могли бы читать где угодно</li><li>Брать инструмент раньше задачи: RFM без данных о деньгах</li><li>Гипотеза без цифры: «retention вырастет»</li></ul>
+      </div>
+      <div class="card">
+        <h3>Откуда метод</h3>
+        <p class="hint" style="margin-top: 6px">Цикл Build–Measure–Learn и проверка допущений — из книги Эрика Риса «Бизнес с нуля» (The Lean Startup). Шаблон гипотезы «Мы верим, что… приведёт к… узнаем по…» — из Lean UX Джеффа Готельфа. Цепочка из четырёх звеньев — упрощённая схема, которую я использую для учёбы.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="learn">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Материалы</span>
+      <h2>Что посмотреть и прочитать по теме</h2>
+    </div>
+    <div class="two">
+      <div class="card">
+        <h3>Видео</h3>
+        <ul class="res" style="margin-top: 12px">
+          <li><a href="https://www.youtube.com/results?search_query=The+Lean+Startup+Eric+Ries+Talks+at+Google" target="_blank" rel="noopener">Эрик Рис, The Lean Startup · Talks at Google, ≈ 55 мин</a><span>Build–Measure–Learn и MVP от автора метода</span></li>
+          <li><a href="https://thisweekinstartups.com/766" target="_blank" rel="noopener">Кейси Уинтерс: как измерять retention и product-market fit · ≈ 50 мин</a><span>Экс-глава роста Pinterest разбирает кривые удержания на реальных стартапах</span></li>
+          <li><a href="https://www.youtube.com/@LennysPodcast/search?query=retention" target="_blank" rel="noopener">Lenny’s Podcast на YouTube</a><span>Поиск по каналу: retention, Elena Verna, Casey Winters</span></li>
+          <li><a href="https://www.youtube.com/results?search_query=GoPractice+%D0%BF%D1%80%D0%BE%D0%B4%D1%83%D0%BA%D1%82%D0%BE%D0%B2%D1%8B%D0%B5+%D0%B3%D0%B8%D0%BF%D0%BE%D1%82%D0%B5%D0%B7%D1%8B" target="_blank" rel="noopener">GoPractice: вебинары про продуктовые гипотезы (рус.)</a><span>Как формулировать и проверять гипотезы на данных</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Чтение</h3>
+        <ul class="res" style="margin-top: 12px">
+          <li><a href="https://caseyaccidental.com/" target="_blank" rel="noopener">Casey Winters, Guide to Finding Product/Market Fit</a><span>PMF — момент, когда кривая удержания выходит на плато</span></li>
+          <li><a href="https://amplitude.com/explore/analytics/cohort-analysis" target="_blank" rel="noopener">Amplitude: полное руководство по когортному анализу</a><span>Типы когорт, пошаговый разбор и частые ошибки</span></li>
+          <li><a href="https://confidence.spotify.com/glossary/hypothesis-driven-development" target="_blank" rel="noopener">Spotify Confidence: hypothesis-driven development</a><span>Из чего состоит хорошая гипотеза и почему расплывчатая ничему не учит</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap">Retention BookLover · учебный продуктовый кейс · 2026</footer>
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script>
+(function () {
+  const S = {"months": ["Янв", "Фев", "Мар", "Апр", "Май", "Июн"], "monthsLong": ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь"], "dec": ",", "thou": " ", "k": " тыс.", "newU": "пришли", "actU": "активны на 30-й день", "base": "уровень Q1", "plateau": "≈ 8 тыс. удержанных", "ofAll": "всех пользователей", "lost": "потеряно", "stopped": "дочитали и остановились", "notFin": "не дочитали", "f1": "Все пользователи", "f2": "Дочитали первую книгу", "f3": "Начали вторую книгу"};
+  const NS = "http://www.w3.org/2000/svg";
+  const NEW = [12000, 15000, 18000, 22000, 25000, 27000];
+  const ACT = [5400, 6750, 8100, 8360, 7500, 7560];
+  const RET = NEW.map((n, i) => ACT[i] / n * 100);
+  const fmtP = (v, d) => v.toFixed(d).replace(".", S.dec) + "%";
+  const fmtN = n => (n < 0 ? "−" : "") + Math.abs(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, S.thou);
+  const tip = document.getElementById("tip");
+  function el(tag, attrs, parent, text) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (text != null) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function showTip(html, ev) {
+    tip.innerHTML = html; tip.classList.add("on");
+    const x = Math.min(ev.clientX + 14, window.innerWidth - tip.offsetWidth - 8);
+    tip.style.left = x + "px"; tip.style.top = (ev.clientY - tip.offsetHeight - 12) + "px";
+  }
+  function hideTip() { tip.classList.remove("on"); }
+  function bindTip(node, html) {
+    node.addEventListener("mousemove", ev => showTip(html, ev));
+    node.addEventListener("mouseleave", hideTip);
+    node.addEventListener("touchstart", ev => { const t = ev.touches[0]; showTip(html, t); setTimeout(hideTip, 2200); }, { passive: true });
+  }
+  // rounded-top bar path anchored to the baseline
+  function barPath(x, y, w, h, r) {
+    r = Math.min(r, w / 2, h);
+    return `M${x},${y + h}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h}Z`;
+  }
+
+  // 1. retention %
+  (function () {
+    const svg = document.getElementById("cRet");
+    const W = 520, H = 300, L = 40, R = 12, T = 22, B = 34, ih = H - T - B, iw = W - L - R;
+    const y = v => T + ih - v / 50 * ih;
+    for (let v = 0; v <= 50; v += 10) {
+      el("line", { x1: L, x2: W - R, y1: y(v), y2: y(v), class: "gridl" }, svg);
+      el("text", { x: L - 8, y: y(v) + 4, "text-anchor": "end", class: "axis" }, svg, v + "%");
+    }
+    const bw = iw / 6;
+    RET.forEach((v, i) => {
+      const x = L + i * bw + bw * 0.2, w = bw * 0.6;
+      const p = el("path", { d: barPath(x, y(v), w, y(0) - y(v), 4), fill: i < 3 ? "var(--c1)" : "var(--c3)", class: "bar" }, svg);
+      el("text", { x: x + w / 2, y: y(v) - 7, "text-anchor": "middle", class: "lbl" }, svg, fmtP(v, 0));
+      el("text", { x: x + w / 2, y: H - 12, "text-anchor": "middle", class: "axis" }, svg, S.months[i]);
+      const hit = el("rect", { x: L + i * bw, y: T, width: bw, height: ih, fill: "transparent", class: "hit" }, svg);
+      bindTip(hit, `<b>${S.monthsLong[i]}</b><br>${fmtN(NEW[i])} ${S.newU} · ${fmtN(ACT[i])} ${S.actU}<br>Retention D30: <b>${fmtP(v, 1)}</b>`);
+      hit.addEventListener("mouseenter", () => p.classList.add("on")); hit.addEventListener("mouseleave", () => p.classList.remove("on"));
+    });
+    el("line", { x1: L, x2: W - R, y1: y(45), y2: y(45), stroke: "var(--ink-2)", "stroke-width": 1.5, "stroke-dasharray": "5 4" }, svg);
+    el("text", { x: W - R, y: y(45) - 6, "text-anchor": "end", class: "lbl-2" }, svg, S.base + " 45%");
+  })();
+
+  // 2. new vs retained
+  (function () {
+    const svg = document.getElementById("cAbs");
+    const W = 520, H = 300, L = 58, R = 12, T = 22, B = 34, ih = H - T - B, iw = W - L - R;
+    const y = v => T + ih - v / 30000 * ih;
+    for (let v = 0; v <= 30000; v += 10000) {
+      el("line", { x1: L, x2: W - R, y1: y(v), y2: y(v), class: "gridl" }, svg);
+      el("text", { x: L - 8, y: y(v) + 4, "text-anchor": "end", class: "axis" }, svg, v / 1000 + (v ? S.k : ""));
+    }
+    const gw = iw / 6;
+    NEW.forEach((n, i) => {
+      const w = gw * 0.32, x1 = L + i * gw + gw * 0.16, x2 = x1 + w + 2;
+      el("path", { d: barPath(x1, y(n), w, y(0) - y(n), 4), fill: "var(--base-bar)" }, svg);
+      el("path", { d: barPath(x2, y(ACT[i]), w, y(0) - y(ACT[i]), 4), fill: "var(--c1)" }, svg);
+      el("text", { x: L + i * gw + gw / 2, y: H - 12, "text-anchor": "middle", class: "axis" }, svg, S.months[i]);
+      const hit = el("rect", { x: L + i * gw, y: T, width: gw, height: ih, fill: "transparent", class: "hit" }, svg);
+      bindTip(hit, `<b>${S.monthsLong[i]}</b><br>${fmtN(n)} ${S.newU}<br>${fmtN(ACT[i])} ${S.actU}`);
+    });
+    // plateau marker over Mar–Jun retained bars
+    const xa = L + 2 * gw + gw * 0.16, xb = L + 6 * gw - gw * 0.16;
+    el("line", { x1: xa, x2: xb, y1: y(8360) - 10, y2: y(8360) - 10, stroke: "var(--c3)", "stroke-width": 2 }, svg);
+    el("text", { x: (xa + xb) / 2, y: y(8360) - 18, "text-anchor": "middle", class: "lbl", style: "fill: var(--c3); stroke: var(--surface); stroke-width: 4px; paint-order: stroke" }, svg, S.plateau);
+  })();
+
+  // 3. funnel
+  (function () {
+    const rows = [[S.f1, 100, "var(--c1)"], [S.f2, 65, "var(--c1)"], [S.f3, 19.5, "var(--c2)"]];
+    document.getElementById("cFun").innerHTML = rows.map(r =>
+      `<div class="frow"><span class="fl">${r[0]}</span><div class="ftrack"><div class="fbar" style="width:${r[1]}%;background:${r[2]}"></div></div><b class="num">${fmtP(r[1], r[1] % 1 ? 1 : 0)}</b></div>`).join("");
+  })();
+
+  // table
+  const tb = document.getElementById("tbody");
+  tb.innerHTML = NEW.map((n, i) => {
+    const dn = i ? n - NEW[i - 1] : null, da = i ? ACT[i] - ACT[i - 1] : null, mr = i ? da / dn * 100 : null;
+    const bad = i >= 3;
+    return `<tr class="${bad ? "bad" : ""}"><td>${S.monthsLong[i]}</td><td>${fmtN(n)}</td><td>${fmtN(ACT[i])}</td><td class="r">${fmtP(RET[i], 0)}</td>` +
+      `<td>${dn == null ? "—" : "+" + fmtN(dn)}</td><td>${da == null ? "—" : (da > 0 ? "+" : "") + fmtN(da)}</td>` +
+      `<td class="mr">${mr == null ? "—" : (mr < 0 ? "−" : "") + fmtP(Math.abs(mr), 1)}</td></tr>`;
+  }).join("");
+})();
+</script>
+
+</body>
+</html>

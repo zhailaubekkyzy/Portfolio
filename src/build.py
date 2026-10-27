@@ -12,7 +12,8 @@ import os, re, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "src")
 sys.path.insert(0, SRC)
-import en_case, en_crm  # noqa: E402
+import en_case, en_crm, booklover_text  # noqa: E402
+import json
 
 CYR = re.compile("[А-Яа-яЁё]")
 HEAD = ('<!doctype html>\n<html lang="{lang}">\n<head>\n<meta charset="utf-8">\n'
@@ -98,6 +99,31 @@ def main():
             print("     ", repr(m[:100]))
     leftovers(crm_en, "en/rfm-dashboard.html")
     write("en/rfm-dashboard.html", wrap(crm_en.replace("/*__SIM__*/", sim).replace("/*__ANALYTICS__*/", ana), "en"))
+
+    # BookLover retention case: {{key}} placeholders filled from booklover_text.py
+    bl = read("booklover.src.html")
+    for i, lang in enumerate(("ru", "en")):
+        page = bl
+        extra = {
+            "back_href": ("./", "../#en")[i],
+            "lang_href": ("en/booklover-retention.html", "../booklover-retention.html")[i],
+            "lang_label": ("EN", "RU")[i],
+            "root": ("", "../")[i],
+        }
+        def sub(m):
+            k = m.group(1)
+            if k in extra:
+                return extra[k]
+            if k not in booklover_text.T:
+                print(f"  ! booklover: missing key {k}")
+                return k
+            # keep RU thousands like "8 100" on one line
+            return re.sub(r"(\d) (\d{3})(?!\d)", "\\1\u00a0\\2", booklover_text.T[k][i])
+        page = re.sub(r"\{\{(\w+)\}\}", sub, page)
+        page = page.replace("/*__JS__*/", json.dumps({k: v[i] for k, v in booklover_text.JS.items()}, ensure_ascii=False))
+        if lang == "en":
+            leftovers(page, "en/booklover-retention.html", skip=("GoPractice",))
+        write(("booklover-retention.html", "en/booklover-retention.html")[i], wrap(page, lang))
     print("Done.")
 
 

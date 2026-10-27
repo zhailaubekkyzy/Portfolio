@@ -12,6 +12,7 @@ The owner writes in Russian; reply in Russian unless she switches.
   - `case.src.html` + `en_case.py` — case page; `en_case.py` holds (Russian, English) pairs.
   - `crm.src.html` + `en_crm.py` — CRM-style dashboard; `sim.js` (demo-data generator) and `analytics.js` are inlined by the build. `en_crm.py` holds a fragment → English table.
   - `build_xlsx.py`, `data.json`, `sample.json`, `strat.json` — the Excel file and figures behind the case.
+  - `booklover.src.html` + `booklover_text.py` — BookLover retention case (training case, data from the course brief). The page uses `{{key}}` placeholders; `booklover_text.py` holds every text as (Russian, English). Builds `booklover-retention.html` + `en/booklover-retention.html`. SQL in `files/booklover-retention.sql`.
 
 ## Adding a project
 1. Put the case page in `src/` (or as a plain page at the root plus `en/` copy) and files in `files/`.
