@@ -269,6 +269,7 @@ input[type="range"] { width: 100%; accent-color: var(--s0); }
   <div class="main">
     <div class="top">
       <div class="top-row">
+        <button type="button" class="btn" id="undoBtn" hidden title="{{back_t}}" aria-label="{{back_t}}">← {{back}}</button>
         <h1 id="vTitle">{{v_overview}}</h1>
         <label class="search" for="q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input class="ctl" id="q" placeholder="{{q_ph}}" autocomplete="off" aria-label="{{q_label}}"></label>
         <a class="btn lang" href="{{lang_href}}">{{lang_label}}</a>
@@ -598,7 +599,52 @@ input[type="range"] { width: 100%; accent-color: var(--s0); }
     const fn = { overview: rOverview, sources: rSources, cohorts: rCohorts, funnel: rFunnel, diagnosis: rDiagnosis, users: rUsers, experiments: rExperiments, method: () => {} }[view];
     fn();
     $("cntU").textContent = fmtN(sel().length);
+    commit();
   }
+
+  // ---------- one step back ----------
+  // Every change (section, filters, chips, sorting, page, toggles, sliders, user card) is saved as a snapshot.
+  // "← Back", Alt+← or Ctrl/Cmd+Z restores the previous one, including the scroll position.
+  const UNDO = [];
+  let last = null, restoring = false, preScroll = 0, openId = -1;
+  ["pointerdown", "keydown"].forEach(t => document.addEventListener(t, () => { if (!restoring) preScroll = window.scrollY; }, true));
+  const val = id => $(id).value;
+  function snap() {
+    return JSON.stringify({ v: view, F, uChip, uPage, uSort, srcSort, srcMetric, cohMode, funBy, d: openId,
+      sim: [val("simMove"), val("simTo"), val("simMark")], ex: [val("exTest"), val("exBase"), val("exMde"), val("exAlpha"), val("exPower")] });
+  }
+  function commit() {
+    if (restoring) return;
+    const now = snap();
+    if (last !== null && now !== last) { UNDO.push({ s: last, y: preScroll }); if (UNDO.length > 150) UNDO.shift(); }
+    last = now;
+    $("undoBtn").hidden = !UNDO.length;
+  }
+  function undo() {
+    const prev = UNDO.pop();
+    if (!prev) return;
+    restoring = true;
+    const o = JSON.parse(prev.s);
+    Object.assign(F, o.F);
+    uChip = o.uChip; uPage = o.uPage; uSort = o.uSort; srcSort = o.srcSort; srcMetric = o.srcMetric; cohMode = o.cohMode; funBy = o.funBy;
+    ["simMove", "simTo", "simMark"].forEach((id, k) => $(id).value = o.sim[k]);
+    ["exTest", "exBase", "exMde", "exAlpha", "exPower"].forEach((id, k) => $(id).value = o.ex[k]);
+    exPreset = +o.ex[0];
+    syncControls();
+    if (o.v !== view) go(o.v); else render();
+    if (view === "experiments") rExperiments(true);
+    if (o.d >= 0) openUser(o.d); else closeUser();
+    window.scrollTo(0, prev.y);
+    restoring = false;
+    last = snap();
+    $("undoBtn").hidden = !UNDO.length;
+    flash(T.undone);
+  }
+  $("undoBtn").addEventListener("click", undo);
+  document.addEventListener("keydown", e => {
+    const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement && document.activeElement.tagName) && document.activeElement.type !== "range";
+    if ((e.altKey && e.key === "ArrowLeft") || (!typing && (e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === "z")) { e.preventDefault(); undo(); }
+  });
 
   // ---------- OVERVIEW ----------
   function findings() {
@@ -744,11 +790,12 @@ input[type="range"] { width: 100%; accent-color: var(--s0); }
     }
     $("srcHeat").innerHTML = h + "</tbody>";
     rSim();
+    commit();
   }
   // budget simulator (June, all platforms and genres)
   const simTargets = [[3, T.ch_names[3]], [2, T.ch_names[2]], [1, T.ch_names[1]], [-1, T.sim_split]];
   $("simTo").innerHTML = simTargets.map(([v, l]) => `<option value="${v}">${l}</option>`).join("");
-  ["simMove", "simTo", "simMark"].forEach(id => $(id).addEventListener("input", rSim));
+  ["simMove", "simTo", "simMark"].forEach(id => { $(id).addEventListener("input", rSim); $(id).addEventListener("change", () => commit()); });
   function rSim() {
     const jun = []; for (let i = 0; i < N; i++) if (D.month[i] === 5) jun.push(i);
     const by = groupBy(jun, i => D.ch[i], 6), tot = agg(jun);
@@ -801,6 +848,7 @@ input[type="range"] { width: 100%; accent-color: var(--s0); }
     for (let m = F.m0; m <= F.m1; m++) if (C[m].n) series.push({ name: T.mshort[m], vals: C[m].at.map(v => v / C[m].n), color: m < 3 ? "var(--s0)" : "var(--s5)", dash: m < 3 ? "" : m === 3 ? "" : m === 4 ? "6 4" : "2 4", label: m === F.m0 || m === F.m1 ? T.mshort[m] : "" });
     lineChart($("cohLines"), DAYS_AT.map(d => T.coh_day + " " + d), series, { max: 1, fmt: v => fmtP(v, 0) });
     $("cohLeg").innerHTML = series.map(s => `<span><i style="background:${s.color}"></i>${s.name}${s.dash ? " ┄" : ""}</span>`).join("");
+    commit();
   }
 
   // ---------- FUNNEL ----------
@@ -819,6 +867,7 @@ input[type="range"] { width: 100%; accent-color: var(--s0); }
     const hi = Math.max(...secs), lo = Math.min(...secs);
     $("funTable").innerHTML = `<thead><tr><th></th>${[T.fs1s, T.fs2s, T.fs3s, T.fs4s, T.fs5s].map(s => `<th class="r">${s}</th>`).join("")}<th class="r">${T.fun_sec_of}</th></tr></thead><tbody>` +
       by.map((r, k) => r.n ? `<tr><td>${funBy === "channel" ? `<span class="sw" style="--c:${COL[k]}"></span>` : ""}${names[k]}</td><td class="r">${fmtN(r.n)}</td><td class="r">${fmtP(r.d1 / r.n, 0)}</td><td class="r">${fmtP(r.finR, 0)}</td><td class="r">${fmtP(r.sec / r.n, 1)}</td><td class="r">${fmtP(r.ret, 0)}</td><td class="r ${r.secR === hi ? "good" : r.secR === lo ? "bad" : ""}">${fmtP(r.secR, 0)}</td></tr>` : "").join("") + "</tbody>";
+    commit();
   }
 
   // ---------- DIAGNOSIS ----------
@@ -907,6 +956,7 @@ input[type="range"] { width: 100%; accent-color: var(--s0); }
     $("uPager").innerHTML = `<span>${tpl(T.pg_shown, { a: fmtN(list.length ? uPage * PAGE + 1 : 0), b: fmtN(Math.min(list.length, (uPage + 1) * PAGE)), n: fmtN(list.length) })}</span><div><button type="button" class="btn" id="pgPrev" ${uPage === 0 ? "disabled" : ""}>${T.pg_prev}</button><button type="button" class="btn" id="pgNext" ${uPage >= pages - 1 ? "disabled" : ""}>${T.pg_next}</button></div>`;
     $("pgPrev").addEventListener("click", () => { uPage--; rUsers(); });
     $("pgNext").addEventListener("click", () => { uPage++; rUsers(); });
+    commit();
   }
   const bookPill = i => D.sec[i] ? `<span class="pill y">${T.b_sec}</span>` : D.fin[i] ? `<span class="pill m">${T.b_fin}</span>` : `<span class="pill m">${T.b_none}</span>`;
   const statusPill = i => isAct(i) ? `<span class="pill y">${T.st_active}</span>` : `<span class="pill n">${D.life[i] === 0 ? T.st_left0 : tpl(T.st_left, { d: D.life[i] })}</span>`;
@@ -930,19 +980,26 @@ input[type="range"] { width: 100%; accent-color: var(--s0); }
       <div><span class="lab">${T.dr_seg}</span><p class="rec" style="margin-top:8px">${rec}</p></div>`;
     drawer.classList.add("on"); scrim.classList.add("on"); drawer.setAttribute("aria-hidden", "false");
     $("dClose").addEventListener("click", closeUser); $("dClose").focus();
+    openId = i; commit();
   }
-  function closeUser() { drawer.classList.remove("on"); scrim.classList.remove("on"); drawer.setAttribute("aria-hidden", "true"); }
+  function closeUser() {
+    const was = drawer.classList.contains("on");
+    drawer.classList.remove("on"); scrim.classList.remove("on"); drawer.setAttribute("aria-hidden", "true");
+    openId = -1; if (was) commit();
+  }
   scrim.addEventListener("click", closeUser);
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeUser(); });
 
   // search
   const toast = $("toast");
+  let toastT;
+  function flash(msg) { toast.textContent = msg; toast.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => toast.classList.remove("on"), 1400); }
   $("q").addEventListener("keydown", e => {
     if (e.key !== "Enter") return;
     const m = e.target.value.match(/(\d+)/);
     const i = m ? parseInt(m[1], 10) - 1 : -1;
     if (i >= 0 && i < N) openUser(i);
-    else { toast.textContent = T.not_found; toast.classList.add("on"); setTimeout(() => toast.classList.remove("on"), 1800); }
+    else flash(T.not_found);
   });
 
   // ---------- EXPERIMENTS ----------
@@ -950,7 +1007,7 @@ input[type="range"] { width: 100%; accent-color: var(--s0); }
   [...$("exAlpha").options].forEach(o => o.textContent = fmtD(+o.value, 2));
   $("exTest").innerHTML = EX.map((e, k) => `<option value="${k}">${e[1]}</option>`).join("");
   let exPreset = -1;
-  ["exBase", "exMde", "exAlpha", "exPower"].forEach(id => $(id).addEventListener("input", () => rExperiments(true)));
+  ["exBase", "exMde", "exAlpha", "exPower"].forEach(id => { $(id).addEventListener("input", () => rExperiments(true)); $(id).addEventListener("change", () => commit()); });
   $("exTest").addEventListener("change", () => { exPreset = -1; rExperiments(); });
   const zq = p => { // inverse normal CDF (Acklam)
     const a = [-39.6968302866538, 220.946098424521, -275.928510446969, 138.357751867269, -30.6647980661472, 2.50662827745924], b = [-54.4760987982241, 161.585836858041, -155.698979859887, 66.8013118877197, -13.2806815528857], c = [-.00778489400243029, -.322396458041136, -2.40075827716184, -2.54973253934373, 4.37466414146497, 2.93816398269878], d = [.00778469570904146, .32246712907004, 2.445134137143, 3.75440866190742];
