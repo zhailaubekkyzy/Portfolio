@@ -154,6 +154,9 @@ td.l { text-align: left; }
 .weeks li { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: grid; gap: 8px; align-content: start; font-size: 14px; color: var(--ink-2); }
 .weeks b { color: var(--ink); font-weight: 600; font-size: 15px; }
 pre { margin: 0; background: var(--surface-2); border-radius: 10px; padding: 16px; overflow-x: auto; font-family: var(--f-mono); font-size: 12.5px; line-height: 1.6; color: var(--ink); }
+.sqlall { margin-top: 12px; }
+.sqlall summary { cursor: pointer; font-size: 14px; font-weight: 600; color: var(--c1); }
+.sqlall pre { margin-top: 10px; max-height: 480px; overflow: auto; }
 .filelink { display: inline-block; margin-top: 12px; font-size: 14px; font-weight: 600; color: var(--c1); }
 
 /* method */
@@ -478,7 +481,7 @@ FROM cohort c
 LEFT JOIN active_d30 a ON a.user_id = c.user_id
 GROUP BY 1, 2
 ORDER BY 1, retention_d30;</pre>
-      <a class="filelink" href="{{root}}files/booklover-retention.sql" target="_blank" rel="noopener">{{sql_file}} →</a>
+      <details class="sqlall"><summary>{{sql_file}}</summary><pre>{{sql_all}}</pre></details>
     </div>
   </div>
 </section>

@@ -15,7 +15,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "src")
 sys.path.insert(0, SRC)
 import en_case, en_crm, booklover_text, blcrm_text  # noqa: E402
-import json
+import json, html
 
 CYR = re.compile("[А-Яа-яЁё]")
 HEAD = ('<!doctype html>\n<html lang="{lang}">\n<head>\n<meta charset="utf-8">\n'
@@ -114,6 +114,7 @@ def main():
             "lang_href": ("en/booklover-retention.html", "../booklover-retention.html")[i],
             "lang_label": ("EN", "RU")[i],
             "root": ("", "../")[i],
+            "sql_all": html.escape(open(os.path.join(ROOT, "files", "booklover-retention.sql"), encoding="utf-8").read(), quote=False),
         }
         def sub(m):
             k = m.group(1)
@@ -150,6 +151,8 @@ def main():
             return re.sub(r"(\d) (\d{3})(?!\d)", "\\1\u00a0\\2", tx[k])
         page = re.sub(r"\{\{(\w+)\}\}", sub2, crm2)
         page = page.replace("/*__T__*/", json.dumps(tx, ensure_ascii=False))
+        with open(os.path.join(ROOT, "files", "booklover-retention.sql"), encoding="utf-8") as fh:
+            page = page.replace("/*__SQL__*/", json.dumps(fh.read()))
         if lang == "en":
             leftovers(page, "en/booklover-crm.html")
         write(("booklover-crm.html", "en/booklover-crm.html")[i], wrap(page, lang))

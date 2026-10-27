@@ -200,6 +200,7 @@ input[type="range"] { width: 100%; accent-color: var(--s0); }
 .scrim.on { opacity: 1; pointer-events: auto; }
 .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(500px, 100%); background: var(--surface); z-index: 31; box-shadow: var(--shadow); transform: translateX(105%); transition: transform .25s cubic-bezier(.2,.8,.2,1); overflow-y: auto; padding: calc(18px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) 20px; display: grid; gap: 16px; align-content: start; }
 .drawer.on { transform: none; }
+.drawer pre.code { white-space: pre; max-height: none; }
 .dh { display: flex; align-items: center; gap: 12px; }
 .dh .av { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 13px; background: var(--c); }
 .dh h3 { font-family: var(--f-mono); font-size: 18px; }
@@ -552,7 +553,7 @@ FROM cohort c
 LEFT JOIN active_d30 a ON a.user_id = c.user_id
 GROUP BY 1, 2
 ORDER BY 1, retention_d30;</pre>
-        <div class="links" style="margin-top:12px"><a class="btn" href="{{root}}files/booklover-retention.sql" target="_blank" rel="noopener">{{c_sql_file}}</a></div></div>
+        <div class="links" style="margin-top:12px"><button type="button" class="btn pri" data-sql>{{c_sql_file}}</button></div></div>
       <p class="note" style="margin-top:0">{{end_note}}</p>
     </section>
 
@@ -599,12 +600,16 @@ ORDER BY 1, retention_d30;</pre>
               <div><label for="exPower">{{ex_power}}</label><select class="ctl" id="exPower"><option value="0.8">80%</option><option value="0.9">90%</option></select></div>
             </div>
             <div style="min-width:0;display:grid;gap:12px;align-content:start">
-              <div class="res2"><div><span class="big" id="exN"></span><br><span>{{ex_n}}</span></div><div><span class="big" id="exDays"></span><br><span>{{ex_days}}</span></div></div>
+              <div class="res2"><div><span class="big" id="exN"></span><br><span>{{ex_n}}</span></div><div><span class="big" id="exDays"></span><br><span id="exDaysL">{{ex_days}}</span></div></div>
               <p class="note" id="exDaily" style="margin-top:0"></p>
             </div>
           </div>
         </div>
-        <div class="card"><h3>{{ex_rules}}</h3>
+        <div class="card"><h3>{{ex_help_h}}</h3>
+          <ol class="rules" style="padding-left:20px"><li>{{ex_help1}}</li><li>{{ex_help2}}</li><li>{{ex_help3}}</li><li>{{ex_help4}}</li><li>{{ex_help5}}</li></ol>
+          <p class="note">{{ex_help_ex}}</p>
+          <p class="note">{{ex_miller}} <a href="https://evanmiller.org/ab-testing/sample-size.html" target="_blank" rel="noopener" style="color:var(--focus);font-weight:600">{{ex_miller_l}}</a></p>
+          <h3 style="margin-top:16px">{{ex_rules}}</h3>
           <ul class="rules"><li>{{ex_r1}}</li><li>{{ex_r2}}</li><li>{{ex_r3}}</li><li>{{ex_r4}}</li><li>{{ex_r5}}</li></ul></div>
       </div>
     </section>
@@ -617,7 +622,7 @@ ORDER BY 1, retention_d30;</pre>
         <div class="card"><h3>{{me2_t}}</h3><p>{{me2}}</p></div>
         <div class="card"><h3>{{me3_t}}</h3><p>{{me3}}</p></div>
         <div class="card"><h3>{{me4_t}}</h3><p>{{me4}}</p>
-          <div class="links" style="margin-top:12px"><a class="btn" href="{{root}}files/booklover-retention.sql" target="_blank" rel="noopener">{{me_sql}}</a><a class="btn" href="booklover-retention.html">{{me_case}}</a></div></div>
+          <div class="links" style="margin-top:12px"><button type="button" class="btn pri" data-sql>{{me_sql}}</button><a class="btn" href="booklover-retention.html">{{me_case}}</a></div></div>
       </div>
       <div class="vhead" style="margin-top:12px"><span class="eyebrow">{{c_meth_e}}</span><h2>{{c_meth_h}}</h2><p>{{c_meth_p}}</p></div>
       <ol class="msteps">
@@ -1229,6 +1234,23 @@ ORDER BY 1, retention_d30;</pre>
     openId = -1; if (was) commit();
   }
   scrim.addEventListener("click", closeUser);
+
+  // SQL viewer: the queries ship inside the page, so the button works everywhere (no file download)
+  const SQL = /*__SQL__*/;
+  function openSql() {
+    drawer.innerHTML = `<div class="dh"><div><h3>SQL</h3><span>${T.sql_sub}</span></div><button type="button" class="x" id="dClose" aria-label="${T.dr_close}">×</button></div>
+      <div class="links"><button type="button" class="btn pri" id="sqlCopy">${T.sql_copy}</button></div>
+      <pre class="code" id="sqlText" tabindex="0"></pre>`;
+    $("sqlText").textContent = SQL;
+    drawer.classList.add("on"); scrim.classList.add("on"); drawer.setAttribute("aria-hidden", "false");
+    $("dClose").addEventListener("click", closeUser); $("dClose").focus();
+    $("sqlCopy").addEventListener("click", () => {
+      const done = () => flash(T.sql_copied);
+      const fallback = () => { const r = document.createRange(); r.selectNodeContents($("sqlText")); const sl = getSelection(); sl.removeAllRanges(); sl.addRange(r); flash(T.sql_select); };
+      try { navigator.clipboard.writeText(SQL).then(done, fallback); } catch (e) { fallback(); }
+    });
+  }
+  document.querySelectorAll("[data-sql]").forEach(b => b.addEventListener("click", openSql));
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeUser(); });
 
   // search
@@ -1271,7 +1293,9 @@ ORDER BY 1, retention_d30;</pre>
     let days = 0; for (let m = F.m0; m <= F.m1; m++) days += MDAYS[m];
     const eligible = k === 0 ? a.fin : a.n, daily = eligible / days;
     $("exN").textContent = fmtN(n);
-    $("exDays").textContent = daily > 0 ? fmtN(Math.ceil(2 * n / daily)) : "—";
+    const dd = daily > 0 ? Math.ceil(2 * n / daily) : 0;
+    $("exDays").textContent = dd ? fmtN(dd) : "—";
+    $("exDaysL").textContent = T.dec === "," ? ((dd % 10 === 1 && dd % 100 !== 11) ? T.ex_day1 : ([2, 3, 4].includes(dd % 10) && ![12, 13, 14].includes(dd % 100)) ? T.ex_day2 : T.ex_days) : (dd === 1 ? T.ex_day1 : T.ex_days);
     $("exDaily").textContent = tpl(T.ex_daily, { d: fmtN(daily), who: e[2] }) + (k === 2 ? " " + T.ex_wait : "");
   }
 
