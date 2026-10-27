@@ -2,6 +2,7 @@
 
   src/home.src.html  -> index.html               (bilingual RU/EN, projects list)
   src/case.src.html  -> rfm-smartflow.html       + en/rfm-smartflow.html  (via src/en_case.py)
+  src/navspy.html    -> appended to both case pages (active section in the top nav)
   src/crm.src.html   -> rfm-dashboard.html       + en/rfm-dashboard.html  (via src/en_crm.py; sim.js + analytics.js inlined)
 
 Source pages are fragments (no <html>/<head>); this script wraps them into full documents.
@@ -80,8 +81,11 @@ def main():
     write("en/index.html", '<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=../#en">'
                            '<title>Portfolio</title><a href="../#en">Portfolio</a>\n')
 
+    # sticky-nav section highlight + reading progress, shared by the case pages
+    spy = "\n" + read("navspy.html")
+
     # case page
-    case = read("case.src.html")
+    case = read("case.src.html") + spy
     write("rfm-smartflow.html", wrap(case, "ru"))
     case_en = pairs(case, en_case.PAIRS, "case")
     leftovers(case_en, "en/rfm-smartflow.html")
@@ -101,7 +105,7 @@ def main():
     write("en/rfm-dashboard.html", wrap(crm_en.replace("/*__SIM__*/", sim).replace("/*__ANALYTICS__*/", ana), "en"))
 
     # BookLover retention case: {{key}} placeholders filled from booklover_text.py
-    bl = read("booklover.src.html")
+    bl = read("booklover.src.html") + spy
     for i, lang in enumerate(("ru", "en")):
         page = bl
         extra = {
