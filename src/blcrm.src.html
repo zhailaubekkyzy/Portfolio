@@ -217,6 +217,54 @@ input[type="range"] { width: 100%; accent-color: var(--s0); }
 .tl li:not(:last-child)::after { content: ""; position: absolute; left: 78px; top: 14px; bottom: -2px; width: 2px; background: var(--line); }
 .rec { background: color-mix(in srgb, var(--focus) 10%, transparent); border-radius: 10px; padding: 12px; font-size: 13.5px; }
 
+/* presentation */
+body.presenting .view { padding-bottom: 230px; }
+body.presenting #undoBtn, body.presenting #prBtn { display: none; }
+.pbar { position: fixed; left: 240px; right: 0; bottom: 0; z-index: 25; background: var(--surface); border-top: 1px solid var(--line); box-shadow: 0 -8px 30px rgb(15 23 42 / .12);
+  padding: 12px max(20px, env(safe-area-inset-right, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)) 20px; }
+.pbar-in { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 16px; align-items: center; max-width: 1200px; }
+.pmeta { display: grid; gap: 2px; min-width: 0; }
+.pmeta b { font-family: var(--f-display); font-size: 16px; line-height: 1.25; }
+.pbtns { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.pbtns .btn[aria-pressed="true"] { background: var(--surface-2); }
+.pnotes { grid-column: 1 / -1; background: var(--warn-bg); color: var(--ink); border-radius: 10px; padding: 10px 12px; font-size: 14px; display: grid; gap: 4px; }
+.pnotes .lab { color: var(--warn); }
+.pnotes .keys { font-size: 11.5px; color: var(--muted); }
+.pdots { grid-column: 1 / -1; display: flex; gap: 4px; }
+.pdots i { flex: 1; height: 3px; border-radius: 2px; background: var(--line); }
+.pdots i.on { background: var(--s0); }
+.spot { outline: 3px solid var(--s4); outline-offset: 4px; border-radius: 14px; }
+tr.spot td { background: color-mix(in srgb, var(--s4) 16%, transparent); }
+.slide { min-height: calc(100vh - 140px); align-content: center; }
+.sl { max-width: 1000px; display: grid; gap: 22px; }
+.sl h2 { font-family: var(--f-display); font-size: clamp(28px, 4.4vw, 52px); font-weight: 700; letter-spacing: -.02em; line-height: 1.05; }
+.sl .lead { font-size: clamp(16px, 1.8vw, 20px); color: var(--ink-2); max-width: 60ch; }
+.sl .nums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.sl .nums div { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 4px; }
+.sl .nums b { font-family: var(--f-display); font-size: clamp(24px, 3vw, 38px); font-weight: 700; font-variant-numeric: tabular-nums; }
+.sl .nums b.bad { color: var(--bad); }
+.sl .nums span { font-size: 13.5px; color: var(--ink-2); }
+.sl .q { font-size: 17px; font-weight: 600; }
+.sl .bets { display: grid; gap: 10px; }
+.sl .bet { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 14px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; }
+.sl .bet .n { font-family: var(--f-display); font-weight: 700; font-size: 18px; width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--surface-2); }
+.sl .bet.fix .n { background: var(--good-bg); color: var(--good); }
+.sl .bet b { display: block; font-size: 16px; }
+.sl .bet span { font-size: 13.5px; color: var(--ink-2); }
+.sl .weeks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.sl .weeks div { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 4px; align-content: start; }
+.sl .weeks b { font-size: 15px; }
+.sl .weeks span { font-size: 13.5px; color: var(--ink-2); }
+.sl .links { font-size: 14px; }
+.sl .links a { color: var(--focus); }
+@media (max-width: 900px) {
+  .pbar { left: 0; padding-left: max(16px, env(safe-area-inset-left, 0px)); }
+  .pbar-in { grid-template-columns: minmax(0, 1fr); }
+  .pbtns { justify-content: flex-start; }
+  .pnotes .keys { display: none; }
+  .sl .nums, .sl .weeks { grid-template-columns: minmax(0, 1fr); }
+}
+
 .tip { position: fixed; pointer-events: none; z-index: 40; background: var(--ink); color: var(--bg); font-size: 12.5px; line-height: 1.45; padding: 7px 10px; border-radius: 8px; max-width: 260px; opacity: 0; transition: opacity .12s; }
 .tip.on { opacity: 1; }
 .toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 9px 14px; border-radius: 10px; font-size: 13px; z-index: 41; opacity: 0; transition: opacity .2s; pointer-events: none; }
@@ -272,6 +320,7 @@ input[type="range"] { width: 100%; accent-color: var(--s0); }
         <button type="button" class="btn" id="undoBtn" hidden title="{{back_t}}" aria-label="{{back_t}}">← {{back}}</button>
         <h1 id="vTitle">{{v_overview}}</h1>
         <label class="search" for="q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input class="ctl" id="q" placeholder="{{q_ph}}" autocomplete="off" aria-label="{{q_label}}"></label>
+        <button type="button" class="btn pri" id="prBtn" title="{{pr_btn_t}}">{{pr_btn}}</button>
         <a class="btn lang" href="{{lang_href}}">{{lang_label}}</a>
       </div>
       <div class="top-row">
@@ -405,6 +454,9 @@ input[type="range"] { width: 100%; accent-color: var(--s0); }
       </div>
     </section>
 
+    <!-- PRESENTATION SLIDE (shown only in presentation mode) -->
+    <section class="view slide" data-view="slide" hidden><div id="slideBody"></div></section>
+
     <!-- METHOD -->
     <section class="view" data-view="method" hidden>
       <div class="vhead"><span class="eyebrow">{{me_e}}</span><h2>{{me_h}}</h2><p>{{me_p}}</p></div>
@@ -416,6 +468,20 @@ input[type="range"] { width: 100%; accent-color: var(--s0); }
           <div class="links" style="margin-top:12px"><a class="btn" href="{{root}}files/booklover-retention.sql" target="_blank" rel="noopener">{{me_sql}}</a><a class="btn pri" href="booklover-retention.html">{{me_case}}</a></div></div>
       </div>
     </section>
+  </div>
+</div>
+
+<div class="pbar" id="pbar" hidden role="region" aria-label="{{pr_btn}}">
+  <div class="pbar-in">
+    <div class="pmeta"><span class="eyebrow" id="pStep"></span><b id="pTitle"></b></div>
+    <div class="pbtns">
+      <button type="button" class="btn" id="pNotesBtn" aria-pressed="true">{{pr_notes}}</button>
+      <button type="button" class="btn" id="pPrev">{{pr_prev}}</button>
+      <button type="button" class="btn pri" id="pNext">{{pr_next}}</button>
+      <button type="button" class="btn" id="pExit">{{pr_exit}}</button>
+    </div>
+    <div class="pnotes" id="pNotes"><span class="lab">{{pr_say}}</span><p id="pSay"></p><span class="keys">{{pr_keys}}</span></div>
+    <div class="pdots" id="pDots" aria-hidden="true"></div>
   </div>
 </div>
 
@@ -576,8 +642,8 @@ input[type="range"] { width: 100%; accent-color: var(--s0); }
   $("fG").addEventListener("change", e => { F.g = +e.target.value; changed(); });
 
   // ---------- views ----------
-  const VIEWS = ["overview", "sources", "cohorts", "funnel", "diagnosis", "users", "experiments", "method"];
-  const TITLES = { overview: T.v_overview, sources: T.v_sources, cohorts: T.v_cohorts, funnel: T.v_funnel, diagnosis: T.v_diagnosis, users: T.v_users, experiments: T.v_experiments, method: T.v_method };
+  const VIEWS = ["overview", "sources", "cohorts", "funnel", "diagnosis", "users", "experiments", "method", "slide"];
+  const TITLES = { overview: T.v_overview, sources: T.v_sources, cohorts: T.v_cohorts, funnel: T.v_funnel, diagnosis: T.v_diagnosis, users: T.v_users, experiments: T.v_experiments, method: T.v_method, slide: T.pr_btn.replace("▶ ", "") };
   let view = "overview";
   function go(v, push = true) {
     if (!VIEWS.includes(v)) v = "overview";
@@ -592,11 +658,11 @@ input[type="range"] { width: 100%; accent-color: var(--s0); }
     if (btn && btn.parentElement.scrollWidth > btn.parentElement.clientWidth) btn.parentElement.scrollLeft = btn.offsetLeft - 40;
   }
   document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.view)));
-  window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if (h && h !== view) go(h, false); });
+  window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if (h === "present") { if (!presenting) startPresentation(); return; } if (!presenting && h && h !== view && h !== "slide") go(h, false); });
 
   function changed() { syncControls(); uPage = 0; exPreset = -1; render(); }
   function render() {
-    const fn = { overview: rOverview, sources: rSources, cohorts: rCohorts, funnel: rFunnel, diagnosis: rDiagnosis, users: rUsers, experiments: rExperiments, method: () => {} }[view];
+    const fn = { overview: rOverview, sources: rSources, cohorts: rCohorts, funnel: rFunnel, diagnosis: rDiagnosis, users: rUsers, experiments: rExperiments, method: () => {}, slide: () => {} }[view];
     fn();
     $("cntU").textContent = fmtN(sel().length);
     commit();
@@ -614,7 +680,7 @@ input[type="range"] { width: 100%; accent-color: var(--s0); }
       sim: [val("simMove"), val("simTo"), val("simMark")], ex: [val("exTest"), val("exBase"), val("exMde"), val("exAlpha"), val("exPower")] });
   }
   function commit() {
-    if (restoring) return;
+    if (restoring || presenting) return;
     const now = snap();
     if (last !== null && now !== last) { UNDO.push({ s: last, y: preScroll }); if (UNDO.length > 150) UNDO.shift(); }
     last = now;
@@ -643,6 +709,7 @@ input[type="range"] { width: 100%; accent-color: var(--s0); }
   $("undoBtn").addEventListener("click", undo);
   document.addEventListener("keydown", e => {
     const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement && document.activeElement.tagName) && document.activeElement.type !== "range";
+    if (presenting) return;
     if ((e.altKey && e.key === "ArrowLeft") || (!typing && (e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === "z")) { e.preventDefault(); undo(); }
   });
 
@@ -915,7 +982,7 @@ input[type="range"] { width: 100%; accent-color: var(--s0); }
     // versions (core only)
     const V = {};
     for (let i = 0; i < N; i++) {
-      if (!pass(i, true, true) || !CH[D.ch[i]].core) continue;
+      if (!CH[D.ch[i]].core || (F.g >= 0 && D.genre[i] !== F.g)) continue; // all platforms: the table compares them
       const k = D.ver[i] * 2 + D.plat[i];
       V[k] = V[k] || []; V[k].push(i);
     }
@@ -988,7 +1055,7 @@ input[type="range"] { width: 100%; accent-color: var(--s0); }
     openId = -1; if (was) commit();
   }
   scrim.addEventListener("click", closeUser);
-  document.addEventListener("keydown", e => { if (e.key === "Escape") closeUser(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !presenting) closeUser(); });
 
   // search
   const toast = $("toast");
@@ -1036,9 +1103,103 @@ input[type="range"] { width: 100%; accent-color: var(--s0); }
 
   let rz; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(render, 150); });
 
+  // ---------- PRESENTATION MODE ----------
+  // One link, one path: story slides and live dashboard states in the order of the case. "Next" sets the section,
+  // filters and toggles for each step and highlights what to point at; notes tell the presenter what to say.
+  let presenting = false, pIdx = 0, notesOn = true;
+  try { notesOn = localStorage.getItem("bl-notes") !== "0"; } catch (e) {}
+  const DEF = () => { Object.assign(F, { m0: 0, m1: 5, ch: -1, pl: -1, g: -1 }); uChip = "all"; uPage = 0; srcMetric = "ret"; cohMode = "pct"; funBy = "month"; };
+  const slideHTML = {
+    s1: () => {
+      let lost = 0; for (let m = 3; m < 6; m++) lost += D.NEW[m] * 0.45 - D.ACT[m];
+      return `<div class="sl"><span class="eyebrow">${T.p1_e}</span><h2>${T.p1_t}</h2><p class="lead">${T.p1_say}</p>
+        <div class="nums"><div><b class="bad">45% → 28%</b><span>${T.p1_k1}</span></div><div><b>+${fmtD((D.NEW[5] / D.NEW[0] - 1) * 100, 0)}%</b><span>${T.p1_k2}</span></div><div><b>≈ ${fmtN(Math.round(lost / 100) * 100)}</b><span>${T.p1_k3}</span></div></div>
+        <p class="q">${T.p1_q}</p></div>`;
+    },
+    s8: () => `<div class="sl"><h2>${T.p8_t}</h2><div class="bets">
+        <div class="bet fix"><span class="n">0</span><div><b>${T.p8_fix}</b><span>${T.p8_fix_d}</span></div></div>
+        <div class="bet"><span class="n">1</span><div><b>${T.p8_h1}</b><span>${T.p8_h1_d}</span></div></div>
+        <div class="bet"><span class="n">2</span><div><b>${T.p8_h2}</b><span>${T.p8_h2_d}</span></div></div>
+        <div class="bet"><span class="n">3</span><div><b>${T.p8_h3}</b><span>${T.p8_h3_d}</span></div></div></div></div>`,
+    s11: () => `<div class="sl"><h2>${T.p11_t}</h2><div class="weeks">
+        ${[1, 2, 3, 4].map(k => `<div><b>${T["p11_w" + k]}</b><span>${T["p11_w" + k + "d"]}</span></div>`).join("")}</div>
+        <p class="links"><a href="booklover-retention.html" target="_blank" rel="noopener">${T.foot_case}</a> · <a href="{{root}}files/booklover-retention.sql" target="_blank" rel="noopener">${T.me_sql}</a></p></div>`
+  };
+  const STEPS = [
+    { t: T.p1_t, say: T.p1_say, slide: "s1" },
+    { t: T.p2_t, say: T.p2_say, view: "overview", spot: () => $("ovBars").closest(".card") },
+    { t: T.p3_t, say: T.p3_say, view: "cohorts", spot: () => $("cohLines").closest(".card") },
+    { t: T.p4_t, say: T.p4_say, view: "sources", set: () => { srcSort = { k: "cpr", dir: -1 }; }, spot: () => $("srcTable").closest(".card") },
+    { t: T.p5_t, say: T.p5_say, view: "diagnosis", spot: () => $("wf").closest(".card") },
+    { t: T.p6_t, say: T.p6_say, view: "diagnosis", set: () => { F.pl = 0; }, spot: () => $("wf").closest(".card") },
+    { t: T.p7_t, say: T.p7_say, view: "funnel", set: () => { funBy = "genre"; }, spot: () => $("funTable").closest(".card") },
+    { t: T.p8_t, say: T.p8_say, slide: "s8" },
+    { t: T.p9_t, say: T.p9_say, view: "sources", set: () => { $("simMove").value = 100; $("simTo").value = -1; $("simMark").value = 30; }, spot: () => $("simTable").closest(".card") },
+    { t: T.p10_t, say: T.p10_say, view: "experiments", set: () => { $("exTest").value = 0; $("exAlpha").value = "0.05"; $("exPower").value = "0.8"; exPreset = -1; }, spot: () => $("exN").closest(".card") },
+    { t: T.p11_t, say: T.p11_say, slide: "s11" }
+  ];
+  $("pDots").innerHTML = STEPS.map(() => "<i></i>").join("");
+  function showStep(k) {
+    pIdx = Math.max(0, Math.min(STEPS.length - 1, k));
+    const st = STEPS[pIdx];
+    document.querySelectorAll(".spot").forEach(e => e.classList.remove("spot"));
+    closeUser();
+    DEF();
+    if (st.set) st.set();
+    syncControls();
+    if (st.slide) { $("slideBody").innerHTML = slideHTML[st.slide](); go("slide", false); }
+    else go(st.view, false);
+    $("pStep").textContent = tpl(T.pr_step, { n: pIdx + 1, t: STEPS.length });
+    $("pTitle").textContent = st.t;
+    $("pSay").textContent = st.say;
+    $("vTitle").textContent = st.slide ? "BookLover" : TITLES[st.view];
+    $("pPrev").disabled = pIdx === 0;
+    $("pNext").textContent = pIdx === STEPS.length - 1 ? T.pr_exit : T.pr_next;
+    [...$("pDots").children].forEach((d, j) => d.classList.toggle("on", j <= pIdx));
+    if (st.spot) {
+      const el = st.spot();
+      if (el) { el.classList.add("spot"); requestAnimationFrame(() => el.scrollIntoView({ block: "center", behavior: "auto" })); }
+    }
+  }
+  function setNotes(on) {
+    notesOn = on; $("pNotes").hidden = !on; $("pNotesBtn").setAttribute("aria-pressed", on);
+    try { localStorage.setItem("bl-notes", on ? "1" : "0"); } catch (e) {}
+  }
+  function startPresentation() {
+    presenting = true;
+    document.body.classList.add("presenting");
+    $("pbar").hidden = false;
+    setNotes(notesOn);
+    try { history.replaceState(null, "", "#present"); } catch (e) {}
+    showStep(0);
+  }
+  function endPresentation() {
+    presenting = false;
+    document.body.classList.remove("presenting");
+    $("pbar").hidden = true;
+    document.querySelectorAll(".spot").forEach(e => e.classList.remove("spot"));
+    DEF(); syncControls();
+    go("overview");
+    UNDO.length = 0; last = snap(); $("undoBtn").hidden = true;
+    flash(T.pr_done);
+  }
+  $("prBtn").addEventListener("click", startPresentation);
+  $("pNext").addEventListener("click", () => pIdx === STEPS.length - 1 ? endPresentation() : showStep(pIdx + 1));
+  $("pPrev").addEventListener("click", () => showStep(pIdx - 1));
+  $("pExit").addEventListener("click", endPresentation);
+  $("pNotesBtn").addEventListener("click", () => setNotes(!notesOn));
+  document.addEventListener("keydown", e => {
+    if (!presenting || /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement && document.activeElement.tagName)) return;
+    if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") { e.preventDefault(); pIdx === STEPS.length - 1 ? endPresentation() : showStep(pIdx + 1); }
+    else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); showStep(pIdx - 1); }
+    else if (e.key === "Escape") { e.preventDefault(); endPresentation(); }
+    else if (e.code === "KeyN") setNotes(!notesOn); // any keyboard layout
+  });
+
   // ---------- start ----------
   syncControls();
   const start = location.hash.slice(1);
-  go(VIEWS.includes(start) ? start : "overview", false);
+  if (start === "present") { go("overview", false); startPresentation(); }
+  else go(VIEWS.includes(start) && start !== "slide" ? start : "overview", false);
 })();
 </script>

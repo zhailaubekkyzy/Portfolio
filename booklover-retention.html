@@ -56,6 +56,9 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .hero h1 span { color: var(--muted); font-weight: 500; }
 .lead { font-size: clamp(16px, 1.6vw, 19px); color: var(--ink-2); max-width: 66ch; }
 .note { display: inline-flex; align-items: center; gap: 8px; width: fit-content; max-width: 100%; font-size: 13px; color: var(--warn); background: var(--warn-bg); padding: 6px 12px; border-radius: 999px; }
+.herolinks { display: flex; gap: 10px 18px; flex-wrap: wrap; align-items: center; }
+.preslink { background: var(--ink); color: var(--bg); text-decoration: none; font-weight: 600; font-size: 15px; padding: 10px 16px; border-radius: 999px; }
+.preslink:hover { opacity: .9; }
 .crmlink { width: fit-content; font-weight: 600; color: var(--c1); text-decoration: none; font-size: 15px; }
 .crmlink:hover { text-decoration: underline; }
 .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 8px; }
@@ -218,7 +221,7 @@ footer { padding-block: 28px 48px; font-size: 13px; color: var(--muted); }
   <h1>Retention <span>BookLover</span></h1>
   <p class="lead">BookLover — мобильное приложение для чтения книг, запущено 6 месяцев назад. Привлечение растёт каждый месяц, но с апреля 30-дневное удержание падает: с 45% до 28%. Я нашла, когда и где ломается удержание, разделила причины на «кто пришёл» и «что увидел», и предложила три гипотезы с метриками и планом проверки.</p>
   <span class="note">Учебный кейс курса по продукт-менеджменту: данные из условия задачи, не реального продукта</span>
-  <a class="crmlink" href="booklover-crm.html">Все расчёты на уровне пользователей, с фильтрами по каналам, платформам и жанрам: CRM-дашборд →</a>
+  <div class="herolinks"><a class="preslink" href="booklover-crm.html#present">▶ Презентация проекта · 11 шагов</a><a class="crmlink" href="booklover-crm.html">Все расчёты на уровне пользователей, с фильтрами по каналам, платформам и жанрам: CRM-дашборд →</a></div>
   <div class="kpis">
     <div class="kpi"><span class="eyebrow">Retention D30</span><span class="v bad num">45% → 28%</span><span class="d">январская и июньская когорты</span></div>
     <div class="kpi"><span class="eyebrow">Удержано из прироста</span><span class="v bad num">6,5%</span><span class="d">дополнительных пользователей апреля к марту (норма — 45%)</span></div>

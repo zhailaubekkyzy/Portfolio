@@ -10,6 +10,7 @@ T = {
 "nav_label": ("Разделы", "Sections"),
 "nav_back": ("← Все проекты", "← All projects"),
 "nav_crm": ("CRM-дашборд →", "CRM dashboard →"),
+"pres_link": ("▶ Презентация проекта · 11 шагов", "▶ Project presentation · 11 steps"),
 "crm_link": ("Все расчёты на уровне пользователей, с фильтрами по каналам, платформам и жанрам: CRM-дашборд →",
              "Every figure at user level, with filters by channel, platform and genre: CRM dashboard →"),
 "h2_sim": ("Оценка — в симуляторе бюджета на дашборде. Остальной разрыв закрывает исправление Android v2.0: около +5 п.п.",
