@@ -2,6 +2,7 @@
 
   src/home.src.html  -> index.html               (bilingual RU/EN, projects list)
   src/case.src.html  -> rfm-smartflow.html       + en/rfm-smartflow.html  (via src/en_case.py)
+  src/blcrm.src.html -> booklover-crm.html      + en/booklover-crm.html  (texts in blcrm_text.py, data from blsim.js)
   src/navspy.html    -> appended to both case pages (active section in the top nav)
   src/crm.src.html   -> rfm-dashboard.html       + en/rfm-dashboard.html  (via src/en_crm.py; sim.js + analytics.js inlined)
 
@@ -13,7 +14,7 @@ import os, re, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "src")
 sys.path.insert(0, SRC)
-import en_case, en_crm, booklover_text  # noqa: E402
+import en_case, en_crm, booklover_text, blcrm_text  # noqa: E402
 import json
 
 CYR = re.compile("[А-Яа-яЁё]")
@@ -128,6 +129,29 @@ def main():
         if lang == "en":
             leftovers(page, "en/booklover-retention.html", skip=("GoPractice",))
         write(("booklover-retention.html", "en/booklover-retention.html")[i], wrap(page, lang))
+    # BookLover CRM dashboard: {{key}} placeholders and the page script's T object come from blcrm_text.py
+    crm2 = read("blcrm.src.html").replace("/*__SIM__*/", read("blsim.js"))
+    for i, lang in enumerate(("ru", "en")):
+        extra = {
+            "portfolio_href": ("./", "../#en")[i],
+            "lang_href": ("en/booklover-crm.html", "../booklover-crm.html")[i],
+            "lang_label": ("EN", "RU")[i],
+            "root": ("", "../")[i],
+        }
+        tx = {k: v[i] for k, v in blcrm_text.T.items()}
+        def sub2(m):
+            k = m.group(1)
+            if k in extra:
+                return extra[k]
+            if k not in tx:
+                print(f"  ! booklover-crm: missing key {k}")
+                return k
+            return re.sub(r"(\d) (\d{3})(?!\d)", "\\1\u00a0\\2", tx[k])
+        page = re.sub(r"\{\{(\w+)\}\}", sub2, crm2)
+        page = page.replace("/*__T__*/", json.dumps(tx, ensure_ascii=False))
+        if lang == "en":
+            leftovers(page, "en/booklover-crm.html")
+        write(("booklover-crm.html", "en/booklover-crm.html")[i], wrap(page, lang))
     print("Done.")
 
 

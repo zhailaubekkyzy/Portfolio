@@ -56,6 +56,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .hero h1 span { color: var(--muted); font-weight: 500; }
 .lead { font-size: clamp(16px, 1.6vw, 19px); color: var(--ink-2); max-width: 66ch; }
 .note { display: inline-flex; align-items: center; gap: 8px; width: fit-content; max-width: 100%; font-size: 13px; color: var(--warn); background: var(--warn-bg); padding: 6px 12px; border-radius: 999px; }
+.crmlink { width: fit-content; font-weight: 600; color: var(--c1); text-decoration: none; font-size: 15px; }
+.crmlink:hover { text-decoration: underline; }
 .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 8px; }
 .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px 18px 16px; display: grid; gap: 6px; align-content: start; }
 .kpi .v { font-family: var(--f-display); font-size: clamp(22px, 2.6vw, 30px); font-weight: 700; letter-spacing: -.01em; }
@@ -197,6 +199,7 @@ footer { padding-block: 28px 48px; font-size: 13px; color: var(--muted); }
 <nav class="nav" aria-label="Разделы">
   <div class="wrap">
     <a href="./" class="back">← Все проекты</a>
+    <a href="booklover-crm.html" class="back">CRM-дашборд →</a>
     <a href="#summary">Итог</a>
     <a href="#cohorts">Когорты</a>
     <a href="#diagnosis">Диагноз</a>
@@ -215,6 +218,7 @@ footer { padding-block: 28px 48px; font-size: 13px; color: var(--muted); }
   <h1>Retention <span>BookLover</span></h1>
   <p class="lead">BookLover — мобильное приложение для чтения книг, запущено 6 месяцев назад. Привлечение растёт каждый месяц, но с апреля 30-дневное удержание падает: с 45% до 28%. Я нашла, когда и где ломается удержание, разделила причины на «кто пришёл» и «что увидел», и предложила три гипотезы с метриками и планом проверки.</p>
   <span class="note">Учебный кейс курса по продукт-менеджменту: данные из условия задачи, не реального продукта</span>
+  <a class="crmlink" href="booklover-crm.html">Все расчёты на уровне пользователей, с фильтрами по каналам, платформам и жанрам: CRM-дашборд →</a>
   <div class="kpis">
     <div class="kpi"><span class="eyebrow">Retention D30</span><span class="v bad num">45% → 28%</span><span class="d">январская и июньская когорты</span></div>
     <div class="kpi"><span class="eyebrow">Удержано из прироста</span><span class="v bad num">6,5%</span><span class="d">дополнительных пользователей апреля к марту (норма — 45%)</span></div>
@@ -361,8 +365,8 @@ footer { padding-block: 28px 48px; font-size: 13px; color: var(--muted); }
           </ol>
         </div>
         <div>
-          <p class="stmt"><em>Если</em>перераспределить бюджет из каналов с D30 ниже 20% в каналы с D30 выше 40% и убрать офферы, которые обещают то, чего нет в продукте, <em>то</em>средний retention D30 вернётся к 38–40%, а стоимость удержанного читателя снизится на 25%, <em>потому что</em>падение началось вместе с ускорением привлечения, и почти весь прирост ушёл в первые 30 дней.</p>
-          <div class="h-more"><p><b>Как проверяю.</b> Не A/B, а перераспределение бюджета на 4 недели с контрольной группой каналов. Сначала диагностика: разбивка когорт апреля–июня по каналам. Если плохо удерживают все каналы, гипотеза отпадает и фокус уходит на продукт.</p><p><b>Что опровергнет.</b> Органика и старые каналы тоже упали до 30%. Тогда причина в продукте, а не в аудитории.</p></div>
+          <p class="stmt"><em>Если</em>перераспределить бюджет из каналов с D30 ниже 20% в каналы с D30 выше 40% и убрать офферы, которые обещают то, чего нет в продукте, <em>то</em>средний retention D30 вырастет с 28% до 34–38%, а стоимость удержанного читателя снизится на 10–15% при том же бюджете, <em>потому что</em>падение началось вместе с ускорением привлечения, и почти весь прирост ушёл в первые 30 дней.</p>
+          <div class="h-more"><p><b>Как проверяю.</b> Не A/B, а перераспределение бюджета на 4 недели с контрольной группой каналов. Сначала диагностика: разбивка когорт апреля–июня по каналам. Если плохо удерживают все каналы, гипотеза отпадает и фокус уходит на продукт. Оценка — в симуляторе бюджета на дашборде. Остальной разрыв закрывает исправление Android v2.0: около +5 п.п.</p><p><b>Что опровергнет.</b> Органика и старые каналы тоже упали до 30%. Тогда причина в продукте, а не в аудитории.</p></div>
         </div>
       </article>
       <article class="card h-card">
@@ -424,8 +428,8 @@ footer { padding-block: 28px 48px; font-size: 13px; color: var(--muted); }
           <tbody>
             <tr><td>Начали вторую книгу за 7 дней, % дочитавших</td><td class="l"><span class="type p">Главная</span></td><td>30%</td><td>40%</td><td>H1</td></tr>
             <tr><td>Минут чтения второй книги в первую неделю</td><td class="l"><span class="type s">Вспомогательная</span></td><td>замерить</td><td>рост</td><td>H1</td></tr>
-            <tr><td>Retention D30 по каналам</td><td class="l"><span class="type p">Главная</span></td><td>28%</td><td>38–40%</td><td>H2</td></tr>
-            <tr><td>Стоимость удержанного читателя, CAC ÷ D30</td><td class="l"><span class="type s">Вспомогательная</span></td><td>замерить</td><td>−25%</td><td>H2</td></tr>
+            <tr><td>Retention D30 по каналам</td><td class="l"><span class="type p">Главная</span></td><td>28%</td><td>34–38%</td><td>H2</td></tr>
+            <tr><td>Стоимость удержанного читателя, CAC ÷ D30</td><td class="l"><span class="type s">Вспомогательная</span></td><td>замерить</td><td>−10–15%</td><td>H2</td></tr>
             <tr><td>Дочитали первую книгу, %</td><td class="l"><span class="type p">Главная</span></td><td>65%</td><td>70%</td><td>H3</td></tr>
             <tr><td>Retention D7</td><td class="l"><span class="type s">Вспомогательная</span></td><td>замерить</td><td>+3 п.п.</td><td>H3</td></tr>
             <tr><td>Retention D30, все новые</td><td class="l"><span class="type s">Вспомогательная</span></td><td>28%</td><td>рост</td><td>все</td></tr>

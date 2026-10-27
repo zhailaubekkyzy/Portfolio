@@ -1,0 +1,1152 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>BookLover CRM</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: CRM shell like the SmartFlow dashboard — left sidebar of views, sticky top bar with global filters (months, channel, platform, genre), one view at a time, user card in a right drawer. */
+:root {
+  --bg: #f3f5f8; --surface: #ffffff; --surface-2: #edf0f4; --ink: #131a26; --ink-2: #485264; --muted: #7a8496; --line: #dde2ea;
+  --side: #121a27; --side-ink: #c9d1de; --side-muted: #7f8aa0; --side-act: #1f2a3c;
+  --focus: #2a78d6; --good: #11764f; --good-bg: #e3f4ec; --bad: #b4441a; --bad-bg: #fbe9e1; --warn: #8a5a00; --warn-bg: #fff4de;
+  --s0: #2a78d6; --s1: #1baf7a; --s2: #e87ba4; --s3: #6250d6; --s4: #eda100; --s5: #eb6834;
+  --base-bar: #c3c8d1; --heat: 42, 120, 214; --shadow: 0 10px 40px rgb(15 23 42 / .18);
+  --f-display: "Unbounded", "Onest", system-ui, sans-serif;
+  --f-body: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1118; --surface: #151b25; --surface-2: #1d2531; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #283041;
+    --side: #0a0e14; --side-ink: #c9d1de; --side-muted: #6f7a8f; --side-act: #1a2230;
+    --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --bad: #f08a5d; --bad-bg: #3a1f14; --warn: #f0c46a; --warn-bg: #33270f;
+    --s0: #3987e5; --s1: #199e70; --s2: #d55181; --s3: #9085e9; --s4: #c98500; --s5: #d95926;
+    --base-bar: #4a5263; --heat: 57, 135, 229; --shadow: 0 10px 40px rgb(0 0 0 / .5); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1118; --surface: #151b25; --surface-2: #1d2531; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #283041;
+  --side: #0a0e14; --side-ink: #c9d1de; --side-muted: #6f7a8f; --side-act: #1a2230;
+  --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --bad: #f08a5d; --bad-bg: #3a1f14; --warn: #f0c46a; --warn-bg: #33270f;
+  --s0: #3987e5; --s1: #199e70; --s2: #d55181; --s3: #9085e9; --s4: #c98500; --s5: #d95926;
+  --base-bar: #4a5263; --heat: 57, 135, 229; --shadow: 0 10px 40px rgb(0 0 0 / .5); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 14.5px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+p { margin: 0; }
+button, select, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+.num { font-variant-numeric: tabular-nums; }
+.eyebrow { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+/* shell */
+.app { display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: 100vh; }
+.side { background: var(--side); color: var(--side-ink); position: sticky; top: 0; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; padding: 18px 12px calc(18px + env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); gap: 4px; }
+.brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 16px; }
+.brand .logo { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--s0), var(--s1)); display: grid; place-items: center; color: #fff; font-family: var(--f-display); font-weight: 700; font-size: 13px; }
+.brand b { display: block; font-size: 14px; color: #fff; }
+.brand span { font-size: 11.5px; color: var(--side-muted); }
+.navgroup { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--side-muted); padding: 12px 10px 4px; }
+.nav-btn { display: flex; align-items: center; gap: 10px; width: 100%; border: 0; background: transparent; color: var(--side-ink); text-align: left; padding: 8px 10px; border-radius: 9px; cursor: pointer; font-size: 14px; }
+.nav-btn svg { width: 17px; height: 17px; flex: none; opacity: .85; }
+.nav-btn .cnt { margin-left: auto; font-size: 11.5px; color: var(--side-muted); font-variant-numeric: tabular-nums; }
+.nav-btn:hover { background: var(--side-act); }
+.nav-btn[aria-current="page"] { background: var(--side-act); color: #fff; box-shadow: inset 3px 0 0 var(--s0); }
+.side .foot { margin-top: auto; display: grid; gap: 6px; padding: 14px 8px 0; font-size: 12.5px; }
+.side .foot a { color: var(--side-ink); text-decoration: none; }
+.side .foot a:hover { color: #fff; }
+.side .demo { font-size: 11.5px; color: var(--side-muted); line-height: 1.4; }
+.main { min-width: 0; display: flex; flex-direction: column; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 8; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); padding-block: 10px; padding-left: 24px; padding-right: max(24px, env(safe-area-inset-right, 0px)); display: grid; gap: 8px; }
+.top-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.top h1 { font-family: var(--f-display); font-size: 18px; font-weight: 700; letter-spacing: -.01em; margin-right: auto; }
+.ctl { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; font-size: 13.5px; }
+select.ctl { padding-right: 6px; max-width: 200px; }
+.fgroup { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); }
+.search { position: relative; }
+.search input { width: 190px; padding-left: 30px; font-family: var(--f-mono); font-size: 13px; }
+.search svg { position: absolute; left: 9px; top: 50%; width: 15px; height: 15px; transform: translateY(-50%); color: var(--muted); }
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 7px 12px; font-size: 13.5px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+a.btn.lang { font-family: var(--f-mono); font-weight: 700; }
+.btn:hover { border-color: var(--ink-2); }
+.btn.pri { background: var(--ink); color: var(--bg); border-color: var(--ink); font-weight: 600; }
+.active-filters { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; font-size: 12.5px; color: var(--muted); }
+.af { font-size: 12.5px; background: var(--surface-2); color: var(--ink); border-radius: 999px; padding: 3px 5px 3px 11px; display: inline-flex; gap: 6px; align-items: center; }
+.af button { border: 0; background: var(--line); border-radius: 50%; width: 18px; height: 18px; line-height: 1; cursor: pointer; font-size: 12px; padding: 0; }
+.linkbtn { border: 0; background: transparent; color: var(--focus); cursor: pointer; font-size: 12.5px; padding: 2px 4px; }
+
+.view { padding: 22px 24px 48px; padding-right: max(24px, env(safe-area-inset-right, 0px)); display: grid; gap: 16px; align-content: start; }
+.vhead { display: grid; gap: 6px; max-width: 840px; }
+.vhead h2 { font-family: var(--f-display); font-size: clamp(20px, 2.4vw, 26px); font-weight: 700; letter-spacing: -.015em; line-height: 1.15; }
+.vhead p { color: var(--ink-2); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; min-width: 0; }
+.card h3 { font-size: 15.5px; font-weight: 600; }
+.card .sub { font-size: 13px; color: var(--muted); margin: 2px 0 12px; }
+.g2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.g3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.g75 { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 16px; }
+.hint { display: inline-flex; gap: 6px; align-items: center; font-size: 12px; color: var(--focus); background: color-mix(in srgb, var(--focus) 12%, transparent); padding: 3px 10px; border-radius: 999px; width: fit-content; margin-bottom: 8px; }
+.note { font-size: 13px; color: var(--ink-2); background: var(--surface-2); border-radius: 10px; padding: 10px 12px; margin-top: 12px; }
+.findings { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.finding { background: var(--ink); color: var(--bg); border-radius: 14px; padding: 16px 18px; display: grid; gap: 4px; align-content: start; }
+.finding b { font-family: var(--f-display); font-size: 18px; font-weight: 700; line-height: 1.2; }
+.finding span { font-size: 13.5px; color: color-mix(in srgb, var(--bg) 80%, var(--ink)); }
+.kpis { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 13px; display: grid; gap: 3px; min-width: 0; align-content: start; }
+.kpi .v { font-family: var(--f-display); font-size: clamp(17px, 1.6vw, 21px); font-weight: 700; font-variant-numeric: tabular-nums; }
+.kpi .d { font-size: 12px; color: var(--muted); }
+.up { color: var(--good); } .down { color: var(--bad); }
+
+/* charts */
+svg text { font-family: var(--f-body); }
+.chart { width: 100%; height: auto; display: block; }
+.ax { fill: var(--muted); font-size: 11px; }
+.gl { stroke: var(--line); }
+.lb { fill: var(--ink); font-size: 11.5px; font-weight: 600; }
+.lb2 { fill: var(--ink-2); font-size: 11px; }
+.legend { display: flex; gap: 8px 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-2); margin-top: 8px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.legend button { border: 0; background: transparent; padding: 2px 0; cursor: pointer; color: inherit; font-size: inherit; }
+.legend button:hover { color: var(--ink); text-decoration: underline; }
+.hit { cursor: pointer; }
+.hit:hover { fill: color-mix(in srgb, var(--ink) 6%, transparent); }
+
+/* tables */
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 5px 12px; font-size: 13px; cursor: pointer; display: inline-flex; gap: 7px; align-items: center; }
+.chip b { font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ink-2); font-size: 12px; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip[aria-pressed="true"] b { color: var(--bg); opacity: .8; }
+.stats { font-size: 13px; color: var(--ink-2); margin-bottom: 10px; }
+.tw { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+table.crm { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 760px; }
+table.crm th { text-align: left; font-family: var(--f-mono); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding: 10px 12px; background: var(--surface-2); border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.crm th.sort { cursor: pointer; }
+table.crm th.sort:hover, table.crm th[aria-sort] { color: var(--ink); }
+table.crm th.r, table.crm td.r { text-align: right; }
+table.crm td { padding: 9px 12px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; white-space: nowrap; }
+table.crm tbody tr.click { cursor: pointer; }
+table.crm tbody tr.click:hover td { background: var(--surface-2); }
+table.crm tbody tr.on td { background: color-mix(in srgb, var(--focus) 10%, transparent); }
+table.crm tbody tr:last-child td { border-bottom: 0; }
+td .sw { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 8px; background: var(--c); }
+td.bad { color: var(--bad); font-weight: 600; }
+td.good { color: var(--good); font-weight: 600; }
+.pill { font-size: 11.5px; padding: 2px 8px; border-radius: 999px; font-weight: 600; white-space: nowrap; }
+.pill.y { background: var(--good-bg); color: var(--good); }
+.pill.n { background: var(--bad-bg); color: var(--bad); }
+.pill.m { background: var(--surface-2); color: var(--ink-2); font-weight: 500; }
+.uid { font-family: var(--f-mono); font-size: 12.5px; color: var(--focus); }
+.pager { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; font-size: 13px; color: var(--ink-2); flex-wrap: wrap; }
+.pager div { display: flex; gap: 6px; }
+
+/* heat */
+.scroll { overflow-x: auto; }
+table.heat { border-collapse: separate; border-spacing: 3px; font-size: 12.5px; min-width: 560px; width: 100%; }
+table.heat th { font-weight: 500; color: var(--muted); font-size: 11.5px; text-align: center; padding: 4px; white-space: nowrap; }
+table.heat th.row { text-align: left; color: var(--ink); font-weight: 600; font-size: 12.5px; }
+table.heat td { text-align: center; padding: 8px 4px; border-radius: 6px; font-variant-numeric: tabular-nums; color: var(--ink); }
+table.heat td.click { cursor: pointer; }
+table.heat td.click:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
+table.heat td.empty { color: var(--muted); }
+table.heat td.size { color: var(--ink-2); text-align: right; padding-right: 10px; }
+.toggle { display: inline-flex; background: var(--surface-2); padding: 3px; border-radius: 999px; gap: 3px; flex-wrap: wrap; }
+.toggle button { border: 0; background: transparent; padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: 13px; color: var(--ink-2); }
+.toggle button[aria-pressed="true"] { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: 0 1px 2px rgb(0 0 0 / .12); }
+.chead { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+
+/* funnel */
+.fsteps { display: grid; gap: 10px; }
+.fstep { display: grid; grid-template-columns: 210px minmax(0, 1fr) 120px; gap: 12px; align-items: center; font-size: 13.5px; }
+.fstep .tr { height: 26px; background: var(--surface-2); border-radius: 6px; overflow: hidden; }
+.fstep .tr i { display: block; height: 100%; border-radius: 6px; background: var(--s0); transition: width .4s; }
+.fstep.hl .tr i { background: var(--s5); }
+.fstep .v { text-align: right; font-variant-numeric: tabular-nums; }
+.fstep .v b { display: block; font-size: 15px; }
+.fstep .v span { font-size: 11.5px; color: var(--muted); }
+
+/* simulator */
+.sim { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 20px; }
+.ctrls { display: grid; gap: 16px; align-content: start; }
+.ctrls label { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: var(--ink-2); margin-bottom: 6px; }
+.ctrls label b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.ctrls select { width: 100%; max-width: none; }
+input[type="range"] { width: 100%; accent-color: var(--s0); }
+.cmp { width: 100%; border-collapse: collapse; font-size: 14px; }
+.cmp th, .cmp td { padding: 10px 8px; border-bottom: 1px solid var(--line); text-align: right; font-variant-numeric: tabular-nums; }
+.cmp th:first-child, .cmp td:first-child { text-align: left; color: var(--ink-2); }
+.cmp thead th { font-family: var(--f-mono); font-size: 11px; font-weight: 500; text-transform: uppercase; color: var(--muted); }
+.cmp td b { font-size: 15.5px; }
+.cmp .dl { display: block; font-size: 12px; font-weight: 600; }
+
+/* experiments */
+.big { font-family: var(--f-display); font-size: clamp(26px, 3vw, 36px); font-weight: 700; font-variant-numeric: tabular-nums; }
+.res2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.res2 div { background: var(--surface-2); border-radius: 12px; padding: 14px; }
+.res2 span { font-size: 12.5px; color: var(--ink-2); }
+.res2 .big { font-size: clamp(26px, 3vw, 36px); color: var(--ink); }
+.rules { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 6px; font-size: 13.5px; color: var(--ink-2); }
+
+/* method */
+.mcards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.mcards .card p { font-size: 13.5px; color: var(--ink-2); margin-top: 6px; }
+.links { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* drawer */
+.scrim { position: fixed; inset: 0; background: rgb(10 14 20 / .35); z-index: 30; opacity: 0; pointer-events: none; transition: opacity .2s; }
+.scrim.on { opacity: 1; pointer-events: auto; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(500px, 100%); background: var(--surface); z-index: 31; box-shadow: var(--shadow); transform: translateX(105%); transition: transform .25s cubic-bezier(.2,.8,.2,1); overflow-y: auto; padding: calc(18px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) 20px; display: grid; gap: 16px; align-content: start; }
+.drawer.on { transform: none; }
+.dh { display: flex; align-items: center; gap: 12px; }
+.dh .av { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 13px; background: var(--c); }
+.dh h3 { font-family: var(--f-mono); font-size: 18px; }
+.dh span { font-size: 13px; color: var(--muted); }
+.dh .x { margin-left: auto; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; width: 34px; height: 34px; cursor: pointer; font-size: 18px; }
+.dstats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.dstats div { background: var(--surface-2); border-radius: 10px; padding: 9px 10px; }
+.dstats b { display: block; font-family: var(--f-display); font-size: 16px; }
+.dstats span { font-size: 11.5px; color: var(--ink-2); }
+.lab { font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.tl { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 0; }
+.tl li { display: grid; grid-template-columns: 64px 14px minmax(0, 1fr); gap: 10px; font-size: 13.5px; padding-bottom: 12px; position: relative; }
+.tl li .d { font-family: var(--f-mono); font-size: 12px; color: var(--muted); text-align: right; padding-top: 1px; }
+.tl li i { width: 10px; height: 10px; border-radius: 50%; background: var(--c, var(--s0)); margin-top: 5px; position: relative; z-index: 1; }
+.tl li:not(:last-child)::after { content: ""; position: absolute; left: 78px; top: 14px; bottom: -2px; width: 2px; background: var(--line); }
+.rec { background: color-mix(in srgb, var(--focus) 10%, transparent); border-radius: 10px; padding: 12px; font-size: 13.5px; }
+
+.tip { position: fixed; pointer-events: none; z-index: 40; background: var(--ink); color: var(--bg); font-size: 12.5px; line-height: 1.45; padding: 7px 10px; border-radius: 8px; max-width: 260px; opacity: 0; transition: opacity .12s; }
+.tip.on { opacity: 1; }
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 9px 14px; border-radius: 10px; font-size: 13px; z-index: 41; opacity: 0; transition: opacity .2s; pointer-events: none; }
+.toast.on { opacity: 1; }
+
+@media (max-width: 1200px) { .kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 900px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .side { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; height: auto; flex-direction: row; overflow-x: auto; padding: 8px max(10px, env(safe-area-inset-right, 0px)) 8px max(10px, env(safe-area-inset-left, 0px)); gap: 4px; scrollbar-width: none; }
+  .brand, .navgroup, .side .foot { display: none; }
+  .nav-btn { width: auto; flex: none; white-space: nowrap; padding: 7px 10px; }
+  .nav-btn .cnt { display: none; }
+  .top { position: static; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .view { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .g2, .g3, .g75, .findings, .sim, .mcards { grid-template-columns: minmax(0, 1fr); }
+  .fstep { grid-template-columns: minmax(0, 1fr) 96px; }
+  .fstep .t { grid-column: 1 / -1; }
+}
+@media (max-width: 520px) {
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .search input { width: 150px; }
+  select.ctl { max-width: 160px; }
+  .dstats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .card { padding: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+
+<div class="app">
+  <aside class="side" aria-label="Разделы">
+    <div class="brand"><span class="logo">BL</span><div><b>BookLover · Retention</b><span>CRM на демо-данных</span></div></div>
+    <div class="navgroup">Анализ</div>
+    <button class="nav-btn" data-view="overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Обзор</button>
+    <button class="nav-btn" data-view="sources"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16l-6 8v6l-4 2v-8z"/></svg>Источники трафика</button>
+    <button class="nav-btn" data-view="cohorts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h12M9 3v18M15 3v12"/></svg>Когорты</button>
+    <button class="nav-btn" data-view="funnel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16M7 10h10M10 15h4M11 20h2"/></svg>Воронка чтения</button>
+    <button class="nav-btn" data-view="diagnosis"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>Диагностика</button>
+    <div class="navgroup">Пользователи</div>
+    <button class="nav-btn" data-view="users"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6"/><path d="M16 4a4 4 0 0 1 0 8M22 21c0-3-2-5-5-5.6"/></svg>Пользователи<span class="cnt" id="cntU"></span></button>
+    <div class="navgroup">Решения</div>
+    <button class="nav-btn" data-view="experiments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-5-9V3"/></svg>Эксперименты</button>
+    <button class="nav-btn" data-view="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg>Как устроены данные</button>
+    <div class="foot">
+      <a href="./">← Портфолио</a>
+      <a href="booklover-retention.html">Кейс: Retention BookLover</a>
+      <p class="demo">Демо-данные: модель воспроизводит цифры из условия кейса. Каналы, платформы и версии — учебные.</p>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="top">
+      <div class="top-row">
+        <h1 id="vTitle">Обзор</h1>
+        <label class="search" for="q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input class="ctl" id="q" placeholder="BL-000123" autocomplete="off" aria-label="Найти пользователя по номеру"></label>
+        <a class="btn lang" href="en/booklover-crm.html">EN</a>
+      </div>
+      <div class="top-row">
+        <span class="fgroup">Месяцы регистрации
+          <select class="ctl" id="fM0" aria-label="С"></select>–<select class="ctl" id="fM1" aria-label="по"></select></span>
+        <select class="ctl" id="fCh" aria-label="Канал"></select>
+        <select class="ctl" id="fPl" aria-label="Платформа"></select>
+        <select class="ctl" id="fG" aria-label="Жанр"></select>
+        <div class="active-filters" id="af"></div>
+      </div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <section class="view" data-view="overview">
+      <div class="vhead"><span class="eyebrow">Январь – июнь · когорты регистрации</span><h2>Привлечение растёт, удержание падает с апреля</h2><p>Каждый пользователь из шести когорт кейса — строка данных. Фильтры наверху меняют все разделы. Нажмите на месяц на графике — откроется список его пользователей.</p></div>
+      <div class="findings" id="findings"></div>
+      <div class="kpis" id="kpis"></div>
+      <div class="g2">
+        <div class="card"><h3>Пришли и остались по месяцам</h3><p class="sub">Серые — пришли, синие — активны на 30-й день</p><span class="hint">Нажмите на месяц → его пользователи</span>
+          <svg class="chart" id="ovBars" viewBox="0 0 560 260" role="img" aria-label="Пришли и остались по месяцам"></svg></div>
+        <div class="card"><h3>Откуда приходят пользователи</h3><p class="sub">Структура привлечения по каналам, тыс. человек</p><span class="hint">Нажмите на канал → источники трафика</span>
+          <svg class="chart" id="ovMix" viewBox="0 0 560 260" role="img" aria-label="Откуда приходят пользователи"></svg>
+          <div class="legend" id="ovMixLeg"></div></div>
+      </div>
+    </section>
+
+    <!-- SOURCES -->
+    <section class="view" data-view="sources" hidden>
+      <div class="vhead"><span class="eyebrow">Источники трафика</span><h2>Какой канал приводит читателей, а какой — установки</h2><p>Стоимость удержанного читателя = расходы канала ÷ активные на 30-й день. Это главная метрика для бюджета: дешёвая установка может обходиться дорого, если человек уходит в первую неделю.</p></div>
+      <div class="card"><h3>Каналы за выбранные месяцы</h3><p class="sub">Нажмите на заголовок, чтобы отсортировать. Нажмите на строку — фильтр по каналу для всех разделов.</p>
+        <div class="tw"><table class="crm" id="srcTable"></table></div></div>
+      <div class="card">
+        <div class="chead"><div><h3>Каналы по месяцам</h3><p class="sub">Выберите метрику. Пустая клетка — канала ещё не было.</p></div>
+          <div class="toggle" role="group" aria-label="Каналы по месяцам" id="srcMetric"></div></div>
+        <div class="scroll"><table class="heat" id="srcHeat"></table></div>
+      </div>
+      <div class="card">
+        <h3>Симулятор бюджета · гипотеза 2</h3><p class="sub">База — июнь. Переложите часть бюджета TikTok и промо в каналы, которые удерживают. При росте ставок CAC в новом канале растёт, поэтому заложена наценка на масштаб.</p>
+        <div class="sim">
+          <div class="ctrls">
+            <div><label for="simMove">Переложить из TikTok и промо <b id="simMoveV"></b></label><input type="range" id="simMove" min="0" max="100" step="10" value="70"></div>
+            <div><label for="simTo">Куда</label><select class="ctl" id="simTo"></select></div>
+            <div><label for="simMark">Наценка CAC на масштаб <b id="simMarkV"></b></label><input type="range" id="simMark" min="0" max="60" step="5" value="30"></div>
+          </div>
+          <div style="min-width:0">
+            <table class="cmp" id="simTable"></table>
+            <p class="note" id="simNote"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COHORTS -->
+    <section class="view" data-view="cohorts" hidden>
+      <div class="vhead"><span class="eyebrow">Когорты</span><h2>Кривые удержания по месяцам регистрации</h2><p>Доля когорты, которая всё ещё читала на 1-й, 3-й, 7-й, 14-й и 30-й день. Если кривая выходит на плато, у продукта есть ядро. Здесь плато ниже с каждым месяцем.</p></div>
+      <div class="card">
+        <div class="chead"><div><h3>Тепловая карта когорт</h3><p class="sub">Нажмите на клетку → пользователи, которые ушли до этого дня</p></div>
+          <div class="toggle" role="group" aria-label="Тепловая карта когорт"><button type="button" id="cohPct" aria-pressed="true">Проценты</button><button type="button" id="cohPpl" aria-pressed="false">Люди</button></div></div>
+        <div class="scroll"><table class="heat" id="cohHeat"></table></div>
+      </div>
+      <div class="card"><h3>Кривые</h3><p class="sub">Наведите на линию, чтобы увидеть значения</p>
+        <svg class="chart" id="cohLines" viewBox="0 0 640 280" role="img" aria-label="Кривые"></svg>
+        <div class="legend" id="cohLeg"></div></div>
+    </section>
+
+    <!-- FUNNEL -->
+    <section class="view" data-view="funnel" hidden>
+      <div class="vhead"><span class="eyebrow">Воронка чтения</span><h2>Где читатель теряется внутри продукта</h2><p>Каждый шаг — доля от зарегистрированных. Главный обрыв — между «дочитал» и «начал вторую»: момент успеха становится точкой выхода.</p></div>
+      <div class="card"><div class="fsteps" id="fSteps"></div></div>
+      <div class="card">
+        <div class="chead"><div><h3>Разбивка</h3><p class="sub">Конверсия в каждый шаг от зарегистрированных. Последний столбец — переход ко второй книге от дочитавших.</p></div>
+          <div class="toggle" role="group" aria-label="Разбивка" id="funBy"></div></div>
+        <div class="tw"><table class="crm" id="funTable"></table></div>
+        <p class="note">Фэнтези и любовные романы продолжают чаще: у них есть серии. Бизнес и саморазвитие — реже всего. Рекомендации на последней странице стоит строить от жанра и серии.</p>
+      </div>
+    </section>
+
+    <!-- DIAGNOSIS -->
+    <section class="view" data-view="diagnosis" hidden>
+      <div class="vhead"><span class="eyebrow">Диагностика</span><h2>Что объясняет падение: аудитория или продукт</h2><p>Разложение показывает, сколько процентных пунктов падения дал сдвиг структуры каналов, а сколько — ухудшение удержания внутри старых каналов.</p></div>
+      <div class="g75">
+        <div class="card"><h3>Retention D30: март → июнь</h3><p class="sub">Ядро — органика, рекомендации, Instagram, Telegram. Новые — TikTok и промо.</p>
+          <svg class="chart" id="wf" viewBox="0 0 560 260" role="img" aria-label="Retention D30: март → июнь"></svg>
+          <p class="note" id="wfNote"></p></div>
+        <div class="card"><h3>Версии приложения</h3><p class="sub">Только ядро: так видно продукт без влияния новых каналов</p>
+          <div class="tw"><table class="crm" id="verTable" style="min-width:380px;font-size:13px"></table></div></div>
+      </div>
+      <div class="card"><h3>Retention D30 по сегментам</h3><p class="sub">Ядро на iOS держится, ядро на Android падает с майской когорты — после выхода v2.0 (6 мая).</p>
+        <svg class="chart" id="segLines" viewBox="0 0 640 260" role="img" aria-label="Retention D30 по сегментам"></svg>
+        <div class="legend" id="segLeg"></div></div>
+      <div class="g3">
+        <div class="card"><span class="eyebrow">Аудитория</span><p style="margin-top:6px">Около двух третей падения — новые каналы. Их пользователи почти не доживают до 30-го дня. Решение — гипотеза 2.</p></div>
+        <div class="card"><span class="eyebrow">Продукт</span><p style="margin-top:6px">Остальное — Android на v2.0. Первый шаг: crash rate и время открытия книги на v2.0, откат или хотфикс. Это дешевле любого эксперимента.</p></div>
+        <div class="card"><span class="eyebrow">Хроническое</span><p style="margin-top:6px">Переход ко второй книге почти не менялся по месяцам. Он не объясняет апрель, но это самый большой рычаг роста. Решение — гипотеза 1.</p></div>
+      </div>
+      <p class="sub" style="font-size:12.5px;color:var(--muted)">Разложение всегда сравнивает март и июнь, фильтр месяцев к нему не применяется.</p>
+    </section>
+
+    <!-- USERS -->
+    <section class="view" data-view="users" hidden>
+      <div class="vhead"><span class="eyebrow">Пользователи</span><h2>Каждый пользователь когорт</h2><p>Нажмите на строку — откроется карточка пользователя с историей чтения.</p></div>
+      <div class="card">
+        <div class="toolbar"><div class="chips" id="uChips"></div></div>
+        <p class="stats" id="uStats"></p>
+        <div class="tw"><table class="crm" id="uTable"></table></div>
+        <div class="pager" id="uPager"></div>
+      </div>
+    </section>
+
+    <!-- EXPERIMENTS -->
+    <section class="view" data-view="experiments" hidden>
+      <div class="vhead"><span class="eyebrow">Эксперименты</span><h2>Сколько людей и дней нужно на тест</h2><p>Калькулятор размера выборки для A/B-теста долей. Трафик берётся из данных с учётом фильтров: сколько подходящих пользователей приходит в день.</p></div>
+      <div class="g75">
+        <div class="card"><h3>Калькулятор</h3>
+          <div class="sim" style="margin-top:12px">
+            <div class="ctrls">
+              <div><label for="exTest">Тест</label><select class="ctl" id="exTest"></select></div>
+              <div><label for="exBase">Базовый уровень <b id="exBaseV"></b></label><input type="range" id="exBase" min="5" max="80" step="1"></div>
+              <div><label for="exMde">Ожидаемый эффект <b id="exMdeV"></b></label><input type="range" id="exMde" min="1" max="15" step="1"></div>
+              <div><label for="exAlpha">Уровень значимости α</label><select class="ctl" id="exAlpha"><option value="0.05">0,05</option><option value="0.1">0,10</option><option value="0.01">0,01</option></select></div>
+              <div><label for="exPower">Мощность</label><select class="ctl" id="exPower"><option value="0.8">80%</option><option value="0.9">90%</option></select></div>
+            </div>
+            <div style="min-width:0;display:grid;gap:12px;align-content:start">
+              <div class="res2"><div><span class="big" id="exN"></span><br><span>в каждой группе</span></div><div><span class="big" id="exDays"></span><br><span>дней набора</span></div></div>
+              <p class="note" id="exDaily" style="margin-top:0"></p>
+            </div>
+          </div>
+        </div>
+        <div class="card"><h3>Правила, которые записываю до запуска</h3>
+          <ul class="rules"><li>Одна главная метрика и порог успеха</li><li>Guardrails: удаления, отписки от уведомлений, рейтинг</li><li>Не смотреть на результат до набора выборки</li><li>Тест только на новых пользователях</li><li>Решение: масштабировать, доработать или закрыть — и записать, что узнали</li></ul></div>
+      </div>
+    </section>
+
+    <!-- METHOD -->
+    <section class="view" data-view="method" hidden>
+      <div class="vhead"><span class="eyebrow">Как устроены данные</span><h2>Модель, которая воспроизводит условие кейса</h2><p>Условие кейса даёт итоговые цифры. Чтобы тренироваться на сегментах, я смоделировала каждого пользователя так, что итоги совпадают с условием точно.</p></div>
+      <div class="mcards">
+        <div class="card"><h3>Точные итоги</h3><p>Новых 12/15/18/22/25/27 тыс., активных на 30-й день 5 400 / 6 750 / 8 100 / 8 360 / 7 500 / 7 560. Дочитали 65%, из них начали вторую 30%. Рейтинг около 4,5 в январе–марте и 4,2 в апреле–июне.</p></div>
+        <div class="card"><h3>Учебные допущения</h3><p>С апреля добавлены TikTok и промо «книги бесплатно». 6 мая вышла v2.0, на Android она хуже. Каналы, платформы, жанры, CAC и расходы придуманы, чтобы показать, как искать причину.</p></div>
+        <div class="card"><h3>Как подогнаны итоги</h3><p>У каждого пользователя есть вероятность остаться: от канала, мотивации, платформы и версии. Сдвиг по шкале логитов подбирает её так, чтобы ожидаемая сумма совпала с условием. Систематическая выборка даёт ровно нужное число.</p></div>
+        <div class="card"><h3>SQL для реальных данных</h3><p>Те же разрезы на реальной базе считаются запросами из файла: retention по когортам, каналам и версиям, воронка чтения, цена удержанного.</p>
+          <div class="links" style="margin-top:12px"><a class="btn" href="files/booklover-retention.sql" target="_blank" rel="noopener">Открыть SQL-запросы</a><a class="btn pri" href="booklover-retention.html">Вернуться к кейсу</a></div></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" aria-label="User"></aside>
+<div class="tip" id="tip" role="tooltip"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* Demo-data generator for the BookLover retention CRM.
+   Deterministic (fixed seed). Every user of the six cohorts in the course brief is simulated,
+   and the totals are pinned to the brief exactly:
+   sign-ups 12/15/18/22/25/27 thousand, active on day 30: 5 400 / 6 750 / 8 100 / 8 360 / 7 500 / 7 560,
+   65% finished a first book, 30% of finishers started a second one.
+   Channels, platforms, app versions, genres, ratings and spend are invented to illustrate the case. */
+function simulateBooklover() {
+  let s = 20261027;
+  const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  const gauss = () => { let u = 0; while (u === 0) u = rnd(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * rnd()); };
+
+  const NEW = [12000, 15000, 18000, 22000, 25000, 27000];
+  const ACT = [5400, 6750, 8100, 8360, 7500, 7560];
+  const DAYS = [31, 28, 31, 30, 31, 30];
+  const FIN_SHARE = 0.65, SEC_SHARE = 0.30;
+
+  // id, retention effect (logit), finish weight, second-book weight, CAC in tenge, core channel?
+  const CHANNELS = [
+    { id: "org", w: 0.15, f: 1.05, s: 1.05, cac: 0, core: 1 },
+    { id: "ref", w: 0.40, f: 1.10, s: 1.15, cac: 300, core: 1 },
+    { id: "ig", w: -0.20, f: 1.00, s: 1.00, cac: 900, core: 1 },
+    { id: "tg", w: 0.02, f: 1.05, s: 1.05, cac: 650, core: 1 },
+    { id: "tt", w: -2.3, f: 0.62, s: 0.70, cac: 450, core: 0 },
+    { id: "promo", w: -3.4, f: 0.38, s: 0.55, cac: 250, core: 0 }
+  ];
+  // users per channel per month (thousands), sums equal NEW
+  const MIX = [
+    [4.4, 1.8, 3.6, 2.2, 0, 0],
+    [5.4, 2.3, 4.6, 2.7, 0, 0],
+    [6.4, 2.8, 5.6, 3.2, 0, 0],
+    [6.6, 2.9, 5.7, 3.3, 2.3, 1.2],
+    [6.7, 2.9, 5.8, 3.3, 3.6, 2.7],
+    [6.8, 3.0, 5.8, 3.4, 4.5, 3.5]
+  ];
+  // genres: id, share, second-book weight (series genres continue more)
+  const GENRES = [
+    { id: "fantasy", w: .22, s: 1.35 }, { id: "romance", w: .18, s: 1.25 }, { id: "fiction", w: .20, s: .95 },
+    { id: "business", w: .16, s: .75 }, { id: "selfhelp", w: .14, s: .7 }, { id: "classics", w: .10, s: .85 }
+  ];
+  // versions: 0 = v1.8 (Jan–Mar), 1 = v1.9 (Apr 1 – May 5), 2 = v2.0 (from May 6, new reader + paywall)
+  const VERSIONS = ["1.8", "1.9", "2.0"];
+  const V2_DAY = 31 + 28 + 31 + 30 + 5; // day index of May 6, counting Jan 1 as 0
+
+  const N = NEW.reduce((a, b) => a + b, 0);
+  const month = new Uint8Array(N), day = new Uint8Array(N), ch = new Uint8Array(N), plat = new Uint8Array(N),
+    ver = new Uint8Array(N), genre = new Uint8Array(N), life = new Uint8Array(N), fin = new Uint8Array(N),
+    finDay = new Uint8Array(N), sec = new Uint8Array(N), rating = new Uint8Array(N), minutes = new Uint16Array(N);
+  const intent = new Float32Array(N), zAct = new Float32Array(N);
+
+  const pickW = (arr, key) => { let r = rnd() * arr.reduce((a, x) => a + x[key], 0), a = 0; for (let i = 0; i < arr.length; i++) { a += arr[i][key]; if (r < a) return i; } return arr.length - 1; };
+
+  // systematic sampling: picks exactly round(sum p) items with inclusion probability p (after scaling to target)
+  function pickExact(idx, weight, target, out) {
+    let lo = 0, hi = 50;
+    const sumAt = k => { let t = 0; for (const i of idx) t += Math.min(1, k * weight[i]); return t; };
+    for (let it = 0; it < 60; it++) { const mid = (lo + hi) / 2; if (sumAt(mid) < target) lo = mid; else hi = mid; }
+    const k = hi;
+    const order = idx.slice();
+    for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); const t = order[i]; order[i] = order[j]; order[j] = t; }
+    let acc = rnd(), picked = 0;
+    for (const i of order) {
+      const p = Math.min(1, k * weight[i]);
+      const before = Math.floor(acc); acc += p;
+      if (Math.floor(acc) > before && picked < target) { out[i] = 1; picked++; }
+    }
+    // rounding guard: top up deterministically if one short
+    for (let j = 0; picked < target && j < order.length; j++) if (!out[order[j]]) { out[order[j]] = 1; picked++; }
+    return k;
+  }
+
+  // same idea on the logit scale: shift a so the expected count hits the target, then systematic sampling
+  function pickLogit(idx, z, target, out) {
+    const sig = x => 1 / (1 + Math.exp(-x));
+    let lo = -12, hi = 12;
+    for (let it = 0; it < 60; it++) { const mid = (lo + hi) / 2; let t = 0; for (const i of idx) t += sig(mid + z[i]); if (t < target) lo = mid; else hi = mid; }
+    const order = idx.slice();
+    for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); const t = order[i]; order[i] = order[j]; order[j] = t; }
+    let acc = rnd(), picked = 0;
+    for (const i of order) { const before = Math.floor(acc); acc += sig(hi + z[i]); if (Math.floor(acc) > before && picked < target) { out[i] = 1; picked++; } }
+    for (let j = 0; picked < target && j < order.length; j++) if (!out[order[j]]) { out[order[j]] = 1; picked++; }
+  }
+
+  let id = 0, dayOffset = 0;
+  const byMonth = [];
+  for (let m = 0; m < 6; m++) {
+    const ids = [];
+    MIX[m].forEach((k, c) => {
+      const n = Math.round(k * 1000);
+      for (let i = 0; i < n; i++) {
+        month[id] = m; ch[id] = c;
+        day[id] = Math.floor(rnd() * DAYS[m]);
+        const absDay = dayOffset + day[id];
+        plat[id] = rnd() < 0.62 ? 1 : 0; // 1 = Android, 0 = iOS
+        ver[id] = absDay >= V2_DAY ? 2 : m >= 3 ? 1 : 0;
+        genre[id] = pickW(GENRES, "w");
+        const g = gauss();
+        intent[id] = Math.exp(0.55 * g);
+        let z = CHANNELS[c].w + 0.8 * g;
+        if (ver[id] === 1) z -= 0.05;
+        if (ver[id] === 2 && plat[id] === 1) z -= 0.6; // v2.0 Android reader regression
+        zAct[id] = z;
+        ids.push(id); id++;
+      }
+    });
+    byMonth.push(ids);
+    dayOffset += DAYS[m];
+  }
+
+  // D30 activity: exact per cohort
+  const act = new Uint8Array(N);
+  byMonth.forEach((ids, m) => pickLogit(ids, zAct, ACT[m], act));
+
+  // lifetime in days: 30 = still active on day 30; churners leave earlier
+  for (let i = 0; i < N; i++) {
+    if (act[i]) { life[i] = 30; continue; }
+    const coreBoost = CHANNELS[ch[i]].core ? 1 : 0.45;
+    const mean = 7 * coreBoost * Math.min(2, intent[i]);
+    let d = Math.floor(-Math.log(1 - rnd()) * mean);
+    if (rnd() < (CHANNELS[ch[i]].core ? 0.18 : 0.42)) d = 0; // never came back after day 0
+    life[i] = Math.min(29, d);
+  }
+
+  // first book finished: 65% of all users, linked to lifetime and channel
+  const all = Array.from({ length: N }, (_, i) => i);
+  const wFin = new Float32Array(N);
+  for (let i = 0; i < N; i++) wFin[i] = CHANNELS[ch[i]].f * (0.25 + life[i] / 30) * Math.sqrt(intent[i]);
+  pickExact(all, wFin, Math.round(N * FIN_SHARE), fin);
+  for (let i = 0; i < N; i++) if (fin[i]) finDay[i] = Math.max(1, Math.min(life[i] || 3, Math.round(3 + rnd() * 12)));
+
+  // second book started within 7 days of finishing: 30% of finishers
+  const finIds = all.filter(i => fin[i]);
+  const wSec = new Float32Array(N);
+  for (const i of finIds) wSec[i] = CHANNELS[ch[i]].s * GENRES[genre[i]].s * (0.35 + life[i] / 30) * intent[i];
+  pickExact(finIds, wSec, Math.round(finIds.length * SEC_SHARE), sec);
+
+  // reading minutes in the first 30 days
+  for (let i = 0; i < N; i++) {
+    const base = 12 * (life[i] + 1) * (0.6 + 0.4 * intent[i]) * (fin[i] ? 1.5 : 0.8) * (sec[i] ? 1.3 : 1);
+    minutes[i] = Math.min(4000, Math.round(base * Math.exp(0.3 * gauss())));
+  }
+
+  // store ratings: about 8% of users rate
+  for (let i = 0; i < N; i++) {
+    if (rnd() > 0.08) continue;
+    let x = 4.61 + (act[i] ? 0.28 : 0) - (life[i] < 3 && !act[i] ? 0.5 : 0)
+      - (ch[i] === 5 ? 0.9 : ch[i] === 4 ? 0.3 : 0)
+      - (ver[i] === 2 && plat[i] === 1 ? 0.22 : 0) + 0.55 * gauss();
+    rating[i] = Math.max(1, Math.min(5, Math.round(x)));
+  }
+
+  return { N, NEW, ACT, DAYS, CHANNELS, MIX, GENRES, VERSIONS, month, day, ch, plat, ver, genre, life, fin, finDay, sec, rating, minutes };
+}
+if (typeof module !== "undefined") module.exports = { simulateBooklover };
+
+</script>
+<script>
+(function () {
+  const T = {"title": "BookLover CRM", "brand_sub": "CRM на демо-данных", "nav_label": "Разделы", "g_analysis": "Анализ", "g_users": "Пользователи", "g_decide": "Решения", "v_overview": "Обзор", "v_sources": "Источники трафика", "v_cohorts": "Когорты", "v_funnel": "Воронка чтения", "v_diagnosis": "Диагностика", "v_users": "Пользователи", "v_experiments": "Эксперименты", "v_method": "Как устроены данные", "foot_back": "← Портфолио", "foot_case": "Кейс: Retention BookLover", "foot_demo": "Демо-данные: модель воспроизводит цифры из условия кейса. Каналы, платформы и версии — учебные.", "f_from": "С", "f_to": "по", "f_months": "Месяцы регистрации", "f_channel": "Канал", "f_platform": "Платформа", "f_genre": "Жанр", "f_all_ch": "Все каналы", "f_all_pl": "Все платформы", "f_all_g": "Все жанры", "f_reset": "Сбросить", "f_active": "Фильтры:", "q_ph": "BL-000123", "q_label": "Найти пользователя по номеру", "not_found": "Пользователь не найден", "months": ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь"], "mshort": ["Янв", "Фев", "Мар", "Апр", "Май", "Июн"], "ch_names": ["Органика (сторы)", "Рекомендации друзей", "Instagram", "Telegram-каналы", "TikTok", "Промо «книги бесплатно»"], "ch_short": ["Органика", "Рекомендации", "Instagram", "Telegram", "TikTok", "Промо"], "pl_names": ["iOS", "Android"], "g_names": ["Фэнтези", "Любовный роман", "Современная проза", "Бизнес", "Саморазвитие", "Классика"], "dec": ",", "thou": " ", "mln": " млн ₸", "thsd": " тыс.", "tg": " ₸", "tg_pre": "", "pp": " п.п.", "users_u": "польз.", "day_u": "день", "days_u": "дн.", "min_u": "мин", "ov_e": "Январь – июнь · когорты регистрации", "ov_h": "Привлечение растёт, удержание падает с апреля", "ov_p": "Каждый пользователь из шести когорт кейса — строка данных. Фильтры наверху меняют все разделы. Нажмите на месяц на графике — откроется список его пользователей.", "k_new": "Новые", "k_ret": "Retention D30", "k_act": "Активны на 30-й день", "k_fin": "Дочитали 1-ю книгу", "k_sec": "Начали 2-ю книгу", "k_sec_d": "от дочитавших", "k_rate": "Рейтинг в сторе", "k_cpr": "Цена удержанного", "k_vs": "янв–мар", "ov_c1": "Пришли и остались по месяцам", "ov_c1s": "Серые — пришли, синие — активны на 30-й день", "ov_hint1": "Нажмите на месяц → его пользователи", "ov_c2": "Откуда приходят пользователи", "ov_c2s": "Структура привлечения по каналам, тыс. человек", "ov_hint2": "Нажмите на канал → источники трафика", "fd1": "Рост купил не тех людей", "fd1_t": "TikTok и промо дают {share} новых в {m}, но удерживают {r}", "fd2": "Ядро тоже просело", "fd2_t": "Android после v2.0: {a} против {i} на iOS в тех же каналах", "fd3": "Книга дочитана — пользователь ушёл", "fd3_t": "Только {s} дочитавших начинают вторую книгу", "src_e": "Источники трафика", "src_h": "Какой канал приводит читателей, а какой — установки", "src_p": "Стоимость удержанного читателя = расходы канала ÷ активные на 30-й день. Это главная метрика для бюджета: дешёвая установка может обходиться дорого, если человек уходит в первую неделю.", "st_ch": "Канал", "st_users": "Новые", "st_share": "Доля", "st_ret": "D30", "st_fin": "Дочитали", "st_sec": "2-я книга", "st_rate": "Рейтинг", "st_cac": "CAC", "st_spend": "Расходы", "st_cpr": "Цена удержанного", "src_tbl": "Каналы за выбранные месяцы", "src_tbl_s": "Нажмите на заголовок, чтобы отсортировать. Нажмите на строку — фильтр по каналу для всех разделов.", "src_heat": "Каналы по месяцам", "src_heat_s": "Выберите метрику. Пустая клетка — канала ещё не было.", "m_ret": "Retention D30", "m_users": "Новые пользователи", "m_cpr": "Цена удержанного", "m_fin": "Дочитали 1-ю", "sim_h": "Симулятор бюджета · гипотеза 2", "sim_s": "База — июнь. Переложите часть бюджета TikTok и промо в каналы, которые удерживают. При росте ставок CAC в новом канале растёт, поэтому заложена наценка на масштаб.", "sim_move": "Переложить из TikTok и промо", "sim_to": "Куда", "sim_mark": "Наценка CAC на масштаб", "sim_split": "Поровну: Telegram, Instagram, рекомендации", "sim_before": "Июнь сейчас", "sim_after": "После", "sim_new": "Новые пользователи", "sim_act": "Активны на 30-й день", "sim_r": "Retention D30", "sim_cpr": "Цена удержанного", "sim_note": "Бюджет тот же: {b}. Retention каналов — июньский. Это оценка для приоритизации, а не прогноз: проверяется перераспределением на 4 недели с контрольными каналами.", "coh_e": "Когорты", "coh_h": "Кривые удержания по месяцам регистрации", "coh_p": "Доля когорты, которая всё ещё читала на 1-й, 3-й, 7-й, 14-й и 30-й день. Если кривая выходит на плато, у продукта есть ядро. Здесь плато ниже с каждым месяцем.", "coh_tbl": "Тепловая карта когорт", "coh_pct": "Проценты", "coh_ppl": "Люди", "coh_curves": "Кривые", "coh_curves_s": "Наведите на линию, чтобы увидеть значения", "coh_col": "Когорта", "coh_size": "Размер", "coh_day": "День", "coh_hint": "Нажмите на клетку → пользователи, которые ушли до этого дня", "fun_e": "Воронка чтения", "fun_h": "Где читатель теряется внутри продукта", "fun_p": "Каждый шаг — доля от зарегистрированных. Главный обрыв — между «дочитал» и «начал вторую»: момент успеха становится точкой выхода.", "fs1": "Зарегистрировались", "fs2": "Вернулись на 2-й день", "fs3": "Дочитали первую книгу", "fs4": "Начали вторую за 7 дней", "fs5": "Активны на 30-й день", "fs1s": "Пришли", "fs2s": "День 2", "fs3s": "Дочитали", "fs4s": "2-я книга", "fs5s": "D30", "fun_by": "Разбивка", "by_month": "По месяцам", "by_channel": "По каналам", "by_genre": "По жанрам", "by_platform": "По платформам", "fun_tbl_s": "Конверсия в каждый шаг от зарегистрированных. Последний столбец — переход ко второй книге от дочитавших.", "fun_sec_of": "2-я от дочит.", "fun_ins": "Фэнтези и любовные романы продолжают чаще: у них есть серии. Бизнес и саморазвитие — реже всего. Рекомендации на последней странице стоит строить от жанра и серии.", "dia_e": "Диагностика", "dia_h": "Что объясняет падение: аудитория или продукт", "dia_p": "Разложение показывает, сколько процентных пунктов падения дал сдвиг структуры каналов, а сколько — ухудшение удержания внутри старых каналов.", "wf_h": "Retention D30: март → июнь", "wf_s": "Ядро — органика, рекомендации, Instagram, Telegram. Новые — TikTok и промо.", "wf_mar": "Март", "wf_mix": "Новые каналы", "wf_core": "Ядро хуже", "wf_jun": "Июнь", "wf_note": "Сдвиг структуры каналов: {mix}; ухудшение ядра: {core}; итого {tot}", "seg_h": "Retention D30 по сегментам", "seg_s": "Ядро на iOS держится, ядро на Android падает с майской когорты — после выхода v2.0 (6 мая).", "seg_ios": "Ядро · iOS", "seg_and": "Ядро · Android", "seg_new": "Новые каналы", "ver_h": "Версии приложения", "ver_s": "Только ядро: так видно продукт без влияния новых каналов", "vt_ver": "Версия", "vt_pl": "Платформа", "vt_users": "Пользователи", "vt_ret": "D30", "vt_rate": "Рейтинг", "vt_from": "Вышла", "v18": "до 31 марта", "v19": "1 апреля", "v20": "6 мая", "dia_c1": "Аудитория", "dia_c1t": "Около двух третей падения — новые каналы. Их пользователи почти не доживают до 30-го дня. Решение — гипотеза 2.", "dia_c2": "Продукт", "dia_c2t": "Остальное — Android на v2.0. Первый шаг: crash rate и время открытия книги на v2.0, откат или хотфикс. Это дешевле любого эксперимента.", "dia_c3": "Хроническое", "dia_c3t": "Переход ко второй книге почти не менялся по месяцам. Он не объясняет апрель, но это самый большой рычаг роста. Решение — гипотеза 1.", "dia_ignore": "Разложение всегда сравнивает март и июнь, фильтр месяцев к нему не применяется.", "us_e": "Пользователи", "us_h": "Каждый пользователь когорт", "us_p": "Нажмите на строку — откроется карточка пользователя с историей чтения.", "chip_all": "Все", "chip_act": "Активны на 30-й день", "chip_churn": "Ушли", "chip_stop": "Дочитали и остановились", "chip_sec": "Начали вторую", "chip_nofin": "Не дочитали", "ut_id": "ID", "ut_date": "Регистрация", "ut_ch": "Канал", "ut_pl": "Платформа", "ut_g": "Жанр", "ut_days": "Дней с нами", "ut_min": "Минут", "ut_book": "Книги", "ut_rate": "Оценка", "ut_status": "Статус", "st_active": "Активен", "st_left": "Ушёл на {d}-й день", "st_left0": "Не вернулся", "b_none": "читает 1-ю", "b_fin": "1 дочитана", "b_sec": "2-я начата", "pg_shown": "Показано {a}–{b} из {n}", "pg_prev": "← Назад", "pg_next": "Вперёд →", "us_stats": "{n} пользователей · активны на 30-й день {r} · дочитали {f}", "dr_close": "Закрыть", "dr_signup": "Регистрация", "dr_days": "Дней с нами", "dr_min": "Минут чтения", "dr_rate": "Оценка", "dr_none": "нет", "dr_tl": "История", "tl_signup": "Регистрация · {ch} · {pl} {v}", "tl_start": "Начал книгу · {g}", "tl_fin": "Дочитал первую книгу", "tl_sec": "Начал вторую книгу", "tl_nosec": "Вторую не начал — остановился после первой", "tl_left": "Последний раз читал", "tl_d30": "Читает на 30-й день", "tl_rate": "Оценил приложение: {r}★", "dr_seg": "Что предложить", "rec_stop": "Экран «Что дальше»: 3 книги того же жанра, первая глава в одно нажатие (гипотеза 1).", "rec_nofin": "Цель 10 минут в день и напоминание в удобное время (гипотеза 3).", "rec_act": "Ядро: спросить в интервью, что помогает читать регулярно.", "rec_sec": "Продолжает: изучить путь — что помогло выбрать вторую книгу.", "ex_e": "Эксперименты", "ex_h": "Сколько людей и дней нужно на тест", "ex_p": "Калькулятор размера выборки для A/B-теста долей. Трафик берётся из данных с учётом фильтров: сколько подходящих пользователей приходит в день.", "ex_calc": "Калькулятор", "ex_test": "Тест", "ex_base": "Базовый уровень", "ex_mde": "Ожидаемый эффект", "ex_alpha": "Уровень значимости α", "ex_power": "Мощность", "ex_n": "в каждой группе", "ex_days": "дней набора", "ex_daily": "Подходящих в день: {d} · {who}", "ex_wait": "Плюс 30 дней ожидания, если главная метрика — D30.", "ex_h1": "H1 · Мост ко второй книге", "ex_h1w": "дочитавшие первую книгу", "ex_h2": "H3 · Привычка в первую неделю", "ex_h2w": "все новые", "ex_h3": "Retention D30 целиком", "ex_h3w": "все новые", "ex_rules": "Правила, которые записываю до запуска", "ex_r1": "Одна главная метрика и порог успеха", "ex_r2": "Guardrails: удаления, отписки от уведомлений, рейтинг", "ex_r3": "Не смотреть на результат до набора выборки", "ex_r4": "Тест только на новых пользователях", "ex_r5": "Решение: масштабировать, доработать или закрыть — и записать, что узнали", "me_e": "Как устроены данные", "me_h": "Модель, которая воспроизводит условие кейса", "me_p": "Условие кейса даёт итоговые цифры. Чтобы тренироваться на сегментах, я смоделировала каждого пользователя так, что итоги совпадают с условием точно.", "me1_t": "Точные итоги", "me1": "Новых 12/15/18/22/25/27 тыс., активных на 30-й день 5 400 / 6 750 / 8 100 / 8 360 / 7 500 / 7 560. Дочитали 65%, из них начали вторую 30%. Рейтинг около 4,5 в январе–марте и 4,2 в апреле–июне.", "me2_t": "Учебные допущения", "me2": "С апреля добавлены TikTok и промо «книги бесплатно». 6 мая вышла v2.0, на Android она хуже. Каналы, платформы, жанры, CAC и расходы придуманы, чтобы показать, как искать причину.", "me3_t": "Как подогнаны итоги", "me3": "У каждого пользователя есть вероятность остаться: от канала, мотивации, платформы и версии. Сдвиг по шкале логитов подбирает её так, чтобы ожидаемая сумма совпала с условием. Систематическая выборка даёт ровно нужное число.", "me4_t": "SQL для реальных данных", "me4": "Те же разрезы на реальной базе считаются запросами из файла: retention по когортам, каналам и версиям, воронка чтения, цена удержанного.", "me_sql": "Открыть SQL-запросы", "me_case": "Вернуться к кейсу"};
+  const D = simulateBooklover();
+  const N = D.N, CH = D.CHANNELS;
+  const COL = ["var(--s0)", "var(--s1)", "var(--s2)", "var(--s3)", "var(--s4)", "var(--s5)"];
+  const NS = "http://www.w3.org/2000/svg";
+  const $ = id => document.getElementById(id);
+  const isAct = i => D.life[i] === 30;
+  const MDAYS = D.DAYS;
+  const MSTART = [0, 31, 59, 90, 120, 151];
+
+  // ---------- formatting ----------
+  const fmtN = n => (n < 0 ? "−" : "") + Math.round(Math.abs(n)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, T.thou);
+  const fmtD = (x, d) => (x < 0 ? "−" : "") + Math.abs(x).toFixed(d).replace(".", T.dec);
+  const fmtP = (x, d = 1) => isFinite(x) ? fmtD(x * 100, d) + "%" : "—";
+  const fmtPP = x => (x > 0 ? "+" : "") + fmtD(x * 100, 1) + T.pp;
+  const money = v => !isFinite(v) ? "—" : v >= 1e6 ? T.tg_pre + fmtD(v / 1e6, 1) + T.mln : T.tg_pre + fmtN(v) + T.tg;
+  const uid = i => "BL-" + String(i + 1).padStart(6, "0");
+  const dateOf = i => { const d = new Date(Date.UTC(2026, D.month[i], D.day[i] + 1)); return d; };
+  const fmtDate = d => String(d.getUTCDate()).padStart(2, "0") + "." + String(d.getUTCMonth() + 1).padStart(2, "0");
+  const tpl = (s, o) => s.replace(/\{(\w+)\}/g, (_, k) => o[k]);
+
+  // ---------- filters ----------
+  const F = { m0: 0, m1: 5, ch: -1, pl: -1, g: -1 };
+  let cache = { key: "", idx: null };
+  function pass(i, ignoreMonths, ignoreCh) {
+    if (!ignoreMonths && (D.month[i] < F.m0 || D.month[i] > F.m1)) return false;
+    if (!ignoreCh && F.ch >= 0 && D.ch[i] !== F.ch) return false;
+    if (F.pl >= 0 && D.plat[i] !== F.pl) return false;
+    if (F.g >= 0 && D.genre[i] !== F.g) return false;
+    return true;
+  }
+  function sel() {
+    const key = JSON.stringify(F);
+    if (cache.key === key) return cache.idx;
+    const out = [];
+    for (let i = 0; i < N; i++) if (pass(i)) out.push(i);
+    cache = { key, idx: out };
+    return out;
+  }
+  function agg(idx) {
+    const a = { n: 0, act: 0, fin: 0, sec: 0, d1: 0, rs: 0, rc: 0, spend: 0 };
+    for (const i of idx) {
+      a.n++; a.act += isAct(i); a.fin += D.fin[i]; a.sec += D.sec[i]; a.d1 += D.life[i] >= 1;
+      if (D.rating[i]) { a.rs += D.rating[i]; a.rc++; }
+      a.spend += CH[D.ch[i]].cac;
+    }
+    a.ret = a.act / a.n; a.finR = a.fin / a.n; a.secR = a.sec / a.fin; a.rate = a.rs / a.rc; a.cpr = a.spend / a.act;
+    return a;
+  }
+  function groupBy(idx, keyFn, k) {
+    const g = Array.from({ length: k }, () => []);
+    for (const i of idx) { const key = keyFn(i); if (key >= 0) g[key].push(i); }
+    return g.map(agg);
+  }
+
+  // ---------- svg helpers ----------
+  const tip = $("tip");
+  function svgEl(tag, attrs, parent, text) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (text != null) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function showTip(html, x, y) {
+    tip.innerHTML = html; tip.classList.add("on");
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    tip.style.left = Math.max(8, Math.min(x + 14, innerWidth - w - 8)) + "px";
+    tip.style.top = Math.max(8, y - h - 12) + "px";
+  }
+  function hideTip() { tip.classList.remove("on"); }
+  function bindTip(node, html) {
+    node.addEventListener("mousemove", e => showTip(typeof html === "function" ? html() : html, e.clientX, e.clientY));
+    node.addEventListener("mouseleave", hideTip);
+  }
+  // charts are drawn at the container's real width so text stays the same size on phones and desktops
+  function fit(svg, H) {
+    const w = Math.max(300, Math.round(svg.getBoundingClientRect().width || svg.parentElement.clientWidth || 560));
+    svg.setAttribute("viewBox", `0 0 ${w} ${H}`);
+    return w;
+  }
+  const barPath = (x, y, w, h, r) => { if (h <= 0) return ""; r = Math.min(r, w / 2, h); return `M${x},${y + h}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h}Z`; };
+  function niceMax(v) { const p = Math.pow(10, Math.floor(Math.log10(v || 1))); for (const m of [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]) if (m * p >= v) return m * p; return 10 * p; }
+  function axisY(svg, box, max, fmt, steps = 4) {
+    for (let k = 0; k <= steps; k++) {
+      const v = max * k / steps, y = box.t + box.h - box.h * k / steps;
+      svgEl("line", { x1: box.l, x2: box.l + box.w, y1: y, y2: y, class: "gl" }, svg);
+      svgEl("text", { x: box.l - 8, y: y + 4, "text-anchor": "end", class: "ax" }, svg, fmt(v));
+    }
+  }
+  function lineChart(svg, labels, series, opt) {
+    svg.innerHTML = "";
+    const H = +svg.viewBox.baseVal.height, W = fit(svg, H);
+    const box = { l: 44, t: 16, w: W - 44 - 16, h: H - 16 - 30 };
+    const max = opt.max, min = opt.min || 0;
+    for (let k = 0; k <= 4; k++) {
+      const v = min + (max - min) * k / 4, y = box.t + box.h - box.h * k / 4;
+      svgEl("line", { x1: box.l, x2: box.l + box.w, y1: y, y2: y, class: "gl" }, svg);
+      svgEl("text", { x: box.l - 8, y: y + 4, "text-anchor": "end", class: "ax" }, svg, opt.fmt(v));
+    }
+    const X = i => box.l + (labels.length === 1 ? box.w / 2 : box.w * i / (labels.length - 1));
+    const Y = v => box.t + box.h - (v - min) / (max - min) * box.h;
+    labels.forEach((l, i) => svgEl("text", { x: X(i), y: H - 8, "text-anchor": i === 0 ? "start" : i === labels.length - 1 ? "end" : "middle", class: "ax" }, svg, l));
+    series.forEach(s => {
+      let d = "";
+      s.vals.forEach((v, i) => { if (v == null || !isFinite(v)) return; d += (d ? "L" : "M") + X(i) + "," + Y(v); });
+      if (d) svgEl("path", { d, fill: "none", stroke: s.color, "stroke-width": 2, "stroke-dasharray": s.dash || "", "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
+      s.vals.forEach((v, i) => { if (v == null || !isFinite(v)) return; svgEl("circle", { cx: X(i), cy: Y(v), r: 4, fill: s.color, stroke: "var(--surface)", "stroke-width": 2 }, svg); });
+      const li = s.vals.length - 1;
+      if (s.label && s.vals[li] != null && isFinite(s.vals[li])) svgEl("text", { x: X(li) - 6, y: Y(s.vals[li]) - 9, "text-anchor": "end", class: "lb", style: "paint-order: stroke; stroke: var(--surface); stroke-width: 4px" }, svg, s.label);
+    });
+    // hover columns
+    labels.forEach((l, i) => {
+      const x0 = labels.length === 1 ? box.l : X(i) - box.w / (labels.length - 1) / 2;
+      const w = labels.length === 1 ? box.w : box.w / (labels.length - 1);
+      const r = svgEl("rect", { x: Math.max(box.l, x0), y: box.t, width: w, height: box.h, fill: "transparent" }, svg);
+      bindTip(r, () => `<b>${opt.tipLabels ? opt.tipLabels[i] : l}</b>` + series.filter(s => s.vals[i] != null && isFinite(s.vals[i])).map(s => `<br>${s.name}: <b>${opt.fmt(s.vals[i])}</b>`).join(""));
+    });
+  }
+
+  // ---------- filter controls ----------
+  function fillSelect(el, items, allLabel) {
+    el.innerHTML = (allLabel ? `<option value="-1">${allLabel}</option>` : "") + items.map((t, i) => `<option value="${i}">${t}</option>`).join("");
+  }
+  fillSelect($("fM0"), T.mshort); fillSelect($("fM1"), T.mshort);
+  fillSelect($("fCh"), T.ch_names, T.f_all_ch); fillSelect($("fPl"), T.pl_names, T.f_all_pl); fillSelect($("fG"), T.g_names, T.f_all_g);
+  function syncControls() {
+    $("fM0").value = F.m0; $("fM1").value = F.m1; $("fCh").value = F.ch; $("fPl").value = F.pl; $("fG").value = F.g;
+    const af = [];
+    if (F.m0 !== 0 || F.m1 !== 5) af.push(["m", F.m0 === F.m1 ? T.months[F.m0] : T.mshort[F.m0] + "–" + T.mshort[F.m1]]);
+    if (F.ch >= 0) af.push(["ch", T.ch_names[F.ch]]);
+    if (F.pl >= 0) af.push(["pl", T.pl_names[F.pl]]);
+    if (F.g >= 0) af.push(["g", T.g_names[F.g]]);
+    $("af").innerHTML = af.length ? `<span>${T.f_active}</span>` + af.map(a => `<span class="af">${a[1]}<button type="button" data-k="${a[0]}" aria-label="${T.f_reset}: ${a[1]}">×</button></span>`).join("") +
+      `<button type="button" class="linkbtn" id="afReset">${T.f_reset}</button>` : "";
+    $("af").querySelectorAll(".af button").forEach(b => b.addEventListener("click", () => {
+      const k = b.dataset.k; if (k === "m") { F.m0 = 0; F.m1 = 5; } else F[k] = -1; changed();
+    }));
+    const r = $("afReset"); if (r) r.addEventListener("click", () => { Object.assign(F, { m0: 0, m1: 5, ch: -1, pl: -1, g: -1 }); changed(); });
+  }
+  $("fM0").addEventListener("change", e => { F.m0 = +e.target.value; if (F.m1 < F.m0) F.m1 = F.m0; changed(); });
+  $("fM1").addEventListener("change", e => { F.m1 = +e.target.value; if (F.m0 > F.m1) F.m0 = F.m1; changed(); });
+  $("fCh").addEventListener("change", e => { F.ch = +e.target.value; changed(); });
+  $("fPl").addEventListener("change", e => { F.pl = +e.target.value; changed(); });
+  $("fG").addEventListener("change", e => { F.g = +e.target.value; changed(); });
+
+  // ---------- views ----------
+  const VIEWS = ["overview", "sources", "cohorts", "funnel", "diagnosis", "users", "experiments", "method"];
+  const TITLES = { overview: T.v_overview, sources: T.v_sources, cohorts: T.v_cohorts, funnel: T.v_funnel, diagnosis: T.v_diagnosis, users: T.v_users, experiments: T.v_experiments, method: T.v_method };
+  let view = "overview";
+  function go(v, push = true) {
+    if (!VIEWS.includes(v)) v = "overview";
+    view = v;
+    document.querySelectorAll(".view").forEach(s => s.hidden = s.dataset.view !== v);
+    document.querySelectorAll(".nav-btn").forEach(b => b.setAttribute("aria-current", b.dataset.view === v ? "page" : "false"));
+    $("vTitle").textContent = TITLES[v];
+    if (push) { try { history.replaceState(null, "", "#" + v); } catch (e) {} }
+    render();
+    window.scrollTo(0, 0);
+    const btn = document.querySelector(`.nav-btn[data-view="${v}"]`);
+    if (btn && btn.parentElement.scrollWidth > btn.parentElement.clientWidth) btn.parentElement.scrollLeft = btn.offsetLeft - 40;
+  }
+  document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.view)));
+  window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if (h && h !== view) go(h, false); });
+
+  function changed() { syncControls(); uPage = 0; exPreset = -1; render(); }
+  function render() {
+    const fn = { overview: rOverview, sources: rSources, cohorts: rCohorts, funnel: rFunnel, diagnosis: rDiagnosis, users: rUsers, experiments: rExperiments, method: () => {} }[view];
+    fn();
+    $("cntU").textContent = fmtN(sel().length);
+  }
+
+  // ---------- OVERVIEW ----------
+  function findings() {
+    const jun = [], core = [[0, 0], [0, 0]];
+    let nn = 0, na = 0;
+    for (let i = 0; i < N; i++) {
+      if (D.month[i] !== 5) continue;
+      if (CH[D.ch[i]].core) { core[D.plat[i]][0]++; core[D.plat[i]][1] += isAct(i); }
+      else { nn++; na += isAct(i); }
+    }
+    let fin = 0, sec = 0; for (let i = 0; i < N; i++) { fin += D.fin[i]; sec += D.sec[i]; }
+    $("findings").innerHTML = [
+      [T.fd1, tpl(T.fd1_t, { share: fmtP(nn / D.NEW[5], 0), m: T.dec === "," ? T.months[5].toLowerCase() : T.months[5], r: fmtP(na / nn) })],
+      [T.fd2, tpl(T.fd2_t, { a: fmtP(core[1][1] / core[1][0]), i: fmtP(core[0][1] / core[0][0]) })],
+      [T.fd3, tpl(T.fd3_t, { s: fmtP(sec / fin, 0) })]
+    ].map(f => `<div class="finding"><b>${f[0]}</b><span>${f[1]}</span></div>`).join("");
+  }
+  findings();
+  function rOverview() {
+    const idx = sel(), a = agg(idx);
+    // baseline Jan–Mar with the same non-month filters
+    const base = []; for (let i = 0; i < N; i++) if (D.month[i] <= 2 && pass(i, true)) base.push(i);
+    const b = agg(base);
+    const delta = (cur, ref, good, fmt) => {
+      if (!isFinite(cur) || !isFinite(ref)) return "";
+      const d = cur - ref, cls = Math.abs(d) < 1e-9 ? "" : (d > 0) === good ? "up" : "down";
+      return `<span class="d ${cls}">${T.k_vs}: ${fmt(ref)}</span>`;
+    };
+    const k = [
+      [T.k_new, fmtN(a.n), ""],
+      [T.k_ret, fmtP(a.ret), delta(a.ret, b.ret, true, v => fmtP(v))],
+      [T.k_act, fmtN(a.act), ""],
+      [T.k_fin, fmtP(a.finR), delta(a.finR, b.finR, true, v => fmtP(v))],
+      [T.k_sec, fmtP(a.secR), `<span class="d">${T.k_sec_d}</span>`],
+      [T.k_rate, isFinite(a.rate) ? fmtD(a.rate, 2) : "—", delta(a.rate, b.rate, true, v => fmtD(v, 2))],
+      [T.k_cpr, money(a.cpr), delta(a.cpr, b.cpr, false, money)]
+    ];
+    $("kpis").innerHTML = k.map(x => `<div class="kpi"><span class="eyebrow">${x[0]}</span><span class="v">${x[1]}</span>${x[2]}</div>`).join("");
+
+    // bars by month
+    const months = []; for (let m = F.m0; m <= F.m1; m++) months.push(m);
+    const by = groupBy(idx, i => D.month[i], 6);
+    const svg = $("ovBars"); svg.innerHTML = "";
+    const H = 260, W = fit(svg, H), box = { l: 64, t: 16, w: W - 64 - 12, h: H - 16 - 30 };
+    const max = niceMax(Math.max(...months.map(m => by[m].n)) || 1);
+    axisY(svg, box, max, v => v >= 1000 ? fmtD(v / 1000, v % 1000 ? 1 : 0) + T.thsd : fmtN(v));
+    const gw = box.w / months.length;
+    months.forEach((m, j) => {
+      const x = box.l + j * gw, bw = Math.min(34, gw * 0.32), x1 = x + gw / 2 - bw - 1, x2 = x + gw / 2 + 1;
+      const y = v => box.t + box.h - v / max * box.h;
+      svgEl("path", { d: barPath(x1, y(by[m].n), bw, box.t + box.h - y(by[m].n), 4), fill: "var(--base-bar)" }, svg);
+      svgEl("path", { d: barPath(x2, y(by[m].act), bw, box.t + box.h - y(by[m].act), 4), fill: "var(--s0)" }, svg);
+      if (by[m].n) svgEl("text", { x: x2 + bw / 2, y: y(by[m].act) - 6, "text-anchor": "middle", class: "lb" }, svg, fmtP(by[m].ret, 0));
+      svgEl("text", { x: x + gw / 2, y: H - 8, "text-anchor": "middle", class: "ax" }, svg, T.mshort[m]);
+      const hit = svgEl("rect", { x, y: box.t, width: gw, height: box.h, fill: "transparent", class: "hit" }, svg);
+      bindTip(hit, `<b>${T.months[m]}</b><br>${T.k_new}: ${fmtN(by[m].n)}<br>${T.k_act}: ${fmtN(by[m].act)}<br>${T.k_ret}: <b>${fmtP(by[m].ret)}</b>`);
+      hit.addEventListener("click", () => { hideTip(); F.m0 = F.m1 = m; uChip = "all"; syncControls(); go("users"); });
+    });
+
+    // channel mix stacked
+    const mix = months.map(m => { const c = [0, 0, 0, 0, 0, 0]; for (const i of idx) if (D.month[i] === m) c[D.ch[i]]++; return c; });
+    const s2 = $("ovMix"); s2.innerHTML = ""; fit(s2, H);
+    const max2 = niceMax(Math.max(...mix.map(c => c.reduce((a, b) => a + b, 0))) || 1);
+    axisY(s2, box, max2, v => v >= 1000 ? fmtD(v / 1000, v % 1000 ? 1 : 0) + T.thsd : fmtN(v));
+    months.forEach((m, j) => {
+      const x = box.l + j * gw + gw * 0.2, bw = gw * 0.6;
+      let acc = 0;
+      mix[j].forEach((v, c) => {
+        if (!v) return;
+        const y0 = box.t + box.h - (acc + v) / max2 * box.h, h = v / max2 * box.h;
+        const r = svgEl("rect", { x, y: y0, width: bw, height: Math.max(0, h - 2), fill: COL[c], rx: 2, class: "hit" }, s2);
+        bindTip(r, `<b>${T.months[m]} · ${T.ch_names[c]}</b><br>${fmtN(v)} · ${fmtP(v / mix[j].reduce((a, b) => a + b, 0), 0)}`);
+        r.addEventListener("click", () => { hideTip(); F.ch = c; syncControls(); go("sources"); });
+        acc += v;
+      });
+      svgEl("text", { x: x + bw / 2, y: H - 8, "text-anchor": "middle", class: "ax" }, s2, T.mshort[m]);
+    });
+    $("ovMixLeg").innerHTML = T.ch_short.map((n, c) => `<button type="button" data-c="${c}"><i style="background:${COL[c]}"></i>${n}</button>`).join("");
+    $("ovMixLeg").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { F.ch = +b.dataset.c; syncControls(); go("sources"); }));
+  }
+
+  // ---------- SOURCES ----------
+  let srcSort = { k: "cpr", dir: 1 }, srcMetric = "ret";
+  function rSources() {
+    const idx = []; for (let i = 0; i < N; i++) if (pass(i, false, true)) idx.push(i);
+    const by = groupBy(idx, i => D.ch[i], 6), tot = agg(idx);
+    const cols = [["ch", T.st_ch], ["n", T.st_users], ["share", T.st_share], ["ret", T.st_ret], ["finR", T.st_fin], ["secR", T.st_sec], ["rate", T.st_rate], ["cac", T.st_cac], ["spend", T.st_spend], ["cpr", T.st_cpr]];
+    let rows = by.map((a, c) => Object.assign({ c, share: a.n / tot.n, cac: CH[c].cac }, a)).filter(r => r.n > 0);
+    rows.sort((a, b) => {
+      if (srcSort.k === "ch") return (a.c - b.c) * srcSort.dir;
+      const x = isFinite(a[srcSort.k]) ? a[srcSort.k] : Infinity, y = isFinite(b[srcSort.k]) ? b[srcSort.k] : Infinity;
+      return (x - y) * srcSort.dir;
+    });
+    const bestRet = Math.max(...rows.map(r => r.ret)), worstRet = Math.min(...rows.map(r => r.ret));
+    const cell = (r, k) => {
+      switch (k) {
+        case "ch": return `<td><span class="sw" style="--c:${COL[r.c]}"></span>${T.ch_names[r.c]}</td>`;
+        case "n": return `<td class="r">${fmtN(r.n)}</td>`;
+        case "share": return `<td class="r">${fmtP(r.share, 0)}</td>`;
+        case "ret": return `<td class="r ${r.ret === bestRet ? "good" : r.ret === worstRet ? "bad" : ""}">${fmtP(r.ret)}</td>`;
+        case "finR": return `<td class="r">${fmtP(r.finR, 0)}</td>`;
+        case "secR": return `<td class="r">${fmtP(r.secR, 0)}</td>`;
+        case "rate": return `<td class="r">${isFinite(r.rate) ? fmtD(r.rate, 2) : "—"}</td>`;
+        case "cac": return `<td class="r">${money(r.cac)}</td>`;
+        case "spend": return `<td class="r">${money(r.spend)}</td>`;
+        case "cpr": return `<td class="r ${r.cpr > tot.cpr * 2 ? "bad" : ""}">${r.cac === 0 ? "0" + T.tg : money(r.cpr)}</td>`;
+      }
+    };
+    $("srcTable").innerHTML = `<thead><tr>${cols.map(([k, l]) => `<th class="sort ${k === "ch" ? "" : "r"}" data-k="${k}" ${srcSort.k === k ? `aria-sort="${srcSort.dir > 0 ? "ascending" : "descending"}"` : ""}>${l}${srcSort.k === k ? (srcSort.dir > 0 ? " ↑" : " ↓") : ""}</th>`).join("")}</tr></thead><tbody>` +
+      rows.map(r => `<tr class="click ${F.ch === r.c ? "on" : ""}" data-c="${r.c}">${cols.map(([k]) => cell(r, k)).join("")}</tr>`).join("") +
+      `<tr><td><b>${T.f_all_ch}</b></td><td class="r"><b>${fmtN(tot.n)}</b></td><td class="r">100%</td><td class="r"><b>${fmtP(tot.ret)}</b></td><td class="r">${fmtP(tot.finR, 0)}</td><td class="r">${fmtP(tot.secR, 0)}</td><td class="r">${isFinite(tot.rate) ? fmtD(tot.rate, 2) : "—"}</td><td class="r">${money(tot.spend / tot.n)}</td><td class="r">${money(tot.spend)}</td><td class="r"><b>${money(tot.cpr)}</b></td></tr></tbody>`;
+    $("srcTable").querySelectorAll("th.sort").forEach(th => th.addEventListener("click", () => {
+      const k = th.dataset.k; srcSort = { k, dir: srcSort.k === k ? -srcSort.dir : (k === "ret" || k === "n" || k === "finR" || k === "secR" || k === "rate" ? -1 : 1) }; rSources();
+    }));
+    $("srcTable").querySelectorAll("tr.click").forEach(tr => tr.addEventListener("click", () => { const c = +tr.dataset.c; F.ch = F.ch === c ? -1 : c; changed(); }));
+
+    // heat
+    const metrics = [["ret", T.m_ret], ["users", T.m_users], ["fin", T.m_fin], ["cpr", T.m_cpr]];
+    $("srcMetric").innerHTML = metrics.map(([k, l]) => `<button type="button" data-k="${k}" aria-pressed="${srcMetric === k}">${l}</button>`).join("");
+    $("srcMetric").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { srcMetric = b.dataset.k; rSources(); }));
+    const grid = []; // [c][m]
+    for (let c = 0; c < 6; c++) { grid.push([]); for (let m = 0; m < 6; m++) grid[c].push([]); }
+    for (const i of idx) grid[D.ch[i]][D.month[i]].push(i);
+    const val = a => srcMetric === "ret" ? a.ret : srcMetric === "users" ? a.n : srcMetric === "fin" ? a.finR : a.cpr;
+    const fmtV = v => srcMetric === "users" ? fmtN(v) : srcMetric === "cpr" ? money(v) : fmtP(v, srcMetric === "ret" ? 1 : 0);
+    const A = grid.map(r => r.map(ix => ix.length ? agg(ix) : null));
+    const all = A.flat().filter(Boolean).map(val).filter(isFinite);
+    const vmax = Math.max(...all), vmin = Math.min(...all);
+    let h = `<thead><tr><th></th>${T.mshort.map((m, j) => `<th>${m}</th>`).join("")}</tr></thead><tbody>`;
+    for (let c = 0; c < 6; c++) {
+      if (F.ch >= 0 && F.ch !== c) continue;
+      h += `<tr><th class="row"><span class="sw" style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:8px;background:${COL[c]}"></span>${T.ch_short[c]}</th>`;
+      for (let m = 0; m < 6; m++) {
+        const a = A[c][m];
+        if (!a || m < F.m0 || m > F.m1) { h += `<td class="empty">·</td>`; continue; }
+        const v = val(a);
+        let t = vmax > vmin ? (v - vmin) / (vmax - vmin) : .5;
+        if (srcMetric === "cpr") t = vmax > vmin ? (Math.log(v) - Math.log(vmin)) / (Math.log(vmax) - Math.log(vmin)) : .5;
+        const alpha = .08 + .62 * (srcMetric === "cpr" ? 1 - t : t);
+        h += `<td style="background: rgba(var(--heat), ${alpha.toFixed(2)})" title="${T.ch_names[c]} · ${T.months[m]}">${isFinite(v) ? fmtV(v) : "—"}</td>`;
+      }
+      h += `</tr>`;
+    }
+    $("srcHeat").innerHTML = h + "</tbody>";
+    rSim();
+  }
+  // budget simulator (June, all platforms and genres)
+  const simTargets = [[3, T.ch_names[3]], [2, T.ch_names[2]], [1, T.ch_names[1]], [-1, T.sim_split]];
+  $("simTo").innerHTML = simTargets.map(([v, l]) => `<option value="${v}">${l}</option>`).join("");
+  ["simMove", "simTo", "simMark"].forEach(id => $(id).addEventListener("input", rSim));
+  function rSim() {
+    const jun = []; for (let i = 0; i < N; i++) if (D.month[i] === 5) jun.push(i);
+    const by = groupBy(jun, i => D.ch[i], 6), tot = agg(jun);
+    const move = +$("simMove").value / 100, mark = +$("simMark").value / 100, to = +$("simTo").value;
+    $("simMoveV").textContent = fmtD(move * 100, 0) + "%"; $("simMarkV").textContent = "+" + fmtD(mark * 100, 0) + "%";
+    const moved = (by[4].spend + by[5].spend) * move;
+    let n = tot.n - (by[4].n + by[5].n) * move, act = tot.act - (by[4].act + by[5].act) * move;
+    const targets = to >= 0 ? [to] : [3, 2, 1];
+    targets.forEach(c => {
+      const budget = moved / targets.length, cac = CH[c].cac * (1 + mark), users = budget / cac;
+      n += users; act += users * by[c].ret;
+    });
+    const after = { n, act, ret: act / n, cpr: tot.spend / act };
+    const row = (label, b, a, fmt, good) => {
+      const d = a - b, cls = Math.abs(d) < 1e-9 ? "" : (d > 0) === good ? "up" : "down";
+      const rel = b ? fmtD((a / b - 1) * 100, 0) + "%" : "";
+      return `<tr><td>${label}</td><td>${fmt(b)}</td><td><b>${fmt(a)}</b><span class="dl ${cls}">${d > 0 ? "+" : ""}${rel}</span></td></tr>`;
+    };
+    $("simTable").innerHTML = `<thead><tr><th></th><th>${T.sim_before}</th><th>${T.sim_after}</th></tr></thead><tbody>` +
+      row(T.sim_new, tot.n, after.n, fmtN, true) + row(T.sim_act, tot.act, after.act, fmtN, true) +
+      `<tr><td>${T.sim_r}</td><td>${fmtP(tot.ret)}</td><td><b>${fmtP(after.ret)}</b><span class="dl ${after.ret > tot.ret ? "up" : ""}">${fmtPP(after.ret - tot.ret)}</span></td></tr>` +
+      row(T.sim_cpr, tot.cpr, after.cpr, money, false) + `</tbody>`;
+    $("simNote").textContent = tpl(T.sim_note, { b: money(tot.spend) });
+  }
+
+  // ---------- COHORTS ----------
+  let cohMode = "pct";
+  const DAYS_AT = [1, 3, 7, 14, 30];
+  $("cohPct").addEventListener("click", () => { cohMode = "pct"; rCohorts(); });
+  $("cohPpl").addEventListener("click", () => { cohMode = "ppl"; rCohorts(); });
+  function cohortData(idx) {
+    const C = Array.from({ length: 6 }, () => ({ n: 0, at: [0, 0, 0, 0, 0] }));
+    for (const i of idx) { const c = C[D.month[i]]; c.n++; DAYS_AT.forEach((d, k) => { if (D.life[i] >= d) c.at[k]++; }); }
+    return C;
+  }
+  function rCohorts() {
+    $("cohPct").setAttribute("aria-pressed", cohMode === "pct"); $("cohPpl").setAttribute("aria-pressed", cohMode === "ppl");
+    const C = cohortData(sel());
+    let h = `<thead><tr><th style="text-align:left">${T.coh_col}</th><th style="text-align:right">${T.coh_size}</th>${DAYS_AT.map(d => `<th>${T.coh_day} ${d}</th>`).join("")}</tr></thead><tbody>`;
+    for (let m = F.m0; m <= F.m1; m++) {
+      const c = C[m]; if (!c.n) continue;
+      h += `<tr><th class="row">${T.months[m]}</th><td class="size">${fmtN(c.n)}</td>` + c.at.map((v, k) => {
+        const p = v / c.n, alpha = .06 + .7 * p;
+        return `<td class="click" data-m="${m}" style="background: rgba(var(--heat), ${alpha.toFixed(2)})" title="${T.months[m]} · ${T.coh_day} ${DAYS_AT[k]}">${cohMode === "pct" ? fmtP(p, 0) : fmtN(v)}</td>`;
+      }).join("") + `</tr>`;
+    }
+    $("cohHeat").innerHTML = h + "</tbody>";
+    $("cohHeat").querySelectorAll("td.click").forEach(td => td.addEventListener("click", () => { F.m0 = F.m1 = +td.dataset.m; uChip = "churn"; syncControls(); go("users"); }));
+    const series = [];
+    for (let m = F.m0; m <= F.m1; m++) if (C[m].n) series.push({ name: T.mshort[m], vals: C[m].at.map(v => v / C[m].n), color: m < 3 ? "var(--s0)" : "var(--s5)", dash: m < 3 ? "" : m === 3 ? "" : m === 4 ? "6 4" : "2 4", label: m === F.m0 || m === F.m1 ? T.mshort[m] : "" });
+    lineChart($("cohLines"), DAYS_AT.map(d => T.coh_day + " " + d), series, { max: 1, fmt: v => fmtP(v, 0) });
+    $("cohLeg").innerHTML = series.map(s => `<span><i style="background:${s.color}"></i>${s.name}${s.dash ? " ┄" : ""}</span>`).join("");
+  }
+
+  // ---------- FUNNEL ----------
+  let funBy = "month";
+  const FUN_BY = [["month", T.by_month], ["channel", T.by_channel], ["genre", T.by_genre], ["platform", T.by_platform]];
+  function rFunnel() {
+    const a = agg(sel());
+    const steps = [[T.fs1, a.n], [T.fs2, a.d1], [T.fs3, a.fin], [T.fs4, a.sec], [T.fs5, a.act]];
+    $("fSteps").innerHTML = steps.map((s, k) => `<div class="fstep ${k === 3 ? "hl" : ""}"><span class="t">${s[0]}</span><div class="tr"><i style="width:${(s[1] / a.n * 100).toFixed(1)}%"></i></div><div class="v"><b>${fmtP(s[1] / a.n)}</b><span>${fmtN(s[1])}</span></div></div>`).join("");
+    $("funBy").innerHTML = FUN_BY.map(([k, l]) => `<button type="button" data-k="${k}" aria-pressed="${funBy === k}">${l}</button>`).join("");
+    $("funBy").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { funBy = b.dataset.k; rFunnel(); }));
+    const keyFn = { month: i => D.month[i], channel: i => D.ch[i], genre: i => D.genre[i], platform: i => D.plat[i] }[funBy];
+    const names = { month: T.months, channel: T.ch_names, genre: T.g_names, platform: T.pl_names }[funBy];
+    const by = groupBy(sel(), keyFn, names.length);
+    const secs = by.filter(r => r.n).map(r => r.secR);
+    const hi = Math.max(...secs), lo = Math.min(...secs);
+    $("funTable").innerHTML = `<thead><tr><th></th>${[T.fs1s, T.fs2s, T.fs3s, T.fs4s, T.fs5s].map(s => `<th class="r">${s}</th>`).join("")}<th class="r">${T.fun_sec_of}</th></tr></thead><tbody>` +
+      by.map((r, k) => r.n ? `<tr><td>${funBy === "channel" ? `<span class="sw" style="--c:${COL[k]}"></span>` : ""}${names[k]}</td><td class="r">${fmtN(r.n)}</td><td class="r">${fmtP(r.d1 / r.n, 0)}</td><td class="r">${fmtP(r.finR, 0)}</td><td class="r">${fmtP(r.sec / r.n, 1)}</td><td class="r">${fmtP(r.ret, 0)}</td><td class="r ${r.secR === hi ? "good" : r.secR === lo ? "bad" : ""}">${fmtP(r.secR, 0)}</td></tr>` : "").join("") + "</tbody>";
+  }
+
+  // ---------- DIAGNOSIS ----------
+  function rDiagnosis() {
+    // decomposition March -> June, core vs new channels; months and channel filter ignored
+    const g = { mar: [0, 0], jc: [0, 0], jn: [0, 0] };
+    for (let i = 0; i < N; i++) {
+      if (!pass(i, true, true)) continue;
+      const a = isAct(i);
+      if (D.month[i] === 2) { g.mar[0]++; g.mar[1] += a; }
+      if (D.month[i] === 5) { const k = CH[D.ch[i]].core ? "jc" : "jn"; g[k][0]++; g[k][1] += a; }
+    }
+    const rMar = g.mar[1] / g.mar[0], nJ = g.jc[0] + g.jn[0];
+    const sNew = g.jn[0] / nJ, sCore = 1 - sNew, rCoreJ = g.jc[1] / g.jc[0], rNewJ = g.jn[0] ? g.jn[1] / g.jn[0] : 0;
+    const mix = sNew * (rNewJ - rMar), core = sCore * (rCoreJ - rMar), rJun = rMar + mix + core;
+    const svg = $("wf"); svg.innerHTML = "";
+    const H = 260, W = fit(svg, H), box = { l: 44, t: 20, w: W - 44 - 12, h: H - 20 - 30 };
+    const max = .6, Y = v => box.t + box.h - v / max * box.h;
+    axisY(svg, box, max, v => fmtP(v, 0), 3);
+    const bars = [[T.wf_mar, 0, rMar, "var(--s0)"], [T.wf_mix, rMar + mix, rMar, "var(--s5)"], [T.wf_core, rMar + mix + core, rMar + mix, "var(--s4)"], [T.wf_jun, 0, rJun, "var(--s0)"]];
+    const gw = box.w / 4;
+    bars.forEach((b, k) => {
+      const lo = Math.min(b[1], b[2]), hi = Math.max(b[1], b[2]), x = box.l + k * gw + gw * .2, w = gw * .6;
+      svgEl("rect", { x, y: Y(hi), width: w, height: Math.max(1, Y(lo) - Y(hi)), fill: b[3], rx: 4 }, svg);
+      const txt = k === 0 || k === 3 ? fmtP(b[2]) : fmtPP(b[1] - b[2]);
+      svgEl("text", { x: x + w / 2, y: Y(hi) - 7, "text-anchor": "middle", class: "lb" }, svg, txt);
+      svgEl("text", { x: x + w / 2, y: H - 8, "text-anchor": "middle", class: "ax" }, svg, b[0]);
+      if (k < 3) { const yy = Y(k === 0 ? rMar : k === 1 ? rMar + mix : rJun); svgEl("line", { x1: x + w, x2: x + gw, y1: yy, y2: yy, stroke: "var(--muted)", "stroke-dasharray": "3 3" }, svg); }
+    });
+    $("wfNote").textContent = tpl(T.wf_note, { mix: fmtPP(mix), core: fmtPP(core), tot: fmtPP(rJun - rMar) });
+
+    // segment lines by month
+    const seg = [[0, 0], [0, 0], [0, 0]].map(() => Array.from({ length: 6 }, () => [0, 0]));
+    for (let i = 0; i < N; i++) {
+      if (!pass(i, true, true)) continue;
+      const s = CH[D.ch[i]].core ? (D.plat[i] ? 1 : 0) : 2;
+      seg[s][D.month[i]][0]++; seg[s][D.month[i]][1] += isAct(i);
+    }
+    const series = [[T.seg_ios, "var(--s0)", ""], [T.seg_and, "var(--s4)", ""], [T.seg_new, "var(--s5)", "6 4"]].map((x, s) => ({
+      name: x[0], color: x[1], dash: x[2], label: x[0], vals: seg[s].map(v => v[0] >= 30 ? v[1] / v[0] : null)
+    }));
+    lineChart($("segLines"), T.mshort, series, { max: .6, fmt: v => fmtP(v, 0), tipLabels: T.months });
+    $("segLeg").innerHTML = series.map(s => `<span><i style="background:${s.color}"></i>${s.name}</span>`).join("");
+
+    // versions (core only)
+    const V = {};
+    for (let i = 0; i < N; i++) {
+      if (!pass(i, true, true) || !CH[D.ch[i]].core) continue;
+      const k = D.ver[i] * 2 + D.plat[i];
+      V[k] = V[k] || []; V[k].push(i);
+    }
+    const rel = [T.v18, T.v19, T.v20];
+    let rows = "";
+    for (let v = 0; v < 3; v++) for (let p = 0; p < 2; p++) {
+      const ix = V[v * 2 + p]; if (!ix) continue;
+      const a = agg(ix), bad = a.ret < 0.38;
+      rows += `<tr><td>v${D.VERSIONS[v]}<br><span style="font-size:11.5px;color:var(--muted)">${rel[v]}</span></td><td>${T.pl_names[p]}</td><td class="r">${fmtN(a.n)}</td><td class="r ${bad ? "bad" : ""}">${fmtP(a.ret)}</td><td class="r ${a.rate < 4.2 ? "bad" : ""}">${isFinite(a.rate) ? fmtD(a.rate, 2) : "—"}</td></tr>`;
+    }
+    $("verTable").innerHTML = `<thead><tr><th>${T.vt_ver}</th><th>${T.vt_pl}</th><th class="r">${T.vt_users}</th><th class="r">${T.vt_ret}</th><th class="r">${T.vt_rate}</th></tr></thead><tbody>${rows}</tbody>`;
+  }
+
+  // ---------- USERS ----------
+  let uChip = "all", uPage = 0, uSort = { k: "date", dir: 1 };
+  const PAGE = 25;
+  const CHIPS = [["all", T.chip_all, () => true], ["act", T.chip_act, i => isAct(i)], ["churn", T.chip_churn, i => !isAct(i)],
+    ["stop", T.chip_stop, i => D.fin[i] && !D.sec[i]], ["sec", T.chip_sec, i => D.sec[i]], ["nofin", T.chip_nofin, i => !D.fin[i]]];
+  function rUsers() {
+    const base = sel();
+    const counts = CHIPS.map(c => { let n = 0; for (const i of base) if (c[2](i)) n++; return n; });
+    $("uChips").innerHTML = CHIPS.map((c, k) => `<button type="button" class="chip" data-k="${c[0]}" aria-pressed="${uChip === c[0]}">${c[1]} <b>${fmtN(counts[k])}</b></button>`).join("");
+    $("uChips").querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => { uChip = b.dataset.k; uPage = 0; rUsers(); }));
+    const test = CHIPS.find(c => c[0] === uChip)[2];
+    let list = base.filter(test);
+    const keyOf = { id: i => i, date: i => MSTART[D.month[i]] + D.day[i], days: i => D.life[i], min: i => D.minutes[i], rate: i => D.rating[i] || 0 };
+    if (uSort.k !== "id") { const f = keyOf[uSort.k]; list = list.slice().sort((a, b) => (f(a) - f(b)) * uSort.dir || a - b); }
+    else if (uSort.dir < 0) list = list.slice().reverse();
+    const a = agg(list);
+    $("uStats").textContent = tpl(T.us_stats, { n: fmtN(list.length), r: fmtP(a.ret), f: fmtP(a.finR) });
+    const pages = Math.max(1, Math.ceil(list.length / PAGE)); if (uPage >= pages) uPage = pages - 1;
+    const slice = list.slice(uPage * PAGE, uPage * PAGE + PAGE);
+    const th = (k, l, r) => `<th class="${k ? "sort" : ""} ${r ? "r" : ""}" ${k ? `data-k="${k}"` : ""} ${uSort.k === k ? `aria-sort="${uSort.dir > 0 ? "ascending" : "descending"}"` : ""}>${l}${uSort.k === k ? (uSort.dir > 0 ? " ↑" : " ↓") : ""}</th>`;
+    $("uTable").innerHTML = `<thead><tr>${th("id", T.ut_id)}${th("date", T.ut_date)}${th("", T.ut_ch)}${th("", T.ut_pl)}${th("", T.ut_g)}${th("days", T.ut_days, 1)}${th("min", T.ut_min, 1)}${th("", T.ut_book)}${th("rate", T.ut_rate, 1)}${th("", T.ut_status)}</tr></thead><tbody>` +
+      slice.map(i => `<tr class="click" data-i="${i}"><td><span class="uid">${uid(i)}</span></td><td>${fmtDate(dateOf(i))}</td><td><span class="sw" style="--c:${COL[D.ch[i]]}"></span>${T.ch_short[D.ch[i]]}</td><td>${T.pl_names[D.plat[i]]} ${D.VERSIONS[D.ver[i]]}</td><td>${T.g_names[D.genre[i]]}</td><td class="r">${D.life[i] === 30 ? "30+" : D.life[i]}</td><td class="r">${fmtN(D.minutes[i])}</td><td>${bookPill(i)}</td><td class="r">${D.rating[i] ? D.rating[i] + "★" : "—"}</td><td>${statusPill(i)}</td></tr>`).join("") + "</tbody>";
+    $("uTable").querySelectorAll("th.sort").forEach(t => t.addEventListener("click", () => { const k = t.dataset.k; uSort = { k, dir: uSort.k === k ? -uSort.dir : 1 }; uPage = 0; rUsers(); }));
+    $("uTable").querySelectorAll("tr.click").forEach(tr => tr.addEventListener("click", () => openUser(+tr.dataset.i)));
+    $("uPager").innerHTML = `<span>${tpl(T.pg_shown, { a: fmtN(list.length ? uPage * PAGE + 1 : 0), b: fmtN(Math.min(list.length, (uPage + 1) * PAGE)), n: fmtN(list.length) })}</span><div><button type="button" class="btn" id="pgPrev" ${uPage === 0 ? "disabled" : ""}>${T.pg_prev}</button><button type="button" class="btn" id="pgNext" ${uPage >= pages - 1 ? "disabled" : ""}>${T.pg_next}</button></div>`;
+    $("pgPrev").addEventListener("click", () => { uPage--; rUsers(); });
+    $("pgNext").addEventListener("click", () => { uPage++; rUsers(); });
+  }
+  const bookPill = i => D.sec[i] ? `<span class="pill y">${T.b_sec}</span>` : D.fin[i] ? `<span class="pill m">${T.b_fin}</span>` : `<span class="pill m">${T.b_none}</span>`;
+  const statusPill = i => isAct(i) ? `<span class="pill y">${T.st_active}</span>` : `<span class="pill n">${D.life[i] === 0 ? T.st_left0 : tpl(T.st_left, { d: D.life[i] })}</span>`;
+
+  // drawer
+  const drawer = $("drawer"), scrim = $("scrim");
+  function openUser(i) {
+    const d0 = dateOf(i), at = n => fmtDate(new Date(d0.getTime() + n * 86400000));
+    const tl = [[0, tpl(T.tl_signup, { ch: T.ch_names[D.ch[i]], pl: T.pl_names[D.plat[i]], v: D.VERSIONS[D.ver[i]] }), COL[D.ch[i]]], [0, tpl(T.tl_start, { g: T.g_names[D.genre[i]] }), "var(--s0)"]];
+    if (D.fin[i]) tl.push([D.finDay[i], T.tl_fin, "var(--s1)"]);
+    if (D.sec[i]) tl.push([Math.min(30, D.finDay[i] + 1 + (i % 5)), T.tl_sec, "var(--s1)"]);
+    else if (D.fin[i]) tl.push([D.finDay[i], T.tl_nosec, "var(--s5)"]);
+    if (D.rating[i]) tl.push([Math.min(D.life[i], 3 + (i % 9)), tpl(T.tl_rate, { r: D.rating[i] }), D.rating[i] >= 4 ? "var(--s1)" : "var(--s5)"]);
+    tl.push(isAct(i) ? [30, T.tl_d30, "var(--s1)"] : [D.life[i], T.tl_left, "var(--s5)"]);
+    tl.sort((a, b) => a[0] - b[0]);
+    const rec = isAct(i) ? (D.sec[i] ? T.rec_sec : T.rec_act) : D.fin[i] && !D.sec[i] ? T.rec_stop : !D.fin[i] ? T.rec_nofin : T.rec_sec;
+    drawer.innerHTML = `<div class="dh"><span class="av" style="--c:${COL[D.ch[i]]}">${T.ch_short[D.ch[i]].slice(0, 2)}</span><div><h3>${uid(i)}</h3><span>${T.ch_names[D.ch[i]]} · ${T.pl_names[D.plat[i]]} ${D.VERSIONS[D.ver[i]]}</span></div><button type="button" class="x" id="dClose" aria-label="${T.dr_close}">×</button></div>
+      <div>${statusPill(i)} ${bookPill(i)}</div>
+      <div class="dstats"><div><b>${fmtDate(d0)}</b><span>${T.dr_signup}</span></div><div><b>${D.life[i] === 30 ? "30+" : D.life[i]}</b><span>${T.dr_days}</span></div><div><b>${fmtN(D.minutes[i])}</b><span>${T.dr_min}</span></div><div><b>${D.rating[i] ? D.rating[i] + "★" : T.dr_none}</b><span>${T.dr_rate}</span></div></div>
+      <div><span class="lab">${T.dr_tl}</span><ul class="tl">${tl.map(t => `<li><span class="d">${at(t[0])}</span><i style="--c:${t[2]}"></i><span>${t[1]}</span></li>`).join("")}</ul></div>
+      <div><span class="lab">${T.dr_seg}</span><p class="rec" style="margin-top:8px">${rec}</p></div>`;
+    drawer.classList.add("on"); scrim.classList.add("on"); drawer.setAttribute("aria-hidden", "false");
+    $("dClose").addEventListener("click", closeUser); $("dClose").focus();
+  }
+  function closeUser() { drawer.classList.remove("on"); scrim.classList.remove("on"); drawer.setAttribute("aria-hidden", "true"); }
+  scrim.addEventListener("click", closeUser);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeUser(); });
+
+  // search
+  const toast = $("toast");
+  $("q").addEventListener("keydown", e => {
+    if (e.key !== "Enter") return;
+    const m = e.target.value.match(/(\d+)/);
+    const i = m ? parseInt(m[1], 10) - 1 : -1;
+    if (i >= 0 && i < N) openUser(i);
+    else { toast.textContent = T.not_found; toast.classList.add("on"); setTimeout(() => toast.classList.remove("on"), 1800); }
+  });
+
+  // ---------- EXPERIMENTS ----------
+  const EX = [["h1", T.ex_h1, T.ex_h1w, 10], ["h3", T.ex_h2, T.ex_h2w, 5], ["d30", T.ex_h3, T.ex_h3w, 3]];
+  [...$("exAlpha").options].forEach(o => o.textContent = fmtD(+o.value, 2));
+  $("exTest").innerHTML = EX.map((e, k) => `<option value="${k}">${e[1]}</option>`).join("");
+  let exPreset = -1;
+  ["exBase", "exMde", "exAlpha", "exPower"].forEach(id => $(id).addEventListener("input", () => rExperiments(true)));
+  $("exTest").addEventListener("change", () => { exPreset = -1; rExperiments(); });
+  const zq = p => { // inverse normal CDF (Acklam)
+    const a = [-39.6968302866538, 220.946098424521, -275.928510446969, 138.357751867269, -30.6647980661472, 2.50662827745924], b = [-54.4760987982241, 161.585836858041, -155.698979859887, 66.8013118877197, -13.2806815528857], c = [-.00778489400243029, -.322396458041136, -2.40075827716184, -2.54973253934373, 4.37466414146497, 2.93816398269878], d = [.00778469570904146, .32246712907004, 2.445134137143, 3.75440866190742];
+    const pl = .02425; let q, r;
+    if (p < pl) { q = Math.sqrt(-2 * Math.log(p)); return (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1); }
+    if (p > 1 - pl) { q = Math.sqrt(-2 * Math.log(1 - p)); return -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1); }
+    q = p - .5; r = q * q; return (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1);
+  };
+  function rExperiments(fromSlider) {
+    const k = +$("exTest").value, e = EX[k], a = agg(sel());
+    if (!fromSlider && exPreset !== k) {
+      const base = k === 0 ? a.secR : k === 1 ? a.finR : a.ret;
+      $("exBase").value = Math.round((isFinite(base) ? base : .3) * 100); $("exMde").value = e[3]; exPreset = k;
+    }
+    const p1 = +$("exBase").value / 100, p2 = Math.min(.99, p1 + +$("exMde").value / 100);
+    const alpha = +$("exAlpha").value, power = +$("exPower").value;
+    $("exBaseV").textContent = fmtD(p1 * 100, 0) + "%"; $("exMdeV").textContent = "+" + $("exMde").value + T.pp;
+    const za = zq(1 - alpha / 2), zb = zq(power), pb = (p1 + p2) / 2;
+    const n = Math.ceil(Math.pow(za * Math.sqrt(2 * pb * (1 - pb)) + zb * Math.sqrt(p1 * (1 - p1) + p2 * (1 - p2)), 2) / Math.pow(p2 - p1, 2));
+    let days = 0; for (let m = F.m0; m <= F.m1; m++) days += MDAYS[m];
+    const eligible = k === 0 ? a.fin : a.n, daily = eligible / days;
+    $("exN").textContent = fmtN(n);
+    $("exDays").textContent = daily > 0 ? fmtN(Math.ceil(2 * n / daily)) : "—";
+    $("exDaily").textContent = tpl(T.ex_daily, { d: fmtN(daily), who: e[2] }) + (k === 2 ? " " + T.ex_wait : "");
+  }
+
+  let rz; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(render, 150); });
+
+  // ---------- start ----------
+  syncControls();
+  const start = location.hash.slice(1);
+  go(VIEWS.includes(start) ? start : "overview", false);
+})();
+</script>
+
+</body>
+</html>

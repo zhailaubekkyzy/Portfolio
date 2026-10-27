@@ -56,6 +56,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .hero h1 span { color: var(--muted); font-weight: 500; }
 .lead { font-size: clamp(16px, 1.6vw, 19px); color: var(--ink-2); max-width: 66ch; }
 .note { display: inline-flex; align-items: center; gap: 8px; width: fit-content; max-width: 100%; font-size: 13px; color: var(--warn); background: var(--warn-bg); padding: 6px 12px; border-radius: 999px; }
+.crmlink { width: fit-content; font-weight: 600; color: var(--c1); text-decoration: none; font-size: 15px; }
+.crmlink:hover { text-decoration: underline; }
 .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 8px; }
 .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px 18px 16px; display: grid; gap: 6px; align-content: start; }
 .kpi .v { font-family: var(--f-display); font-size: clamp(22px, 2.6vw, 30px); font-weight: 700; letter-spacing: -.01em; }
@@ -197,6 +199,7 @@ footer { padding-block: 28px 48px; font-size: 13px; color: var(--muted); }
 <nav class="nav" aria-label="Sections">
   <div class="wrap">
     <a href="../#en" class="back">← All projects</a>
+    <a href="booklover-crm.html" class="back">CRM dashboard →</a>
     <a href="#summary">Summary</a>
     <a href="#cohorts">Cohorts</a>
     <a href="#diagnosis">Diagnosis</a>
@@ -215,6 +218,7 @@ footer { padding-block: 28px 48px; font-size: 13px; color: var(--muted); }
   <h1>Retention <span>BookLover</span></h1>
   <p class="lead">BookLover is a mobile reading app launched six months ago. Acquisition grows every month, yet since April 30-day retention has been falling: from 45% to 28%. I found when and where retention breaks, separated causes into “who arrived” and “what they found”, and proposed three hypotheses with metrics and a test plan.</p>
   <span class="note">A training case from a product management course: the data come from the brief, not a real product</span>
+  <a class="crmlink" href="booklover-crm.html">Every figure at user level, with filters by channel, platform and genre: CRM dashboard →</a>
   <div class="kpis">
     <div class="kpi"><span class="eyebrow">D30 retention</span><span class="v bad num">45% → 28%</span><span class="d">January vs June cohort</span></div>
     <div class="kpi"><span class="eyebrow">Retained from growth</span><span class="v bad num">6.5%</span><span class="d">of April’s extra users vs March (baseline 45%)</span></div>
@@ -361,8 +365,8 @@ footer { padding-block: 28px 48px; font-size: 13px; color: var(--muted); }
           </ol>
         </div>
         <div>
-          <p class="stmt"><em>If</em>we move budget from channels with D30 under 20% to channels above 40% and drop offers that promise what the product lacks, <em>then</em>blended D30 retention returns to 38–40%, and cost per retained reader falls 25%, <em>because</em>the drop began with accelerated acquisition, and almost all the growth churned within 30 days.</p>
-          <div class="h-more"><p><b>How I test it.</b> Not an A/B test but a 4-week budget shift with a control set of channels. Diagnosis first: split April–June cohorts by channel. If every channel retains badly, the hypothesis falls and focus moves to the product.</p><p><b>What would disprove it.</b> Organic and the original channels also fell to around 30%. Then the cause is the product, not the audience.</p></div>
+          <p class="stmt"><em>If</em>we move budget from channels with D30 under 20% to channels above 40% and drop offers that promise what the product lacks, <em>then</em>blended D30 retention rises from 28% to 34–38%, and cost per retained reader falls 10–15% on the same budget, <em>because</em>the drop began with accelerated acquisition, and almost all the growth churned within 30 days.</p>
+          <div class="h-more"><p><b>How I test it.</b> Not an A/B test but a 4-week budget shift with a control set of channels. Diagnosis first: split April–June cohorts by channel. If every channel retains badly, the hypothesis falls and focus moves to the product. The estimate comes from the dashboard’s budget simulator. The remaining gap closes with the Android v2.0 fix: about +5 pp.</p><p><b>What would disprove it.</b> Organic and the original channels also fell to around 30%. Then the cause is the product, not the audience.</p></div>
         </div>
       </article>
       <article class="card h-card">
@@ -424,8 +428,8 @@ footer { padding-block: 28px 48px; font-size: 13px; color: var(--muted); }
           <tbody>
             <tr><td>Started a 2nd book within 7 days, % of finishers</td><td class="l"><span class="type p">Primary</span></td><td>30%</td><td>40%</td><td>H1</td></tr>
             <tr><td>Minutes read on the 2nd book in week one</td><td class="l"><span class="type s">Secondary</span></td><td>to measure</td><td>up</td><td>H1</td></tr>
-            <tr><td>D30 retention by channel</td><td class="l"><span class="type p">Primary</span></td><td>28%</td><td>38–40%</td><td>H2</td></tr>
-            <tr><td>Cost per retained reader, CAC ÷ D30</td><td class="l"><span class="type s">Secondary</span></td><td>to measure</td><td>−25%</td><td>H2</td></tr>
+            <tr><td>D30 retention by channel</td><td class="l"><span class="type p">Primary</span></td><td>28%</td><td>34–38%</td><td>H2</td></tr>
+            <tr><td>Cost per retained reader, CAC ÷ D30</td><td class="l"><span class="type s">Secondary</span></td><td>to measure</td><td>−10–15%</td><td>H2</td></tr>
             <tr><td>Finished the first book, %</td><td class="l"><span class="type p">Primary</span></td><td>65%</td><td>70%</td><td>H3</td></tr>
             <tr><td>D7 retention</td><td class="l"><span class="type s">Secondary</span></td><td>to measure</td><td>+3 pp</td><td>H3</td></tr>
             <tr><td>D30 retention, all new users</td><td class="l"><span class="type s">Secondary</span></td><td>28%</td><td>up</td><td>all</td></tr>

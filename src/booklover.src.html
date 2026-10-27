@@ -50,6 +50,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .hero h1 span { color: var(--muted); font-weight: 500; }
 .lead { font-size: clamp(16px, 1.6vw, 19px); color: var(--ink-2); max-width: 66ch; }
 .note { display: inline-flex; align-items: center; gap: 8px; width: fit-content; max-width: 100%; font-size: 13px; color: var(--warn); background: var(--warn-bg); padding: 6px 12px; border-radius: 999px; }
+.crmlink { width: fit-content; font-weight: 600; color: var(--c1); text-decoration: none; font-size: 15px; }
+.crmlink:hover { text-decoration: underline; }
 .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 8px; }
 .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px 18px 16px; display: grid; gap: 6px; align-content: start; }
 .kpi .v { font-family: var(--f-display); font-size: clamp(22px, 2.6vw, 30px); font-weight: 700; letter-spacing: -.01em; }
@@ -188,6 +190,7 @@ footer { padding-block: 28px 48px; font-size: 13px; color: var(--muted); }
 <nav class="nav" aria-label="{{nav_label}}">
   <div class="wrap">
     <a href="{{back_href}}" class="back">{{nav_back}}</a>
+    <a href="booklover-crm.html" class="back">{{nav_crm}}</a>
     <a href="#summary">{{nav_summary}}</a>
     <a href="#cohorts">{{nav_data}}</a>
     <a href="#diagnosis">{{nav_diag}}</a>
@@ -206,6 +209,7 @@ footer { padding-block: 28px 48px; font-size: 13px; color: var(--muted); }
   <h1>{{h1}}</h1>
   <p class="lead">{{lead}}</p>
   <span class="note">{{note}}</span>
+  <a class="crmlink" href="booklover-crm.html">{{crm_link}}</a>
   <div class="kpis">
     <div class="kpi"><span class="eyebrow">{{k1_e}}</span><span class="v bad num">{{k1_v}}</span><span class="d">{{k1_d}}</span></div>
     <div class="kpi"><span class="eyebrow">{{k2_e}}</span><span class="v bad num">{{k2_v}}</span><span class="d">{{k2_d}}</span></div>
@@ -353,7 +357,7 @@ footer { padding-block: 28px 48px; font-size: 13px; color: var(--muted); }
         </div>
         <div>
           <p class="stmt"><em>{{lbl_if}}</em>{{h2_if}} <em>{{lbl_then}}</em>{{h2_then}} <em>{{lbl_bec}}</em>{{h2_bec}}</p>
-          <div class="h-more"><p><b>{{lbl_test}}.</b> {{h2_test}}</p><p><b>{{lbl_wrong}}.</b> {{h2_wrong}}</p></div>
+          <div class="h-more"><p><b>{{lbl_test}}.</b> {{h2_test}} {{h2_sim}}</p><p><b>{{lbl_wrong}}.</b> {{h2_wrong}}</p></div>
         </div>
       </article>
       <article class="card h-card">
@@ -415,7 +419,7 @@ footer { padding-block: 28px 48px; font-size: 13px; color: var(--muted); }
           <tbody>
             <tr><td>{{m1}}</td><td class="l"><span class="type p">{{t_primary}}</span></td><td>30%</td><td>40%</td><td>H1</td></tr>
             <tr><td>{{m2}}</td><td class="l"><span class="type s">{{t_secondary}}</span></td><td>{{v_meas}}</td><td>{{v_grow}}</td><td>H1</td></tr>
-            <tr><td>{{m3}}</td><td class="l"><span class="type p">{{t_primary}}</span></td><td>28%</td><td>38–40%</td><td>H2</td></tr>
+            <tr><td>{{m3}}</td><td class="l"><span class="type p">{{t_primary}}</span></td><td>28%</td><td>{{v_h2goal}}</td><td>H2</td></tr>
             <tr><td>{{m4}}</td><td class="l"><span class="type s">{{t_secondary}}</span></td><td>{{v_meas}}</td><td>{{v_cut25}}</td><td>H2</td></tr>
             <tr><td>{{m5}}</td><td class="l"><span class="type p">{{t_primary}}</span></td><td>65%</td><td>70%</td><td>H3</td></tr>
             <tr><td>{{m6}}</td><td class="l"><span class="type s">{{t_secondary}}</span></td><td>{{v_meas}}</td><td>+3 {{pp}}</td><td>H3</td></tr>
