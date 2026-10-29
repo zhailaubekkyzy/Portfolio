@@ -38,9 +38,45 @@ def write(rel, text):
     print(f"  wrote {rel} ({len(text) // 1024} KB)")
 
 
+# Shared by every page: (1) start at the very top — also inside the Claude app, where the page sits in a frame and
+# window.scrollTo alone does not move the screen; (2) hide the phone keyboard when tapping outside a text field,
+# on Enter and on Escape.
+GLOBAL = """<script>
+(function () {
+  try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) {}
+  function toTop() {
+    try { window.scrollTo(0, 0); } catch (e) {}
+    try { if (window.top !== window && document.body) document.body.scrollIntoView({ block: "start" }); } catch (e) {}
+  }
+  window.pfToTop = toTop;
+  function onLoad() {
+    var h = decodeURIComponent(location.hash.slice(1));
+    if (h && document.getElementById(h)) return; // a link to a section of a long page keeps its place
+    toTop();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", onLoad); else onLoad();
+  window.addEventListener("pageshow", function (e) { if (e.persisted) onLoad(); });
+  var TYPING = /^(INPUT|TEXTAREA|SELECT)$/;
+  function typing(el) { return el && (el.isContentEditable || (TYPING.test(el.tagName) && el.type !== "range" && el.type !== "checkbox" && el.type !== "radio" && el.type !== "button")); }
+  document.addEventListener("pointerdown", function (e) {
+    var a = document.activeElement;
+    if (!typing(a)) return;
+    var t = e.target;
+    if (t && t.closest && t.closest("input, textarea, select, label, [contenteditable]")) return;
+    a.blur();
+  }, true);
+  document.addEventListener("keydown", function (e) {
+    var a = document.activeElement;
+    if (!typing(a) || a.tagName === "TEXTAREA") return;
+    if (e.key === "Enter" || e.key === "Escape") a.blur();
+  });
+})();
+</script>"""
+
+
 def wrap(fragment, lang):
     i = fragment.index("</style>") + len("</style>")
-    return HEAD.format(lang=lang) + fragment[:i] + "\n</head>\n<body>\n" + fragment[i:] + "\n</body>\n</html>\n"
+    return HEAD.format(lang=lang) + fragment[:i] + "\n</head>\n<body>\n" + fragment[i:] + "\n" + GLOBAL + "\n</body>\n</html>\n"
 
 
 def pairs(text, pairs_list, label):

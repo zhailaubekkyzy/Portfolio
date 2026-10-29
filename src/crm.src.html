@@ -657,7 +657,7 @@ table.mig td.cell:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
     $("vTitle").innerHTML = TITLES[v] + (+fN.value >= 0 || +fC.value >= 0 ? `<small>${[+fN.value >= 0 ? B.NICHES[+fN.value].name : "", +fC.value >= 0 ? B.CHANNELS[+fC.value].name : ""].filter(Boolean).join(" · ")}</small>` : "");
     if (push) { try { history.replaceState(null, "", "#" + v); } catch (e) {} }
     renderView();
-    window.scrollTo({ top: 0 });
+    (window.pfToTop || (() => window.scrollTo({ top: 0 })))();
   }
   document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.view)));
   document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => go(b.dataset.go)));

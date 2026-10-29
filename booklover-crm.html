@@ -1030,7 +1030,7 @@ if (typeof module !== "undefined") module.exports = { simulateBooklover };
     $("fRow").hidden = ["task", "factors", "hypotheses", "plan", "summary", "method"].includes(v); // filters only where there is data
     if (push) { try { history.replaceState(null, "", "#" + v); } catch (e) {} }
     render();
-    window.scrollTo(0, 0);
+    (window.pfToTop || (() => window.scrollTo(0, 0)))();
     const btn = document.querySelector(`.nav-btn[data-view="${v}"]`);
     if (btn && btn.parentElement.scrollWidth > btn.parentElement.clientWidth) btn.parentElement.scrollLeft = btn.offsetLeft - 40;
   }
@@ -1506,5 +1506,36 @@ if (typeof module !== "undefined") module.exports = { simulateBooklover };
 })();
 </script>
 
+<script>
+(function () {
+  try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) {}
+  function toTop() {
+    try { window.scrollTo(0, 0); } catch (e) {}
+    try { if (window.top !== window && document.body) document.body.scrollIntoView({ block: "start" }); } catch (e) {}
+  }
+  window.pfToTop = toTop;
+  function onLoad() {
+    var h = decodeURIComponent(location.hash.slice(1));
+    if (h && document.getElementById(h)) return; // a link to a section of a long page keeps its place
+    toTop();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", onLoad); else onLoad();
+  window.addEventListener("pageshow", function (e) { if (e.persisted) onLoad(); });
+  var TYPING = /^(INPUT|TEXTAREA|SELECT)$/;
+  function typing(el) { return el && (el.isContentEditable || (TYPING.test(el.tagName) && el.type !== "range" && el.type !== "checkbox" && el.type !== "radio" && el.type !== "button")); }
+  document.addEventListener("pointerdown", function (e) {
+    var a = document.activeElement;
+    if (!typing(a)) return;
+    var t = e.target;
+    if (t && t.closest && t.closest("input, textarea, select, label, [contenteditable]")) return;
+    a.blur();
+  }, true);
+  document.addEventListener("keydown", function (e) {
+    var a = document.activeElement;
+    if (!typing(a) || a.tagName === "TEXTAREA") return;
+    if (e.key === "Enter" || e.key === "Escape") a.blur();
+  });
+})();
+</script>
 </body>
 </html>

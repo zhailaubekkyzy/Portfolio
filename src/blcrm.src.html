@@ -868,7 +868,7 @@ ORDER BY 1, retention_d30;</pre>
     $("fRow").hidden = ["task", "factors", "hypotheses", "plan", "summary", "method"].includes(v); // filters only where there is data
     if (push) { try { history.replaceState(null, "", "#" + v); } catch (e) {} }
     render();
-    window.scrollTo(0, 0);
+    (window.pfToTop || (() => window.scrollTo(0, 0)))();
     const btn = document.querySelector(`.nav-btn[data-view="${v}"]`);
     if (btn && btn.parentElement.scrollWidth > btn.parentElement.clientWidth) btn.parentElement.scrollLeft = btn.offsetLeft - 40;
   }

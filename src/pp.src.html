@@ -855,7 +855,7 @@ table.src td.hl { background: color-mix(in srgb, var(--mb) 10%, transparent); fo
     $("fRow").hidden = !FILTERED.includes(v);
     if (push) { try { history.replaceState(null, "", "#" + v); } catch (e) {} }
     render();
-    window.scrollTo(0, 0);
+    (window.pfToTop || (() => window.scrollTo(0, 0)))();
     const btn = document.querySelector(`.nav-btn[data-view="${v}"]`);
     if (btn && btn.parentElement.scrollWidth > btn.parentElement.clientWidth) btn.parentElement.scrollLeft = btn.offsetLeft - 40;
   }
