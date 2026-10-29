@@ -27,6 +27,7 @@ T = {
 "foot_back": ("← Портфолио", "← Portfolio"),
 "foot_demo": ("Итоговые цифры — из условия кейса. Карточки клиентов, месяцы, причины и health score — демо-данные, сгенерированные так, чтобы суммы совпадали с условием.",
               "Totals come from the case brief. Account cards, months, reasons and health scores are demo data generated so that the totals match the brief."),
+"back": ("Назад", "Back"), "back_t": ("Шаг назад (Alt+← или Ctrl+Z)", "One step back (Alt+← or Ctrl+Z)"), "undone": ("Шаг назад", "Stepped back"),
 "q_ph": ("Клиент или ID", "Account or ID"),
 "f_seg": ("Сегмент", "Segment"), "f_coh": ("Когорта", "Cohort"), "f_use": ("Функции", "Features"), "f_ind": ("Отрасль", "Industry"),
 "f_seg_all": ("Все сегменты", "All segments"), "f_coh_all": ("Все когорты", "All cohorts"), "f_use_all": ("Любое использование", "Any feature usage"), "f_ind_all": ("Все отрасли", "All industries"),

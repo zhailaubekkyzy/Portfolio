@@ -442,6 +442,7 @@ table.src td.hl { background: color-mix(in srgb, var(--mb) 10%, transparent); fo
   <div class="main">
     <div class="top">
       <div class="top-row">
+        <button type="button" class="btn" id="undoBtn" hidden title="{{back_t}}" aria-label="{{back_t}}">← {{back}}</button>
         <h1 id="vTitle">{{v_task}}</h1>
         <label class="search" for="q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input class="ctl" id="q" placeholder="{{q_ph}}" autocomplete="off" aria-label="{{q_ph}}"></label>
         <a class="btn lang" href="{{lang_href}}">{{lang_label}}</a>
@@ -722,6 +723,7 @@ table.src td.hl { background: color-mix(in srgb, var(--mb) 10%, transparent); fo
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" aria-hidden="true" aria-label="{{dr_label}}"></aside>
 <div class="tip" id="tip" role="tooltip"></div>
+<div class="toast" id="toast" role="status"></div>
 
 <script>
 /*__SIM__*/
@@ -865,6 +867,7 @@ table.src td.hl { background: color-mix(in srgb, var(--mb) 10%, transparent); fo
     const none = () => {};
     ({ task: rTask, overview: rOverview, churn: rChurn, money: rMoney, priority: rPriority, causes: rCauses, strategy: none, metrics: rMetrics, sim: rSim, summary: none, accounts: rAccounts, method: none })[view]();
     $("cntA").textContent = fmtN(sel().length);
+    commit();
   }
 
   // ---------- 1 TASK ----------
@@ -959,7 +962,8 @@ table.src td.hl { background: color-mix(in srgb, var(--mb) 10%, transparent); fo
   $("denTg").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { den = +b.dataset.i; $("denTg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); rChurn(); }));
   $("newShare").addEventListener("input", () => rChurn());
   function denVal(g) { return den === 0 ? g.base : den === 1 ? g.base + g.neu : (g.base + g.end) / 2; }
-  function rChurn() {
+  function rChurn() { rChurn_(); commit(); }
+  function rChurn_() {
     const segs = bySeg(ACC), all = agg(ACC);
     $("denFormula").textContent = T.den_f[den];
     const vals = segs.map(g => g.ch / denVal(g)), tv = all.ch / denVal(all);
@@ -999,7 +1003,8 @@ table.src td.hl { background: color-mix(in srgb, var(--mb) 10%, transparent); fo
 
   // ---------- 4 MONEY ----------
   let cac = [3000, 12000, 45000];
-  function rMoney() {
+  function rMoney() { rMoney_(); commit(); }
+  function rMoney_() {
     const list = sel(), a = agg(list), segs = bySeg(sel(true));
     const nrr = a.grr;
     $("mKpis").innerHTML = [
@@ -1083,7 +1088,8 @@ table.src td.hl { background: color-mix(in srgb, var(--mb) 10%, transparent); fo
   $("lensTg").innerHTML = T.lens_names.map((n, i) => `<button type="button" data-i="${i}" aria-pressed="${i === 0}">${n}</button>`).join("");
   $("lensTg").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { lens = +b.dataset.i; $("lensTg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); rPriority(); }));
   const CTRL = [0.3, 0.8, 0.7]; // judgement: how much of the churn the product can influence (see text)
-  function rPriority() {
+  function rPriority() { rPriority_(); commit(); }
+  function rPriority_() {
     const segs = bySeg(ACC);
     const M = [g => g.churn, g => g.ch, g => g.arrLost, (g, s) => g.arrLost * CTRL[s]][lens];
     const F2 = [v => fmtP(v), fmtN, v => usd(v), v => usd(v)][lens];
@@ -1181,7 +1187,8 @@ table.src td.hl { background: color-mix(in srgb, var(--mb) 10%, transparent); fo
   // ---------- 8 METRICS ----------
   let mSel = "adopt";
   const MT = T.mt;
-  function rMetrics() {
+  function rMetrics() { rMetrics_(); commit(); }
+  function rMetrics_() {
     const box = (k) => `<button type="button" class="mbox${MT[k].lag ? " lag" : ""}" data-k="${k}" aria-pressed="${k === mSel}" style="--c:${MT[k].c ? SC[MT[k].c - 1] : "var(--muted)"}"><span class="tag2">${MT[k].tag}</span><b>${MT[k].n}</b><span>${MT[k].s}</span></button>`;
     $("mtree").innerHTML = `<div class="lvl">${box("nrr")}</div><div class="lvl l2">${box("grr")}${box("exp")}</div><div class="lvl l3">${box("adopt")}${box("health")}${box("upg")}</div><div class="lvl l3">${box("ttv")}${box("exit")}${box("seg")}</div>`;
     $("mtree").querySelectorAll(".mbox").forEach(b => b.addEventListener("click", () => { mSel = b.dataset.k; rMetrics(); }));
@@ -1199,7 +1206,8 @@ table.src td.hl { background: color-mix(in srgb, var(--mb) 10%, transparent); fo
     $("xPre").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); rSim();
   }));
   ["xSt", "xMb", "xCo", "xUp"].forEach(id => $(id).addEventListener("input", () => { $("xPre").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", "false")); rSim(); }));
-  function rSim() {
+  function rSim() { rSim_(); commit(); }
+  function rSim_() {
     const segs = bySeg(ACC), all = agg(ACC);
     const pp = [+$("xSt").value, +$("xMb").value, +$("xCo").value].map(v => v / 100), up = +$("xUp").value / 100;
     $("xStV").textContent = "−" + fmtD(pp[0] * 100, 0) + T.pp; $("xMbV").textContent = "−" + fmtD(pp[1] * 100, 0) + T.pp; $("xCoV").textContent = "−" + fmtD(pp[2] * 100, 0) + T.pp;
@@ -1227,7 +1235,8 @@ table.src td.hl { background: color-mix(in srgb, var(--mb) 10%, transparent); fo
   $("q").addEventListener("input", () => { aPage = 0; if (view !== "accounts") go("accounts"); else rAccounts(); });
   const COLS = [["id", T.ac[0], a => a.id], ["name", T.ac[1], a => a.name], ["seg", T.ac[2], a => a.seg], ["emp", T.ac[3], a => a.emp, 1], ["arr", T.ac[4], a => a.price, 1],
     ["key", T.ac[5], a => a.keyUsed, 1], ["seats", T.ac[6], a => a.seatsUsed / a.seatsPaid, 1], ["login", T.ac[7], a => a.lastLogin, 1], ["health", T.ac[8], a => a.health, 1], ["st", T.ac[9], status]];
-  function rAccounts() {
+  function rAccounts() { rAccounts_(); commit(); }
+  function rAccounts_() {
     const q = $("q").value.trim().toLowerCase();
     let base = sel();
     if (q) base = base.filter(a => a.id.toLowerCase().includes(q) || a.name.toLowerCase().includes(q));
@@ -1276,14 +1285,63 @@ table.src td.hl { background: color-mix(in srgb, var(--mb) 10%, transparent); fo
       <p class="note" style="margin-top:0">${T.demo_pill}</p>`;
     drawer.classList.add("on"); scrim.classList.add("on"); drawer.setAttribute("aria-hidden", "false");
     $("dClose").addEventListener("click", closeAcc); $("dClose").focus();
+    commit();
     document.querySelectorAll("#aTbl tr.click").forEach(tr => tr.classList.toggle("on", tr.dataset.id === id));
   }
-  function closeAcc() { openId = null; drawer.classList.remove("on"); scrim.classList.remove("on"); drawer.setAttribute("aria-hidden", "true"); document.querySelectorAll("#aTbl tr.on").forEach(tr => tr.classList.remove("on")); }
+  function closeAcc() { openId = null; drawer.classList.remove("on"); scrim.classList.remove("on"); drawer.setAttribute("aria-hidden", "true"); document.querySelectorAll("#aTbl tr.on").forEach(tr => tr.classList.remove("on")); commit(); }
   scrim.addEventListener("click", closeAcc);
   document.addEventListener("keydown", e => { if (e.key === "Escape") { closeAcc(); hideTip(); } });
+
+  // ---------- one step back ----------
+  // Every change (step, filters, toggles, sliders, chips, sorting, page, account card) is saved as a snapshot.
+  // "← Back", Alt+← or Ctrl/Cmd+Z restores the previous one, including the scroll position.
+  const UNDO = [];
+  let last = null, restoring = false, ready = false, preScroll = 0;
+  ["pointerdown", "keydown"].forEach(t => document.addEventListener(t, () => { if (!restoring) preScroll = window.scrollY; }, true));
+  const SL = ["newShare", "xSt", "xMb", "xCo", "xUp"];
+  function snap() {
+    return JSON.stringify({ v: view, F, den, lens, cac, mSel, aChip, aPage, aSort, aReason, q: $("q").value, d: openId, sl: SL.map(id => $(id).value) });
+  }
+  function commit() {
+    if (restoring || !ready) return;
+    const now = snap();
+    if (last !== null && now !== last) { UNDO.push({ s: last, y: preScroll }); if (UNDO.length > 150) UNDO.shift(); }
+    last = now;
+    $("undoBtn").hidden = !UNDO.length;
+  }
+  const press = (id, i) => $(id).querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.i === i));
+  function undo() {
+    const prev = UNDO.pop();
+    if (!prev) return;
+    restoring = true;
+    const o = JSON.parse(prev.s);
+    Object.assign(F, o.F);
+    den = o.den; lens = o.lens; cac = o.cac; mSel = o.mSel; aChip = o.aChip; aPage = o.aPage; aSort = o.aSort; aReason = o.aReason;
+    $("q").value = o.q;
+    SL.forEach((id, k) => $(id).value = o.sl[k]);
+    press("denTg", den); press("lensTg", lens);
+    const pi = PRE.findIndex(p => p.join() === o.sl.slice(1).join());
+    $("xPre").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.i === pi));
+    syncControls();
+    if (o.v !== view) go(o.v); else render();
+    if (o.d) openAcc(o.d); else closeAcc();
+    window.scrollTo(0, prev.y);
+    restoring = false;
+    last = snap();
+    $("undoBtn").hidden = !UNDO.length;
+    flash(T.undone);
+  }
+  let toastT;
+  function flash(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 1400); }
+  $("undoBtn").addEventListener("click", undo);
+  document.addEventListener("keydown", e => {
+    const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement && document.activeElement.tagName) && document.activeElement.type !== "range";
+    if ((e.altKey && e.key === "ArrowLeft") || (!typing && (e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === "z")) { e.preventDefault(); undo(); }
+  });
 
   syncControls();
   const h0 = location.hash.slice(1);
   go(VIEWS.includes(h0) ? h0 : "task", false);
+  ready = true; last = snap();
 })();
 </script>
