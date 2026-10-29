@@ -1,0 +1,1289 @@
+<title>{{title}}</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: same CRM shell as the BookLover dashboard — left sidebar of numbered steps, sticky top bar with global filters (segment, cohort, feature usage, industry), one view at a time, account card in a right drawer. */
+:root {
+  --bg: #f3f5f8; --surface: #ffffff; --surface-2: #edf0f4; --ink: #131a26; --ink-2: #485264; --muted: #7a8496; --line: #dde2ea;
+  --side: #121a27; --side-ink: #c9d1de; --side-muted: #7f8aa0; --side-act: #1f2a3c;
+  --focus: #2a78d6; --good: #11764f; --good-bg: #e3f4ec; --bad: #b4441a; --bad-bg: #fbe9e1; --warn: #8a5a00; --warn-bg: #fff4de;
+  --s0: #2a78d6; --s1: #1baf7a; --s2: #e87ba4; --s3: #6250d6; --s4: #eda100; --s5: #eb6834;
+  --base-bar: #c3c8d1; --heat: 42, 120, 214; --shadow: 0 10px 40px rgb(15 23 42 / .18);
+  --f-display: "Unbounded", "Onest", system-ui, sans-serif;
+  --f-body: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1118; --surface: #151b25; --surface-2: #1d2531; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #283041;
+    --side: #0a0e14; --side-ink: #c9d1de; --side-muted: #6f7a8f; --side-act: #1a2230;
+    --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --bad: #f08a5d; --bad-bg: #3a1f14; --warn: #f0c46a; --warn-bg: #33270f;
+    --s0: #3987e5; --s1: #199e70; --s2: #d55181; --s3: #9085e9; --s4: #c98500; --s5: #d95926;
+    --base-bar: #4a5263; --heat: 57, 135, 229; --shadow: 0 10px 40px rgb(0 0 0 / .5); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1118; --surface: #151b25; --surface-2: #1d2531; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #283041;
+  --side: #0a0e14; --side-ink: #c9d1de; --side-muted: #6f7a8f; --side-act: #1a2230;
+  --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --bad: #f08a5d; --bad-bg: #3a1f14; --warn: #f0c46a; --warn-bg: #33270f;
+  --s0: #3987e5; --s1: #199e70; --s2: #d55181; --s3: #9085e9; --s4: #c98500; --s5: #d95926;
+  --base-bar: #4a5263; --heat: 57, 135, 229; --shadow: 0 10px 40px rgb(0 0 0 / .5); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 14.5px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+p { margin: 0; }
+button, select, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+.num { font-variant-numeric: tabular-nums; }
+.eyebrow { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+/* shell */
+.app { display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: 100vh; }
+.side { background: var(--side); color: var(--side-ink); position: sticky; top: 0; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; padding: 18px 12px calc(18px + env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); gap: 4px; }
+.brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 16px; }
+.brand .logo { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--s0), var(--s1)); display: grid; place-items: center; color: #fff; font-family: var(--f-display); font-weight: 700; font-size: 13px; }
+.brand b { display: block; font-size: 14px; color: #fff; }
+.brand span { font-size: 11.5px; color: var(--side-muted); }
+.navgroup { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--side-muted); padding: 12px 10px 4px; }
+.nav-btn { display: flex; align-items: center; gap: 10px; width: 100%; border: 0; background: transparent; color: var(--side-ink); text-align: left; padding: 8px 10px; border-radius: 9px; cursor: pointer; font-size: 14px; }
+.nav-btn svg { width: 17px; height: 17px; flex: none; opacity: .85; }
+.nav-btn .cnt { margin-left: auto; font-size: 11.5px; color: var(--side-muted); font-variant-numeric: tabular-nums; }
+.nav-btn:hover { background: var(--side-act); }
+.nav-btn[aria-current="page"] { background: var(--side-act); color: #fff; box-shadow: inset 3px 0 0 var(--s0); }
+.side .foot { margin-top: auto; display: grid; gap: 6px; padding: 14px 8px 0; font-size: 12.5px; }
+.side .foot a { color: var(--side-ink); text-decoration: none; }
+.side .foot a:hover { color: #fff; }
+.side .demo { font-size: 11.5px; color: var(--side-muted); line-height: 1.4; }
+.main { min-width: 0; display: flex; flex-direction: column; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 8; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); padding-block: 10px; padding-left: 24px; padding-right: max(24px, env(safe-area-inset-right, 0px)); display: grid; gap: 8px; }
+.top-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.top h1 { font-family: var(--f-display); font-size: 18px; font-weight: 700; letter-spacing: -.01em; margin-right: auto; }
+.ctl { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; font-size: 13.5px; }
+select.ctl { padding-right: 6px; max-width: 200px; }
+.fgroup { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); }
+.search { position: relative; }
+.search input { width: 190px; padding-left: 30px; font-family: var(--f-mono); font-size: 13px; }
+.search svg { position: absolute; left: 9px; top: 50%; width: 15px; height: 15px; transform: translateY(-50%); color: var(--muted); }
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 7px 12px; font-size: 13.5px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+a.btn.lang { font-family: var(--f-mono); font-weight: 700; }
+.btn:hover { border-color: var(--ink-2); }
+.btn.pri { background: var(--ink); color: var(--bg); border-color: var(--ink); font-weight: 600; }
+.active-filters { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; font-size: 12.5px; color: var(--muted); }
+.af { font-size: 12.5px; background: var(--surface-2); color: var(--ink); border-radius: 999px; padding: 3px 5px 3px 11px; display: inline-flex; gap: 6px; align-items: center; }
+.af button { border: 0; background: var(--line); border-radius: 50%; width: 18px; height: 18px; line-height: 1; cursor: pointer; font-size: 12px; padding: 0; }
+.linkbtn { border: 0; background: transparent; color: var(--focus); cursor: pointer; font-size: 12.5px; padding: 2px 4px; }
+
+.view { padding: 22px 24px 48px; padding-right: max(24px, env(safe-area-inset-right, 0px)); display: grid; gap: 16px; align-content: start; }
+.vhead { display: grid; gap: 6px; max-width: 840px; }
+.vhead h2 { font-family: var(--f-display); font-size: clamp(20px, 2.4vw, 26px); font-weight: 700; letter-spacing: -.015em; line-height: 1.15; }
+.vhead p { color: var(--ink-2); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; min-width: 0; }
+.card h3 { font-size: 15.5px; font-weight: 600; }
+.card .sub { font-size: 13px; color: var(--muted); margin: 2px 0 12px; }
+.g2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.g3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.g75 { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 16px; }
+.hint { display: inline-flex; gap: 6px; align-items: center; font-size: 12px; color: var(--focus); background: color-mix(in srgb, var(--focus) 12%, transparent); padding: 3px 10px; border-radius: 999px; width: fit-content; margin-bottom: 8px; }
+.note { font-size: 13px; color: var(--ink-2); background: var(--surface-2); border-radius: 10px; padding: 10px 12px; margin-top: 12px; }
+.findings { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.finding { background: var(--ink); color: var(--bg); border-radius: 14px; padding: 16px 18px; display: grid; gap: 4px; align-content: start; }
+.finding b { font-family: var(--f-display); font-size: 18px; font-weight: 700; line-height: 1.2; }
+.finding span { font-size: 13.5px; color: color-mix(in srgb, var(--bg) 80%, var(--ink)); }
+.kpis { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 13px; display: grid; gap: 3px; min-width: 0; align-content: start; }
+.kpi .v { font-family: var(--f-display); font-size: clamp(17px, 1.6vw, 21px); font-weight: 700; font-variant-numeric: tabular-nums; }
+.kpi .d { font-size: 12px; color: var(--muted); }
+.up { color: var(--good); } .down { color: var(--bad); }
+
+/* charts */
+svg text { font-family: var(--f-body); }
+.chart { width: 100%; height: auto; display: block; }
+.ax { fill: var(--muted); font-size: 11px; }
+.gl { stroke: var(--line); }
+.lb { fill: var(--ink); font-size: 11.5px; font-weight: 600; }
+.lb2 { fill: var(--ink-2); font-size: 11px; }
+.legend { display: flex; gap: 8px 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-2); margin-top: 8px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.legend button { border: 0; background: transparent; padding: 2px 0; cursor: pointer; color: inherit; font-size: inherit; }
+.legend button:hover { color: var(--ink); text-decoration: underline; }
+.hit { cursor: pointer; }
+.hit:hover { fill: color-mix(in srgb, var(--ink) 6%, transparent); }
+
+/* tables */
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 5px 12px; font-size: 13px; cursor: pointer; display: inline-flex; gap: 7px; align-items: center; }
+.chip b { font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ink-2); font-size: 12px; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip[aria-pressed="true"] b { color: var(--bg); opacity: .8; }
+.stats { font-size: 13px; color: var(--ink-2); margin-bottom: 10px; }
+.tw { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+table.crm { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 760px; }
+table.crm th { text-align: left; font-family: var(--f-mono); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding: 10px 12px; background: var(--surface-2); border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.crm th.sort { cursor: pointer; }
+table.crm th.sort:hover, table.crm th[aria-sort] { color: var(--ink); }
+table.crm th.r, table.crm td.r { text-align: right; }
+table.crm td { padding: 9px 12px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; white-space: nowrap; }
+table.crm tbody tr.click { cursor: pointer; }
+table.crm tbody tr.click:hover td { background: var(--surface-2); }
+table.crm tbody tr.on td { background: color-mix(in srgb, var(--focus) 10%, transparent); }
+table.crm tbody tr:last-child td { border-bottom: 0; }
+td .sw { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 8px; background: var(--c); }
+td.bad { color: var(--bad); font-weight: 600; }
+td.good { color: var(--good); font-weight: 600; }
+.pill { font-size: 11.5px; padding: 2px 8px; border-radius: 999px; font-weight: 600; white-space: nowrap; }
+.pill.y { background: var(--good-bg); color: var(--good); }
+.pill.n { background: var(--bad-bg); color: var(--bad); }
+.pill.m { background: var(--surface-2); color: var(--ink-2); font-weight: 500; }
+.uid { font-family: var(--f-mono); font-size: 12.5px; color: var(--focus); }
+.pager { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; font-size: 13px; color: var(--ink-2); flex-wrap: wrap; }
+.pager div { display: flex; gap: 6px; }
+
+/* heat */
+.scroll { overflow-x: auto; }
+table.heat { border-collapse: separate; border-spacing: 3px; font-size: 12.5px; min-width: 560px; width: 100%; }
+table.heat th { font-weight: 500; color: var(--muted); font-size: 11.5px; text-align: center; padding: 4px; white-space: nowrap; }
+table.heat th.row { text-align: left; color: var(--ink); font-weight: 600; font-size: 12.5px; }
+table.heat td { text-align: center; padding: 8px 4px; border-radius: 6px; font-variant-numeric: tabular-nums; color: var(--ink); }
+table.heat td.click { cursor: pointer; }
+table.heat td.click:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
+table.heat td.empty { color: var(--muted); }
+table.heat td.size { color: var(--ink-2); text-align: right; padding-right: 10px; }
+.toggle { display: inline-flex; background: var(--surface-2); padding: 3px; border-radius: 999px; gap: 3px; flex-wrap: wrap; }
+.toggle button { border: 0; background: transparent; padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: 13px; color: var(--ink-2); }
+.toggle button[aria-pressed="true"] { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: 0 1px 2px rgb(0 0 0 / .12); }
+.chead { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+
+/* funnel */
+.fsteps { display: grid; gap: 10px; }
+.fstep { display: grid; grid-template-columns: 210px minmax(0, 1fr) 120px; gap: 12px; align-items: center; font-size: 13.5px; }
+.fstep .tr { height: 26px; background: var(--surface-2); border-radius: 6px; overflow: hidden; }
+.fstep .tr i { display: block; height: 100%; border-radius: 6px; background: var(--s0); transition: width .4s; }
+.fstep.hl .tr i { background: var(--s5); }
+.fstep .v { text-align: right; font-variant-numeric: tabular-nums; }
+.fstep .v b { display: block; font-size: 15px; }
+.fstep .v span { font-size: 11.5px; color: var(--muted); }
+
+/* simulator */
+.sim { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 20px; }
+.ctrls { display: grid; gap: 16px; align-content: start; }
+.ctrls label { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: var(--ink-2); margin-bottom: 6px; }
+.ctrls label b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.ctrls select { width: 100%; max-width: none; }
+input[type="range"] { width: 100%; accent-color: var(--s0); }
+.cmp { width: 100%; border-collapse: collapse; font-size: 14px; }
+.cmp th, .cmp td { padding: 10px 8px; border-bottom: 1px solid var(--line); text-align: right; font-variant-numeric: tabular-nums; }
+.cmp th:first-child, .cmp td:first-child { text-align: left; color: var(--ink-2); }
+.cmp thead th { font-family: var(--f-mono); font-size: 11px; font-weight: 500; text-transform: uppercase; color: var(--muted); }
+.cmp td b { font-size: 15.5px; }
+.cmp .dl { display: block; font-size: 12px; font-weight: 600; }
+
+/* experiments */
+.big { font-family: var(--f-display); font-size: clamp(26px, 3vw, 36px); font-weight: 700; font-variant-numeric: tabular-nums; }
+.res2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.res2 div { background: var(--surface-2); border-radius: 12px; padding: 14px; }
+.res2 span { font-size: 12.5px; color: var(--ink-2); }
+.res2 .big { font-size: clamp(26px, 3vw, 36px); color: var(--ink); }
+.rules { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 6px; font-size: 13.5px; color: var(--ink-2); }
+
+/* method */
+.mcards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.mcards .card p { font-size: 13.5px; color: var(--ink-2); margin-top: 6px; }
+.links { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* drawer */
+.scrim { position: fixed; inset: 0; background: rgb(10 14 20 / .35); z-index: 30; opacity: 0; pointer-events: none; transition: opacity .2s; }
+.scrim.on { opacity: 1; pointer-events: auto; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(500px, 100%); background: var(--surface); z-index: 31; box-shadow: var(--shadow); transform: translateX(105%); transition: transform .25s cubic-bezier(.2,.8,.2,1); overflow-y: auto; padding: calc(18px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) 20px; display: grid; gap: 16px; align-content: start; }
+.drawer.on { transform: none; }
+.drawer pre.code { white-space: pre; max-height: none; }
+.dh { display: flex; align-items: center; gap: 12px; }
+.dh .av { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 13px; background: var(--c); }
+.dh h3 { font-family: var(--f-mono); font-size: 18px; }
+.dh span { font-size: 13px; color: var(--muted); }
+.dh .x { margin-left: auto; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; width: 34px; height: 34px; cursor: pointer; font-size: 18px; }
+.dstats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.dstats div { background: var(--surface-2); border-radius: 10px; padding: 9px 10px; }
+.dstats b { display: block; font-family: var(--f-display); font-size: 16px; }
+.dstats span { font-size: 11.5px; color: var(--ink-2); }
+.lab { font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.tl { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 0; }
+.tl li { display: grid; grid-template-columns: 64px 14px minmax(0, 1fr); gap: 10px; font-size: 13.5px; padding-bottom: 12px; position: relative; }
+.tl li .d { font-family: var(--f-mono); font-size: 12px; color: var(--muted); text-align: right; padding-top: 1px; }
+.tl li i { width: 10px; height: 10px; border-radius: 50%; background: var(--c, var(--s0)); margin-top: 5px; position: relative; z-index: 1; }
+.tl li:not(:last-child)::after { content: ""; position: absolute; left: 78px; top: 14px; bottom: -2px; width: 2px; background: var(--line); }
+.rec { background: color-mix(in srgb, var(--focus) 10%, transparent); border-radius: 10px; padding: 12px; font-size: 13.5px; }
+
+/* step-by-step case */
+.nav-btn .no { width: 22px; height: 22px; flex: none; border-radius: 7px; display: grid; place-items: center; font-family: var(--f-mono); font-size: 11.5px; font-weight: 600; background: var(--side-act); color: var(--side-ink); }
+.nav-btn[aria-current="page"] .no { background: var(--s0); color: #fff; }
+.stepno { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--s0); font-weight: 600; }
+.stepnav { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin-top: 8px; }
+.stepnav button { text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: 14px; padding: 14px 16px; cursor: pointer; display: grid; gap: 2px; min-width: 0; }
+.stepnav button:hover { border-color: var(--ink-2); }
+.stepnav button.next { text-align: right; background: var(--ink); color: var(--bg); border-color: var(--ink); grid-column: 2; }
+.stepnav button span { font-size: 12px; opacity: .7; }
+.stepnav button b { font-size: 15px; }
+.hero-h { font-size: clamp(28px, 4vw, 44px) !important; }
+.hero-h span { color: var(--muted); font-weight: 500; }
+.notepill { display: inline-flex; width: fit-content; max-width: 100%; font-size: 13px; color: var(--warn); background: var(--warn-bg); padding: 5px 12px; border-radius: 999px; }
+.kpis4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.kpis4 .v { font-size: clamp(20px, 2.2vw, 28px); }
+.sumgrid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 12px; align-items: start; }
+.sumgrid .finding b { font-size: clamp(28px, 3.4vw, 40px); }
+.sumlist { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.sumlist li { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 6px; align-content: start; font-size: 14.5px; color: var(--ink-2); }
+.sumlist b { font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; font-weight: 500; color: var(--muted); }
+.bucket { display: grid; gap: 12px; align-content: start; }
+.bucket h3 { font-family: var(--f-display); font-size: 17px; }
+.fac { display: grid; gap: 5px; padding-top: 12px; border-top: 1px solid var(--line); }
+.bucket h3 + .fac { border-top: 0; padding-top: 0; }
+.fac .pill { width: fit-content; }
+.fac b { font-weight: 600; font-size: 14.5px; }
+.fac > span:last-child { font-size: 13px; color: var(--ink-2); }
+.fixcard { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 14px; align-items: center; }
+.fixcard .n { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-family: var(--f-display); font-weight: 700; background: var(--good-bg); color: var(--good); }
+.fixcard b { display: block; font-size: 15.5px; }
+.fixcard span { font-size: 13.5px; color: var(--ink-2); }
+.hcard { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 20px; }
+.hcard h3 { font-family: var(--f-display); font-size: 18px; margin: 4px 0 12px; }
+.chain { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+.chain li { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 10px; font-size: 13.5px; color: var(--ink-2); }
+.chain li b { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; font-weight: 500; color: var(--muted); padding-top: 2px; }
+.stmt { background: var(--surface-2); border-radius: 10px; padding: 14px 16px; font-size: 15.5px; line-height: 1.6; }
+.stmt em { font-style: normal; font-family: var(--f-mono); font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--s0); margin-right: 4px; }
+.hmore { display: grid; gap: 8px; margin-top: 12px; font-size: 13.5px; color: var(--ink-2); }
+.hmore b { color: var(--ink); }
+table.crm td.wrap { white-space: normal; min-width: 220px; color: var(--ink-2); }
+.pill.t1 { background: color-mix(in srgb, var(--s0) 14%, transparent); color: var(--s0); }
+.tree { font-family: var(--f-mono); font-size: 13px; line-height: 1.7; margin-top: 8px; }
+.weeks { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.weeks li { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 6px; align-content: start; font-size: 13.5px; color: var(--ink-2); }
+.weeks b { color: var(--ink); font-size: 15px; }
+pre.code { margin: 0; background: var(--surface-2); border-radius: 10px; padding: 14px; overflow-x: auto; font-family: var(--f-mono); font-size: 12px; line-height: 1.6; }
+.msteps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; counter-reset: m; }
+.msteps li { counter-increment: m; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px 14px 52px; position: relative; display: grid; gap: 4px; font-size: 13.5px; color: var(--ink-2); }
+.msteps li::before { content: counter(m); position: absolute; left: 16px; top: 14px; width: 24px; height: 24px; border-radius: 50%; background: var(--ink); color: var(--bg); display: grid; place-items: center; font-size: 12px; font-weight: 600; }
+.msteps b { color: var(--ink); font-size: 14.5px; }
+.sumh { font-family: var(--f-display); font-size: 17px !important; margin-bottom: 12px; }
+.slist { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.slist li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; font-size: 14.5px; color: var(--ink-2); }
+.slist li b { display: block; color: var(--ink); font-weight: 600; }
+.slist .n { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; font-family: var(--f-mono); font-size: 12px; font-weight: 600; background: var(--surface-2); color: var(--ink); }
+.slist .n.fix { background: var(--good-bg); color: var(--good); }
+a.stepref { color: var(--focus); font-weight: 600; cursor: pointer; white-space: nowrap; }
+a.stepref:hover { text-decoration: underline; }
+.res { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; font-size: 13.5px; }
+.res a { color: var(--focus); font-weight: 600; text-decoration: none; }
+.res a:hover { text-decoration: underline; }
+@media (max-width: 900px) {
+  .kpis4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sumgrid, .hcard, .msteps, .weeks, .sumlist { grid-template-columns: minmax(0, 1fr); }
+  .stepnav { grid-template-columns: minmax(0, 1fr); }
+  .stepnav button.next { grid-column: 1; grid-row: 1; }
+  .chain li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+}
+
+.tip { position: fixed; pointer-events: none; z-index: 40; background: var(--ink); color: var(--bg); font-size: 12.5px; line-height: 1.45; padding: 7px 10px; border-radius: 8px; max-width: 260px; opacity: 0; transition: opacity .12s; }
+.tip.on { opacity: 1; }
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 9px 14px; border-radius: 10px; font-size: 13px; z-index: 41; opacity: 0; transition: opacity .2s; pointer-events: none; }
+.toast.on { opacity: 1; }
+
+@media (max-width: 1200px) { .kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 900px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .side { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; height: auto; flex-direction: row; overflow-x: auto; padding: 8px max(10px, env(safe-area-inset-right, 0px)) 8px max(10px, env(safe-area-inset-left, 0px)); gap: 4px; scrollbar-width: none; }
+  .brand, .navgroup, .side .foot { display: none; }
+  .nav-btn { width: auto; flex: none; white-space: nowrap; padding: 7px 10px; }
+  .nav-btn .cnt { display: none; }
+  .top { position: static; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .view { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .g2, .g3, .g75, .findings, .sim, .mcards { grid-template-columns: minmax(0, 1fr); }
+  .fstep { grid-template-columns: minmax(0, 1fr) 96px; }
+  .fstep .t { grid-column: 1 / -1; }
+}
+@media (max-width: 520px) {
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .search input { width: 150px; }
+  select.ctl { max-width: 160px; }
+  .dstats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .card { padding: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+/* ProjectPro additions */
+#mKpis .kpi .v { font-size: clamp(15px, 1.35vw, 19px); white-space: nowrap; }
+:root { --st: #eb6834; --mb: #2a78d6; --co: #1baf7a; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --st: #d95926; --mb: #3987e5; --co: #199e70; } }
+:root[data-theme="dark"] { --st: #d95926; --mb: #3987e5; --co: #199e70; }
+.brand .logo { background: linear-gradient(135deg, var(--mb), var(--co)); }
+.nav-btn[aria-current="page"] { box-shadow: inset 3px 0 0 var(--mb); }
+.nav-btn[aria-current="page"] .no { background: var(--mb); }
+.stepno { color: var(--mb); }
+.segpill { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; }
+.segpill i { width: 9px; height: 9px; border-radius: 50%; background: var(--c); display: inline-block; }
+table.src { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 560px; }
+table.src th, table.src td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: right; font-variant-numeric: tabular-nums; }
+table.src th:first-child, table.src td:first-child { text-align: left; }
+table.src thead th { font-family: var(--f-mono); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); background: var(--surface-2); }
+table.src tfoot td { font-weight: 700; border-bottom: 0; }
+table.src td.hl { background: color-mix(in srgb, var(--mb) 10%, transparent); font-weight: 700; }
+.gaps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.gaps li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; font-size: 13.5px; color: var(--ink-2); }
+.gaps li i { width: 26px; height: 26px; border-radius: 8px; background: var(--warn-bg); color: var(--warn); display: grid; place-items: center; font-style: normal; font-weight: 700; font-size: 13px; }
+.gaps b { color: var(--ink); display: block; }
+.ctrlrow { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+.ctrlrow .rng { min-width: 240px; flex: 1; max-width: 420px; }
+.ctrlrow .rng label { display: flex; justify-content: space-between; font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+.ctrlrow .rng label b { color: var(--ink); }
+.formula { font-family: var(--f-mono); font-size: 13px; background: var(--surface-2); border-radius: 10px; padding: 10px 12px; color: var(--ink); overflow-x: auto; white-space: nowrap; }
+.rangebar { position: relative; height: 34px; margin: 18px 0 6px; }
+.rangebar .tr { position: absolute; left: 0; right: 0; top: 14px; height: 6px; border-radius: 3px; background: var(--surface-2); }
+.rangebar .band { position: absolute; top: 12px; height: 10px; border-radius: 5px; background: color-mix(in srgb, var(--mb) 35%, transparent); }
+.rangebar .mk { position: absolute; top: 4px; width: 3px; height: 26px; border-radius: 2px; background: var(--ink); transform: translateX(-1px); }
+.rangebar .mk span { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 11.5px; white-space: nowrap; color: var(--ink-2); font-weight: 600; }
+.ltv { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.ltv .card { display: grid; gap: 8px; align-content: start; }
+.ltv .row { display: flex; justify-content: space-between; font-size: 13.5px; color: var(--ink-2); gap: 8px; }
+.ltv .row b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.ratio { font-family: var(--f-display); font-size: 26px; font-weight: 700; }
+.verdict { font-size: 12.5px; font-weight: 600; padding: 3px 10px; border-radius: 999px; width: fit-content; }
+.verdict.ok { background: var(--good-bg); color: var(--good); }
+.verdict.mid { background: var(--warn-bg); color: var(--warn); }
+.verdict.bad { background: var(--bad-bg); color: var(--bad); }
+.scorebox { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.scard { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 10px; background: var(--surface); align-content: start; }
+.scard.win { border: 2px solid var(--ink); }
+.scard h3 { display: flex; align-items: center; gap: 8px; font-size: 16px; }
+.scard h3 i { width: 12px; height: 12px; border-radius: 50%; background: var(--c); }
+.axis2 { display: grid; grid-template-columns: 110px minmax(0, 1fr) 70px; gap: 8px; align-items: center; font-size: 13px; color: var(--ink-2); }
+.axis2 .tr { height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+.axis2 .tr i { display: block; height: 100%; border-radius: 4px; background: var(--c); }
+.axis2 b { text-align: right; color: var(--ink); font-variant-numeric: tabular-nums; }
+.tree2 { display: grid; gap: 10px; }
+.tnode { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: var(--surface); display: grid; gap: 4px; font-size: 13.5px; color: var(--ink-2); }
+.tnode b { color: var(--ink); font-size: 14.5px; }
+.tnode.root { background: var(--ink); color: color-mix(in srgb, var(--bg) 80%, var(--ink)); border-color: var(--ink); }
+.tnode.root b { color: var(--bg); }
+.tbranch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.tcol { display: grid; gap: 8px; align-content: start; padding-left: 14px; border-left: 2px solid var(--line); }
+.tag2 { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.strat { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.strat .card { display: grid; gap: 10px; align-content: start; border-top: 4px solid var(--c); }
+.strat .card.main { box-shadow: 0 0 0 2px var(--ink); }
+.strat h3 { font-family: var(--f-display); font-size: 17px !important; }
+.strat .focus { font-size: 14.5px; color: var(--ink); background: var(--surface-2); border-radius: 10px; padding: 10px 12px; }
+.strat ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 13.5px; color: var(--ink-2); }
+.strat .no { font-size: 13px; color: var(--ink-2); border-top: 1px dashed var(--line); padding-top: 10px; }
+.strat .no b, .strat .mt b { color: var(--ink); }
+.strat .mt { font-size: 13px; color: var(--ink-2); }
+.mtree { display: grid; gap: 10px; }
+.mtree .lvl { display: grid; gap: 10px; }
+.mtree .lvl.l2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.mtree .lvl.l3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.mbox { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: var(--surface); display: grid; gap: 3px; font-size: 13px; color: var(--ink-2); cursor: pointer; text-align: left; }
+.mbox:hover, .mbox[aria-pressed="true"] { border-color: var(--ink); }
+.mbox b { color: var(--ink); font-size: 14px; }
+.mbox .tag2 { color: var(--c, var(--muted)); }
+.mbox.lag { background: var(--surface-2); }
+.mdetail { background: var(--surface-2); border-radius: 12px; padding: 14px 16px; display: grid; gap: 6px; font-size: 13.5px; color: var(--ink-2); }
+.mdetail b { color: var(--ink); }
+.simres { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.simres div { background: var(--surface-2); border-radius: 12px; padding: 12px 14px; display: grid; gap: 2px; }
+.simres b { font-family: var(--f-display); font-size: clamp(20px, 2.2vw, 26px); font-variant-numeric: tabular-nums; }
+.simres span { font-size: 12.5px; color: var(--ink-2); }
+.hbar { display: grid; gap: 12px; }
+.hrow { display: grid; grid-template-columns: 150px minmax(0, 1fr) 96px; gap: 10px; align-items: center; font-size: 13.5px; }
+.hrow .tr { position: relative; height: 26px; background: var(--surface-2); border-radius: 6px; overflow: hidden; }
+.hrow .tr i { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 6px; transition: width .35s; }
+.hrow .tr i.ghost { background: var(--base-bar); }
+.hrow .v { text-align: right; font-variant-numeric: tabular-nums; }
+.hrow .v b { display: block; }
+.hrow .v span { font-size: 11.5px; color: var(--muted); }
+.lessons { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.lessons li { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; font-size: 13.5px; color: var(--ink-2); display: grid; gap: 4px; }
+.lessons b { color: var(--ink); font-size: 14.5px; }
+.play { display: grid; gap: 8px; }
+.play li { font-size: 13.5px; }
+@media (max-width: 1100px) { .ltv, .scorebox, .strat { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 900px) {
+  .tbranch, .mtree .lvl.l2, .mtree .lvl.l3, .lessons, .simres { grid-template-columns: minmax(0, 1fr); }
+  .hrow { grid-template-columns: minmax(0, 1fr) 90px; }
+  .hrow .t { grid-column: 1 / -1; }
+}
+</style>
+
+<div class="app">
+  <aside class="side" aria-label="{{nav_label}}">
+    <div class="brand"><span class="logo">PP</span><div><b>ProjectPro · Retention</b><span>{{brand_sub}}</span></div></div>
+    <div class="navgroup">{{g_steps}}</div>
+    <button class="nav-btn" data-view="task"><span class="no">1</span>{{v_task}}</button>
+    <button class="nav-btn" data-view="overview"><span class="no">2</span>{{v_overview}}</button>
+    <button class="nav-btn" data-view="churn"><span class="no">3</span>{{v_churn}}</button>
+    <button class="nav-btn" data-view="money"><span class="no">4</span>{{v_money}}</button>
+    <button class="nav-btn" data-view="priority"><span class="no">5</span>{{v_priority}}</button>
+    <button class="nav-btn" data-view="causes"><span class="no">6</span>{{v_causes}}</button>
+    <button class="nav-btn" data-view="strategy"><span class="no">7</span>{{v_strategy}}</button>
+    <button class="nav-btn" data-view="metrics"><span class="no">8</span>{{v_metrics}}</button>
+    <button class="nav-btn" data-view="sim"><span class="no">9</span>{{v_sim}}</button>
+    <button class="nav-btn" data-view="summary"><span class="no">10</span>{{v_summary}}</button>
+    <div class="navgroup">{{g_appx}}</div>
+    <button class="nav-btn" data-view="accounts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg>{{v_accounts}}<span class="cnt" id="cntA"></span></button>
+    <button class="nav-btn" data-view="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg>{{v_method}}</button>
+    <div class="foot">
+      <a href="{{portfolio_href}}">{{foot_back}}</a>
+      <p class="demo">{{foot_demo}}</p>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="top">
+      <div class="top-row">
+        <h1 id="vTitle">{{v_task}}</h1>
+        <label class="search" for="q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input class="ctl" id="q" placeholder="{{q_ph}}" autocomplete="off" aria-label="{{q_ph}}"></label>
+        <a class="btn lang" href="{{lang_href}}">{{lang_label}}</a>
+      </div>
+      <div class="top-row" id="fRow">
+        <select class="ctl" id="fSeg" aria-label="{{f_seg}}"></select>
+        <select class="ctl" id="fCoh" aria-label="{{f_coh}}"></select>
+        <select class="ctl" id="fUse" aria-label="{{f_use}}"></select>
+        <select class="ctl" id="fInd" aria-label="{{f_ind}}"></select>
+        <div class="active-filters" id="af"></div>
+      </div>
+    </div>
+
+    <!-- 1 TASK -->
+    <section class="view" data-view="task">
+      <div class="vhead"><span class="eyebrow">{{t_eyebrow}}</span><h2 class="hero-h">{{t_h1}}</h2><p>{{t_lead}}</p><span class="notepill">{{t_note}}</span></div>
+      <div class="kpis4">
+        <div class="kpi"><span class="eyebrow">{{t_k1_e}}</span><span class="v">{{t_k1_v}}</span><span class="d">{{t_k1_d}}</span></div>
+        <div class="kpi"><span class="eyebrow">{{t_k2_e}}</span><span class="v down">{{t_k2_v}}</span><span class="d">{{t_k2_d}}</span></div>
+        <div class="kpi"><span class="eyebrow">{{t_k3_e}}</span><span class="v down">{{t_k3_v}}</span><span class="d">{{t_k3_d}}</span></div>
+        <div class="kpi"><span class="eyebrow">{{t_k4_e}}</span><span class="v up">{{t_k4_v}}</span><span class="d">{{t_k4_d}}</span></div>
+      </div>
+      <div class="card">
+        <div class="chead"><div><h3>{{t_src_h}}</h3><p class="sub">{{t_src_sub}}</p></div></div>
+        <div class="tw"><table class="src" id="srcTbl"></table></div>
+        <p class="note">{{t_src_note}}</p>
+      </div>
+      <div class="g2">
+        <div class="card"><h3>{{t_q_h}}</h3><p class="sub">{{t_q_sub}}</p>
+          <ol class="rules"><li>{{t_q1}}</li><li>{{t_q2}}</li><li>{{t_q3}}</li><li>{{t_q4}}</li><li>{{t_q5}}</li><li>{{t_q6}}</li></ol></div>
+        <div class="card"><h3>{{t_gap_h}}</h3><p class="sub">{{t_gap_sub}}</p>
+          <ul class="gaps">
+            <li><i>?</i><span><b>{{t_g1_t}}</b>{{t_g1}}</span></li>
+            <li><i>?</i><span><b>{{t_g2_t}}</b>{{t_g2}}</span></li>
+            <li><i>?</i><span><b>{{t_g3_t}}</b>{{t_g3}}</span></li>
+            <li><i>?</i><span><b>{{t_g4_t}}</b>{{t_g4}}</span></li>
+          </ul></div>
+      </div>
+    </section>
+
+    <!-- 2 OVERVIEW -->
+    <section class="view" data-view="overview" hidden>
+      <div class="vhead"><h2>{{o_h}}</h2><p>{{o_p}}</p></div>
+      <div class="findings">
+        <div class="finding"><b>{{o_f1}}</b><span>{{o_f1_t}}</span></div>
+        <div class="finding"><b>{{o_f2}}</b><span>{{o_f2_t}}</span></div>
+        <div class="finding"><b>{{o_f3}}</b><span>{{o_f3_t}}</span></div>
+      </div>
+      <div class="kpis" id="kpis"></div>
+      <div class="g2">
+        <div class="card"><h3>{{o_c1}}</h3><p class="sub">{{o_c1_sub}}</p><span class="hint">{{hint_click}}</span>
+          <svg class="chart" id="ovBridge" viewBox="0 0 560 280" role="img" aria-label="{{o_c1}}"></svg>
+          <div class="legend" id="ovBridgeLeg"></div></div>
+        <div class="card"><h3>{{o_c2}}</h3><p class="sub">{{o_c2_sub}}</p>
+          <svg class="chart" id="ovNet" viewBox="0 0 560 280" role="img" aria-label="{{o_c2}}"></svg>
+          <p class="note">{{o_c2_note}}</p></div>
+      </div>
+      <div class="card"><h3>{{o_c3}}</h3><p class="sub">{{o_c3_sub}}</p>
+        <svg class="chart" id="ovMonths" viewBox="0 0 900 260" role="img" aria-label="{{o_c3}}"></svg>
+        <div class="legend" id="ovMonthsLeg"></div>
+        <p class="note">{{o_c3_note}}</p></div>
+    </section>
+
+    <!-- 3 CHURN -->
+    <section class="view" data-view="churn" hidden>
+      <div class="vhead"><h2>{{c_h}}</h2><p>{{c_p}}</p></div>
+      <div class="card">
+        <div class="chead"><div><h3>{{c_den_h}}</h3><p class="sub">{{c_den_sub}}</p></div>
+          <div class="toggle" role="group" aria-label="{{c_den_h}}" id="denTg"></div></div>
+        <div class="formula" id="denFormula"></div>
+        <div class="g75" style="margin-top:14px">
+          <div><svg class="chart" id="chBars" viewBox="0 0 560 280" role="img" aria-label="{{c_bars}}"></svg><div class="legend" id="chBarsLeg"></div></div>
+          <div class="tw" style="align-self:start"><table class="crm" id="chTbl" style="min-width:380px"></table></div>
+        </div>
+        <p class="note" id="denNote"></p>
+      </div>
+      <div class="card">
+        <div class="chead"><div><h3>{{c_mix_h}}</h3><p class="sub">{{c_mix_sub}}</p></div></div>
+        <div class="ctrlrow"><div class="rng"><label for="newShare">{{c_mix_l}} <b id="newShareV"></b></label><input type="range" id="newShare" min="0" max="60" step="5" value="20"></div></div>
+        <div id="ranges"></div>
+        <p class="note">{{c_mix_note}}</p>
+      </div>
+      <div class="g2">
+        <div class="card"><h3>{{c_ret_h}}</h3><p class="sub">{{c_ret_sub}}</p><div class="hbar" id="retBars"></div></div>
+        <div class="card"><h3>{{c_lessons_h}}</h3>
+          <ul class="rules"><li>{{c_l1}}</li><li>{{c_l2}}</li><li>{{c_l3}}</li></ul></div>
+      </div>
+    </section>
+
+    <!-- 4 MONEY -->
+    <section class="view" data-view="money" hidden>
+      <div class="vhead"><h2>{{m_h}}</h2><p>{{m_p}}</p></div>
+      <div class="kpis" id="mKpis"></div>
+      <div class="g2">
+        <div class="card"><h3>{{m_wf}}</h3><p class="sub">{{m_wf_sub}}</p>
+          <svg class="chart" id="mWf" viewBox="0 0 560 280" role="img" aria-label="{{m_wf}}"></svg></div>
+        <div class="card"><h3>{{m_lost}}</h3><p class="sub">{{m_lost_sub}}</p><span class="hint">{{hint_click}}</span>
+          <svg class="chart" id="mLost" viewBox="0 0 560 280" role="img" aria-label="{{m_lost}}"></svg>
+          <p class="note">{{m_lost_note}}</p></div>
+      </div>
+      <div class="card"><h3>{{m_share}}</h3><p class="sub">{{m_share_sub}}</p>
+        <svg class="chart" id="mShare" viewBox="0 0 900 250" role="img" aria-label="{{m_share}}"></svg>
+        <div class="legend" id="mShareLeg"></div>
+        <p class="note">{{m_share_note}}</p></div>
+      <div class="card">
+        <div class="chead"><div><h3>{{m_ltv_h}}</h3><p class="sub">{{m_ltv_sub}}</p></div></div>
+        <div class="formula">{{m_ltv_f}}</div>
+        <div class="ltv" id="ltv" style="margin-top:14px"></div>
+        <p class="note">{{m_ltv_note}}</p>
+      </div>
+    </section>
+
+    <!-- 5 PRIORITY -->
+    <section class="view" data-view="priority" hidden>
+      <div class="vhead"><h2>{{p_h}}</h2><p>{{p_p}}</p></div>
+      <div class="card">
+        <div class="chead"><div><h3>{{p_lens_h}}</h3><p class="sub">{{p_lens_sub}}</p></div>
+          <div class="toggle" role="group" aria-label="{{p_lens_h}}" id="lensTg"></div></div>
+        <div class="hbar" id="lensBars"></div>
+        <p class="note" id="lensNote"></p>
+      </div>
+      <div class="card"><h3>{{p_mx_h}}</h3><p class="sub">{{p_mx_sub}}</p>
+        <svg class="chart" id="pMatrix" viewBox="0 0 900 380" role="img" aria-label="{{p_mx_h}}"></svg></div>
+      <div class="scorebox" id="scoreBox"></div>
+      <div class="finding"><b>{{p_verdict}}</b><span>{{p_verdict_t}}</span></div>
+    </section>
+
+    <!-- 6 CAUSES -->
+    <section class="view" data-view="causes" hidden>
+      <div class="vhead"><h2>{{u_h}}</h2><p>{{u_p}}</p></div>
+      <div class="g75">
+        <div class="card"><h3>{{u_split}}</h3><p class="sub">{{u_split_sub}}</p>
+          <svg class="chart" id="uDonut" viewBox="0 0 560 240" role="img" aria-label="{{u_split}}"></svg></div>
+        <div class="card"><h3>{{u_read}}</h3><ul class="rules"><li>{{u_r1}}</li><li>{{u_r2}}</li><li>{{u_r3}}</li></ul></div>
+      </div>
+      <div class="card"><h3>{{u_tree}}</h3><p class="sub">{{u_tree_sub}}</p>
+        <div class="tree2">
+          <div class="tnode root"><b>{{u_t0}}</b><span>{{u_t0_t}}</span></div>
+          <div class="tbranch">
+            <div class="tcol">
+              <div class="tnode"><span class="tag2">60%</span><b>{{u_ta}}</b><span>{{u_ta_t}}</span></div>
+              <div class="tnode"><span class="tag2">{{u_hyp}}</span><b>{{u_ta1}}</b><span>{{u_ta1_t}}</span></div>
+              <div class="tnode"><span class="tag2">{{u_check}}</span><span>{{u_ta2}}</span></div>
+            </div>
+            <div class="tcol">
+              <div class="tnode"><span class="tag2">40%</span><b>{{u_tb}}</b><span>{{u_tb_t}}</span></div>
+              <div class="tnode"><span class="tag2">{{u_hyp}}</span><b>{{u_tb1}}</b><span>{{u_tb1_t}}</span></div>
+              <div class="tnode"><span class="tag2">{{u_check}}</span><span>{{u_tb2}}</span></div>
+            </div>
+          </div>
+        </div></div>
+      <div class="g2">
+        <div class="card"><h3>{{u_seg}}</h3><p class="sub">{{u_seg_sub}}</p><span class="notepill">{{demo_pill}}</span>
+          <svg class="chart" id="uSeg" viewBox="0 0 560 230" role="img" aria-label="{{u_seg}}"></svg><div class="legend" id="uSegLeg"></div></div>
+        <div class="card"><h3>{{u_rs}}</h3><p class="sub">{{u_rs_sub}}</p><span class="notepill">{{demo_pill}}</span><span class="hint" style="margin-left:6px">{{hint_click}}</span>
+          <div class="hbar" id="uReasons" style="margin-top:8px"></div><div class="legend"><span><i style="background:var(--st)"></i>{{use_basic}}</span><span><i style="background:var(--mb)"></i>{{use_full}}</span></div></div>
+      </div>
+      <div class="card"><h3>{{u_hl}}</h3><p class="sub">{{u_hl_sub}}</p><span class="notepill">{{demo_pill}}</span>
+        <div class="tw" style="margin-top:10px"><table class="crm" id="uHealth" style="min-width:560px"></table></div></div>
+    </section>
+
+    <!-- 7 STRATEGY -->
+    <section class="view" data-view="strategy" hidden>
+      <div class="vhead"><h2>{{s_h}}</h2><p>{{s_p}}</p></div>
+      <div class="strat">
+        <div class="card main" style="--c:var(--mb)"><span class="eyebrow">{{s1_e}}</span><h3>{{seg_mb}}</h3>
+          <div class="focus">{{s1_f}}</div>
+          <ul><li>{{s1_a1}}</li><li>{{s1_a2}}</li><li>{{s1_a3}}</li></ul>
+          <div class="no"><b>{{s_not}}</b> {{s1_n}}</div><div class="mt"><b>{{s_metric}}</b> {{s1_m}}</div></div>
+        <div class="card" style="--c:var(--st)"><span class="eyebrow">{{s2_e}}</span><h3>{{seg_st}}</h3>
+          <div class="focus">{{s2_f}}</div>
+          <ul><li>{{s2_a1}}</li><li>{{s2_a2}}</li><li>{{s2_a3}}</li></ul>
+          <div class="no"><b>{{s_not}}</b> {{s2_n}}</div><div class="mt"><b>{{s_metric}}</b> {{s2_m}}</div></div>
+        <div class="card" style="--c:var(--co)"><span class="eyebrow">{{s3_e}}</span><h3>{{seg_co}}</h3>
+          <div class="focus">{{s3_f}}</div>
+          <ul><li>{{s3_a1}}</li><li>{{s3_a2}}</li><li>{{s3_a3}}</li></ul>
+          <div class="no"><b>{{s_not}}</b> {{s3_n}}</div><div class="mt"><b>{{s_metric}}</b> {{s3_m}}</div></div>
+      </div>
+      <div class="g2">
+        <div class="card"><h3>{{s_first_h}}</h3><p class="sub">{{s_first_sub}}</p>
+          <ul class="slist"><li><span class="n">1</span><span><b>{{s_f1_t}}</b>{{s_f1}}</span></li><li><span class="n">2</span><span><b>{{s_f2_t}}</b>{{s_f2}}</span></li><li><span class="n">3</span><span><b>{{s_f3_t}}</b>{{s_f3}}</span></li></ul></div>
+        <div class="card"><h3>{{s_why_h}}</h3><ul class="rules"><li>{{s_w1}}</li><li>{{s_w2}}</li><li>{{s_w3}}</li></ul></div>
+      </div>
+    </section>
+
+    <!-- 8 METRICS -->
+    <section class="view" data-view="metrics" hidden>
+      <div class="vhead"><h2>{{k_h}}</h2><p>{{k_p}}</p></div>
+      <div class="card"><h3>{{k_tree}}</h3><p class="sub">{{k_tree_sub}}</p><span class="hint">{{hint_metric}}</span>
+        <div class="mtree" id="mtree"></div>
+        <div class="mdetail" id="mdetail" style="margin-top:12px"></div></div>
+      <div class="card"><h3>{{k_tbl}}</h3><p class="sub">{{k_tbl_sub}}</p>
+        <div class="tw"><table class="crm" id="kTbl" style="min-width:860px"></table></div></div>
+      <div class="card"><h3>{{k_rule_h}}</h3><ul class="rules"><li>{{k_r1}}</li><li>{{k_r2}}</li><li>{{k_r3}}</li></ul></div>
+    </section>
+
+    <!-- 9 SIMULATOR -->
+    <section class="view" data-view="sim" hidden>
+      <div class="vhead"><h2>{{x_h}}</h2><p>{{x_p}}</p></div>
+      <div class="card"><div class="sim">
+        <div class="ctrls">
+          <div><label for="xSt">{{x_st}} <b id="xStV"></b></label><input type="range" id="xSt" min="0" max="20" step="1" value="5"></div>
+          <div><label for="xMb">{{x_mb}} <b id="xMbV"></b></label><input type="range" id="xMb" min="0" max="20" step="1" value="10"></div>
+          <div><label for="xCo">{{x_co}} <b id="xCoV"></b></label><input type="range" id="xCo" min="0" max="15" step="1" value="5"></div>
+          <div><label for="xUp">{{x_up}} <b id="xUpV"></b></label><input type="range" id="xUp" min="0" max="15" step="1" value="5"></div>
+          <div class="toggle" role="group" aria-label="{{x_presets}}" id="xPre"></div>
+          <p class="note" style="margin-top:0">{{x_note}}</p>
+        </div>
+        <div style="display:grid;gap:14px;align-content:start">
+          <div class="simres" id="xRes"></div>
+          <div class="hbar" id="xBars"></div>
+          <p class="note" id="xNote2"></p>
+        </div>
+      </div></div>
+    </section>
+
+    <!-- 10 SUMMARY -->
+    <section class="view" data-view="summary" hidden>
+      <div class="vhead"><h2>{{z_h}}</h2></div>
+      <div class="sumgrid">
+        <div class="finding"><span class="eyebrow" style="color:inherit;opacity:.7">{{z_e}}</span><b>{{z_big}}</b><span>{{z_big_t}}</span></div>
+        <div class="card"><h3 class="sumh">{{z_c_h}}</h3>
+          <ul class="slist">
+            <li><span class="n">1</span><span><b>{{z_c1_t}}</b>{{z_c1}} <a class="stepref" data-go="churn">{{z_see}} 3</a></span></li>
+            <li><span class="n">2</span><span><b>{{z_c2_t}}</b>{{z_c2}} <a class="stepref" data-go="money">{{z_see}} 4</a></span></li>
+            <li><span class="n">3</span><span><b>{{z_c3_t}}</b>{{z_c3}} <a class="stepref" data-go="priority">{{z_see}} 5</a></span></li>
+            <li><span class="n">4</span><span><b>{{z_c4_t}}</b>{{z_c4}} <a class="stepref" data-go="causes">{{z_see}} 6</a></span></li>
+          </ul></div>
+      </div>
+      <div class="g2">
+        <div class="card"><h3 class="sumh">{{z_s_h}}</h3>
+          <ul class="slist">
+            <li><span class="n fix">1</span><span><b>{{seg_mb}}</b>{{z_s1}}</span></li>
+            <li><span class="n fix">2</span><span><b>{{seg_st}}</b>{{z_s2}}</span></li>
+            <li><span class="n fix">3</span><span><b>{{seg_co}}</b>{{z_s3}}</span></li>
+          </ul></div>
+        <div class="card"><h3 class="sumh">{{z_m_h}}</h3>
+          <ul class="slist">
+            <li><span class="n">→</span><span><b>{{z_m1_t}}</b>{{z_m1}}</span></li>
+            <li><span class="n">→</span><span><b>{{z_m2_t}}</b>{{z_m2}}</span></li>
+            <li><span class="n">→</span><span><b>{{z_m3_t}}</b>{{z_m3}}</span></li>
+          </ul></div>
+      </div>
+      <div class="card"><h3 class="sumh">{{z_l_h}}</h3>
+        <ul class="lessons"><li><b>{{z_l1_t}}</b>{{z_l1}}</li><li><b>{{z_l2_t}}</b>{{z_l2}}</li><li><b>{{z_l3_t}}</b>{{z_l3}}</li><li><b>{{z_l4_t}}</b>{{z_l4}}</li></ul></div>
+    </section>
+
+    <!-- ACCOUNTS -->
+    <section class="view" data-view="accounts" hidden>
+      <div class="vhead"><span class="eyebrow">{{step_appx}}</span><h2>{{a_h}}</h2><p>{{a_p}}</p></div>
+      <div class="card">
+        <div class="toolbar"><div class="chips" id="aChips"></div></div>
+        <p class="stats" id="aStats"></p>
+        <div class="tw"><table class="crm" id="aTbl"></table></div>
+        <div class="pager" id="aPager"></div>
+      </div>
+    </section>
+
+    <!-- METHOD -->
+    <section class="view" data-view="method" hidden>
+      <div class="vhead"><span class="eyebrow">{{step_appx}}</span><h2>{{me_h}}</h2><p>{{me_p}}</p></div>
+      <div class="mcards">
+        <div class="card"><h3>{{me1_t}}</h3><p>{{me1}}</p></div>
+        <div class="card"><h3>{{me2_t}}</h3><p>{{me2}}</p></div>
+        <div class="card"><h3>{{me3_t}}</h3><p>{{me3}}</p></div>
+        <div class="card"><h3>{{me4_t}}</h3><p>{{me4}}</p></div>
+      </div>
+      <div class="card"><h3>{{me_f_h}}</h3>
+        <div style="display:grid;gap:8px;margin-top:10px">
+          <div class="formula">{{me_f1}}</div><div class="formula">{{me_f2}}</div><div class="formula">{{me_f3}}</div>
+          <div class="formula">{{me_f4}}</div><div class="formula">{{me_f5}}</div><div class="formula">{{me_f6}}</div>
+        </div></div>
+      <div class="card"><h3>{{me_tr_h}}</h3><ul class="rules"><li>{{me_tr1}}</li><li>{{me_tr2}}</li><li>{{me_tr3}}</li><li>{{me_tr4}}</li><li>{{me_tr5}}</li></ul></div>
+    </section>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" aria-label="{{dr_label}}"></aside>
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script>
+/*__SIM__*/
+</script>
+<script>
+(function () {
+  const T = /*__T__*/;
+  const D = simulateProjectPro();
+  const ACC = D.acc, SEG = D.SEG;
+  const SC = ["var(--st)", "var(--mb)", "var(--co)"];
+  const NS = "http://www.w3.org/2000/svg";
+  const $ = id => document.getElementById(id);
+  const tpl = (s, o) => s.replace(/\{(\w+)\}/g, (_, k) => o[k]);
+
+  // ---------- formatting ----------
+  const fmtN = n => (n < 0 ? "−" : "") + Math.round(Math.abs(n)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, T.thou);
+  const fmtD = (x, d) => (x < 0 ? "−" : "") + Math.abs(x).toFixed(d).replace(".", T.dec);
+  const fmtP = (x, d = 1) => isFinite(x) ? fmtD(x * 100, d) + "%" : "—";
+  const usd = (v, d = 2, short = false) => !isFinite(v) ? "—" : (v < 0 ? "−" : "") + (Math.abs(v) >= (short ? 1e6 : 1e5) ? "$" + fmtD(Math.abs(v) / 1e6, d) + T.mln : short && Math.abs(v) >= 1e4 ? "$" + fmtD(Math.abs(v) / 1e3, 0) + T.k : "$" + fmtN(Math.abs(v)));
+  const usdF = v => "$" + fmtN(v);
+  const sgn = (v, f) => (v > 0 ? "+" : v < 0 ? "−" : "") + f(Math.abs(v));
+  const segDot = s => `<span class="segpill"><i style="--c:${SC[s]}"></i>${T.seg_names[s]}</span>`;
+
+  // ---------- filters ----------
+  const F = { seg: -1, coh: -1, use: -1, ind: -1 };
+  function pass(a, ignoreSeg) {
+    if (!ignoreSeg && F.seg >= 0 && a.seg !== F.seg) return false;
+    if (F.coh >= 0 && a.cohort !== F.coh) return false;
+    if (F.use >= 0 && (a.full ? 0 : 1) !== F.use) return false;
+    if (F.ind >= 0 && a.ind !== F.ind) return false;
+    return true;
+  }
+  const sel = ignoreSeg => ACC.filter(a => pass(a, ignoreSeg));
+  function agg(list) {
+    const r = { n: list.length, base: 0, neu: 0, ch: 0, chB: 0, chN: 0, arr0: 0, arrNew: 0, arrLost: 0, basic: 0, full: 0, chBasic: 0 };
+    for (const a of list) {
+      if (a.cohort === 0) { r.base++; r.arr0 += a.price; } else { r.neu++; r.arrNew += a.price; }
+      if (a.churned) { r.ch++; r.arrLost += a.price; if (a.cohort === 0) r.chB++; else r.chN++; if (!a.full) r.chBasic++; }
+    }
+    r.end = r.base + r.neu - r.ch;
+    r.arrEnd = r.arr0 + r.arrNew - r.arrLost;
+    r.churn = r.ch / r.base;
+    r.grr = (r.arr0 - r.arrLost) / r.arr0;
+    return r;
+  }
+  const bySeg = list => [0, 1, 2].map(s => agg(list.filter(a => a.seg === s)));
+  const fill = (el, items, all) => el.innerHTML = `<option value="-1">${all}</option>` + items.map((t, i) => `<option value="${i}">${t}</option>`).join("");
+  fill($("fSeg"), T.seg_names, T.f_seg_all); fill($("fCoh"), T.coh_names, T.f_coh_all);
+  fill($("fUse"), T.use_names, T.f_use_all); fill($("fInd"), T.ind_names, T.f_ind_all);
+  const FL = { seg: ["fSeg", T.seg_names], coh: ["fCoh", T.coh_names], use: ["fUse", T.use_names], ind: ["fInd", T.ind_names] };
+  Object.keys(FL).forEach(k => $(FL[k][0]).addEventListener("change", e => { F[k] = +e.target.value; changed(); }));
+  function syncControls() {
+    const af = [];
+    Object.keys(FL).forEach(k => { $(FL[k][0]).value = F[k]; if (F[k] >= 0) af.push([k, FL[k][1][F[k]]]); });
+    $("af").innerHTML = af.length ? `<span>${T.f_active}</span>` + af.map(a => `<span class="af">${a[1]}<button type="button" data-k="${a[0]}" aria-label="${T.f_reset}: ${a[1]}">×</button></span>`).join("") + `<button type="button" class="linkbtn" id="afReset">${T.f_reset}</button>` : "";
+    $("af").querySelectorAll(".af button").forEach(b => b.addEventListener("click", () => { F[b.dataset.k] = -1; changed(); }));
+    const r = $("afReset"); if (r) r.addEventListener("click", () => { Object.keys(F).forEach(k => F[k] = -1); changed(); });
+  }
+
+  // ---------- svg helpers ----------
+  const tip = $("tip");
+  function svgEl(tag, attrs, parent, text) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (text != null) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function showTip(html, x, y) {
+    tip.innerHTML = html; tip.classList.add("on");
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    tip.style.left = Math.max(8, Math.min(x + 14, innerWidth - w - 8)) + "px";
+    tip.style.top = Math.max(8, y - h - 12) + "px";
+  }
+  const hideTip = () => tip.classList.remove("on");
+  function bindTip(node, html) {
+    node.addEventListener("mousemove", e => showTip(typeof html === "function" ? html() : html, e.clientX, e.clientY));
+    node.addEventListener("mouseleave", hideTip);
+    node.addEventListener("click", e => { if (e.pointerType === "touch") showTip(typeof html === "function" ? html() : html, e.clientX, e.clientY); });
+  }
+  function fit(svg, H) {
+    const w = Math.max(300, Math.round(svg.getBoundingClientRect().width || svg.parentElement.clientWidth || 560));
+    svg.setAttribute("viewBox", `0 0 ${w} ${H}`);
+    return w;
+  }
+  const barPath = (x, y, w, h, r) => { if (h <= 0) return ""; r = Math.min(r, w / 2, h); return `M${x},${y + h}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h}Z`; };
+  function niceMax(v) { const p = Math.pow(10, Math.floor(Math.log10(v || 1))); for (const m of [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]) if (m * p >= v) return m * p; return 10 * p; }
+  function axisY(svg, box, max, fmt, steps = 4, min = 0) {
+    for (let k = 0; k <= steps; k++) {
+      const v = min + (max - min) * k / steps, y = box.t + box.h - box.h * k / steps;
+      svgEl("line", { x1: box.l, x2: box.l + box.w, y1: y, y2: y, class: "gl" }, svg);
+      svgEl("text", { x: box.l - 8, y: y + 4, "text-anchor": "end", class: "ax" }, svg, fmt(v));
+    }
+  }
+  const halo = "paint-order: stroke; stroke: var(--surface); stroke-width: 4px";
+  // horizontal bar rows (HTML): rows = [{label, val, max, color, txt, sub, ghost, onClick, tip}]
+  function hbars(el, rows) {
+    el.innerHTML = rows.map((r, k) => `<div class="hrow"><span class="t">${r.label}</span><div class="tr" data-k="${k}" style="${r.onClick ? "cursor:pointer" : ""}">${r.ghost != null ? `<i class="ghost" style="width:${Math.max(0, r.ghost / r.max * 100)}%${r.ghostColor ? ";background:" + r.ghostColor : ""}"></i>` : ""}<i style="width:${Math.max(0, r.val / r.max * 100)}%;background:${r.color}"></i></div><span class="v"><b>${r.txt}</b>${r.sub ? `<span>${r.sub}</span>` : ""}</span></div>`).join("");
+    el.querySelectorAll(".tr").forEach(t => { const r = rows[+t.dataset.k]; if (r.tip) bindTip(t, r.tip); if (r.onClick) t.addEventListener("click", () => { hideTip(); r.onClick(); }); });
+  }
+
+  // ---------- views ----------
+  const STEPS = ["task", "overview", "churn", "money", "priority", "causes", "strategy", "metrics", "sim", "summary"];
+  const VIEWS = STEPS.concat(["accounts", "method"]);
+  const TITLES = { task: T.v_task, overview: T.v_overview, churn: T.v_churn, money: T.v_money, priority: T.v_priority, causes: T.v_causes, strategy: T.v_strategy,
+    metrics: T.v_metrics, sim: T.v_sim, summary: T.v_summary, accounts: T.v_accounts, method: T.v_method };
+  const FILTERED = ["overview", "money", "causes", "accounts"];
+  let view = "task";
+  document.querySelectorAll(".view").forEach(sec => {
+    const v = sec.dataset.view, k = STEPS.indexOf(v);
+    const head = sec.querySelector(".vhead");
+    if (k >= 0 && head) head.insertAdjacentHTML("afterbegin", `<span class="stepno">${tpl(T.step_of, { n: k + 1, t: STEPS.length })}</span>`);
+    let h = "";
+    const prev = k > 0 ? STEPS[k - 1] : null;
+    const next = k >= 0 && k < STEPS.length - 1 ? STEPS[k + 1] : k === STEPS.length - 1 ? "accounts" : null;
+    if (prev) h += `<button type="button" data-go="${prev}"><span>← ${T.step_prev}</span><b>${k}. ${TITLES[prev]}</b></button>`;
+    if (next) h += `<button type="button" class="next" data-go="${next}"><span>${next === "accounts" ? T.step_appx : T.step_next} →</span><b>${STEPS.includes(next) ? (k + 2) + ". " : ""}${TITLES[next]}</b></button>`;
+    if (v === "accounts") h = `<button type="button" data-go="summary"><span>← ${T.step_prev}</span><b>${STEPS.length}. ${TITLES.summary}</b></button><button type="button" class="next" data-go="method"><span>${T.step_appx} →</span><b>${TITLES.method}</b></button>`;
+    if (v === "method") h = `<button type="button" data-go="accounts"><span>← ${T.step_appx}</span><b>${TITLES.accounts}</b></button><button type="button" class="next" data-go="task"><span>${T.step_restart} →</span><b>1. ${TITLES.task}</b></button>`;
+    if (h) sec.insertAdjacentHTML("beforeend", `<nav class="stepnav" aria-label="${T.nav_label}">${h}</nav>`);
+  });
+  document.querySelectorAll(".stepnav button, a.stepref").forEach(b => b.addEventListener("click", () => go(b.dataset.go)));
+  function go(v, push = true) {
+    if (!VIEWS.includes(v)) v = "task";
+    view = v;
+    document.querySelectorAll(".view").forEach(s => s.hidden = s.dataset.view !== v);
+    document.querySelectorAll(".nav-btn").forEach(b => b.setAttribute("aria-current", b.dataset.view === v ? "page" : "false"));
+    $("vTitle").textContent = (STEPS.includes(v) ? (STEPS.indexOf(v) + 1) + ". " : "") + TITLES[v];
+    $("fRow").hidden = !FILTERED.includes(v);
+    if (push) { try { history.replaceState(null, "", "#" + v); } catch (e) {} }
+    render();
+    window.scrollTo(0, 0);
+    const btn = document.querySelector(`.nav-btn[data-view="${v}"]`);
+    if (btn && btn.parentElement.scrollWidth > btn.parentElement.clientWidth) btn.parentElement.scrollLeft = btn.offsetLeft - 40;
+  }
+  document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.view)));
+  window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if (h && h !== view) go(h, false); });
+  let rT; window.addEventListener("resize", () => { clearTimeout(rT); rT = setTimeout(render, 150); });
+  function changed() { syncControls(); aPage = 0; render(); }
+  function render() {
+    const none = () => {};
+    ({ task: rTask, overview: rOverview, churn: rChurn, money: rMoney, priority: rPriority, causes: rCauses, strategy: none, metrics: rMetrics, sim: rSim, summary: none, accounts: rAccounts, method: none })[view]();
+    $("cntA").textContent = fmtN(sel().length);
+  }
+
+  // ---------- 1 TASK ----------
+  let taskDone = false;
+  function rTask() {
+    if (taskDone) return; taskDone = true;
+    const tot = { base: 0, neu: 0, ch: 0 };
+    const rows = SEG.map((g, s) => { tot.base += g.base; tot.neu += g.neu; tot.ch += g.churn;
+      return `<tr><td>${segDot(s)} <span style="color:var(--muted);font-size:12.5px">${T.seg_size[s]}</span></td><td>${fmtN(g.base)}</td><td>${fmtN(g.neu)}</td><td>${fmtN(g.churn)}</td><td>${usd(g.price)}</td></tr>`; }).join("");
+    $("srcTbl").innerHTML = `<thead><tr><th>${T.th_seg}</th><th>${T.th_base}</th><th>${T.th_new}</th><th>${T.th_churn}</th><th>${T.th_price}</th></tr></thead><tbody>${rows}</tbody>
+      <tfoot><tr><td>${T.th_total}</td><td>${fmtN(tot.base)}</td><td>${fmtN(tot.neu)}</td><td>${fmtN(tot.ch)}</td><td>—</td></tr></tfoot>`;
+  }
+
+  // ---------- 2 OVERVIEW ----------
+  function rOverview() {
+    const list = sel(), a = agg(list), segs = bySeg(sel(true));
+    const k = [
+      [T.k_base, fmtN(a.base), T.k_base_d],
+      [T.k_new, "+" + fmtN(a.neu), ""],
+      [T.k_ch, "−" + fmtN(a.ch), ""],
+      [T.k_end, fmtN(a.end), `<span class="${a.end - a.base >= 0 ? "up" : "down"}">${sgn(a.end - a.base, fmtN)}</span>`],
+      [T.k_churn, fmtP(a.churn), T.k_churn_d],
+      [T.k_lost, usd(a.arrLost), ""],
+      [T.k_grr, fmtP(a.grr), T.k_grr_d]
+    ];
+    $("kpis").innerHTML = k.map(x => `<div class="kpi"><span class="eyebrow">${x[0]}</span><span class="v">${x[1]}</span><span class="d">${x[2]}</span></div>`).join("");
+
+    // bridge: grouped bars per segment (start, new, churned, end)
+    const svg = $("ovBridge"); svg.innerHTML = "";
+    const H = 280, W = fit(svg, H), box = { l: 44, t: 18, w: W - 44 - 10, h: H - 18 - 34 };
+    const segIdx = F.seg >= 0 ? [F.seg] : [0, 1, 2];
+    const keys = ["base", "neu", "ch", "end"], fills = ["var(--base-bar)", null, "var(--ink-2)", null];
+    const max = niceMax(Math.max(...segIdx.map(s => Math.max(segs[s].base, segs[s].end))));
+    axisY(svg, box, max, fmtN);
+    const gw = box.w / segIdx.length, bw = Math.min(30, gw / 6);
+    segIdx.forEach((s, j) => {
+      const g = segs[s], x0 = box.l + j * gw + (gw - bw * 4 - 6) / 2;
+      keys.forEach((kk, q) => {
+        const v = g[kk], x = x0 + q * (bw + 2), y = box.t + box.h - v / max * box.h;
+        const col = q === 1 ? `color-mix(in srgb, ${SC[s]} 45%, var(--surface))` : q === 3 ? SC[s] : fills[q];
+        svgEl("path", { d: barPath(x, y, bw, box.t + box.h - y, 4), fill: col }, svg);
+        svgEl("text", { x: x + bw / 2, y: y - 5, "text-anchor": "middle", class: "lb2" }, svg, fmtN(v));
+      });
+      svgEl("text", { x: box.l + j * gw + gw / 2, y: H - 10, "text-anchor": "middle", class: "lb" }, svg, T.seg_names[s]);
+      const hit = svgEl("rect", { x: box.l + j * gw, y: box.t, width: gw, height: box.h, fill: "transparent", class: "hit" }, svg);
+      bindTip(hit, `<b>${T.seg_names[s]}</b><br>${T.k_base}: ${fmtN(g.base)}<br>${T.k_new}: +${fmtN(g.neu)}<br>${T.k_ch}: −${fmtN(g.ch)}<br>${T.k_end}: <b>${fmtN(g.end)}</b>`);
+      hit.addEventListener("click", () => { hideTip(); F.seg = s; aChip = "churned"; syncControls(); go("accounts"); });
+    });
+    const tri = op => `linear-gradient(90deg, ${["st", "mb", "co"].map((c, i) => `${op ? `color-mix(in srgb, var(--${c}) 45%, var(--surface))` : `var(--${c})`} ${i * 33.4}% ${(i + 1) * 33.4}%`).join(", ")})`;
+    $("ovBridgeLeg").innerHTML = T.bridge_leg.map((l, q) => `<span><i style="background:${q === 1 ? tri(true) : q === 3 ? tri(false) : fills[q]}"></i>${l}</span>`).join("");
+
+    // net change diverging
+    const s2 = $("ovNet"); s2.innerHTML = "";
+    const W2 = fit(s2, H), nl = Math.min(150, Math.round(W2 * 0.36)), b2 = { l: nl, t: 20, w: W2 - nl - 50, h: H - 40 };
+    const nets = [0, 1, 2].map(s => segs[s].end - segs[s].base);
+    const m2 = niceMax(Math.max(...nets.map(Math.abs)) || 1);
+    const zx = b2.l + b2.w / 2, rowH = b2.h / 3;
+    svgEl("line", { x1: zx, x2: zx, y1: b2.t - 6, y2: b2.t + b2.h, stroke: "var(--ink-2)", "stroke-width": 1 }, s2);
+    nets.forEach((v, s) => {
+      const y = b2.t + s * rowH + rowH * 0.25, h = rowH * 0.5, w = Math.abs(v) / m2 * b2.w / 2;
+      const x = v >= 0 ? zx : zx - w;
+      svgEl("rect", { x, y, width: Math.max(2, w), height: h, rx: 4, fill: SC[s] }, s2);
+      svgEl("text", { x: 0, y: y + h / 2 + 4, class: "lb" }, s2, T.seg_names[s]);
+      svgEl("text", { x: v >= 0 ? x + w + 6 : x - 6, y: y + h / 2 + 4, "text-anchor": v >= 0 ? "start" : "end", class: "lb", style: halo }, s2, sgn(v, fmtN));
+      const hit = svgEl("rect", { x: b2.l, y: b2.t + s * rowH, width: b2.w, height: rowH, fill: "transparent" }, s2);
+      bindTip(hit, `<b>${T.seg_names[s]}</b><br>${tpl(T.net_tip, { a: fmtN(segs[s].neu), b: fmtN(segs[s].ch), c: sgn(v, fmtN) })}`);
+    });
+    svgEl("text", { x: zx - 6, y: b2.t - 8, "text-anchor": "end", class: "ax" }, s2, T.net_shrink);
+    svgEl("text", { x: zx + 6, y: b2.t - 8, class: "ax" }, s2, T.net_grow);
+
+    // churn by renewal month (base cohort, demo distribution)
+    const s3 = $("ovMonths"); s3.innerHTML = "";
+    const H3 = 260, W3 = fit(s3, H3), b3 = { l: 44, t: 16, w: W3 - 44 - 10, h: H3 - 16 - 30 };
+    const mm = Array.from({ length: 12 }, () => [0, 0, 0]);
+    list.forEach(a => { if (a.churned) mm[a.churnM][a.seg]++; });
+    const m3 = niceMax(Math.max(...mm.map(r => r[0] + r[1] + r[2])) || 1);
+    axisY(s3, b3, m3, fmtN);
+    const gw3 = b3.w / 12, bw3 = gw3 * 0.62;
+    mm.forEach((r, m) => {
+      let acc = 0; const x = b3.l + m * gw3 + (gw3 - bw3) / 2;
+      r.forEach((v, s) => { if (!v) return; const h = v / m3 * b3.h, y = b3.t + b3.h - (acc + v) / m3 * b3.h; svgEl("rect", { x, y, width: bw3, height: Math.max(0, h - 2), rx: 2, fill: SC[s] }, s3); acc += v; });
+      if (gw3 >= 34 || m % 2 === 0) svgEl("text", { x: x + bw3 / 2, y: H3 - 10, "text-anchor": "middle", class: "ax" }, s3, T.mshort[m]);
+      const hit = svgEl("rect", { x: b3.l + m * gw3, y: b3.t, width: gw3, height: b3.h, fill: "transparent", class: "hit" }, s3);
+      bindTip(hit, `<b>${T.months[m]}</b>` + r.map((v, s) => `<br>${T.seg_names[s]}: ${fmtN(v)}`).join("") + `<br>${T.th_total}: <b>${fmtN(r[0] + r[1] + r[2])}</b>`);
+    });
+    $("ovMonthsLeg").innerHTML = T.seg_names.map((n, s) => `<span><i style="background:${SC[s]}"></i>${n}</span>`).join("") + `<span class="notepill" style="margin-left:auto">${T.demo_pill}</span>`;
+  }
+
+  // ---------- 3 CHURN ----------
+  let den = 0;
+  $("denTg").innerHTML = T.den_names.map((n, i) => `<button type="button" data-i="${i}" aria-pressed="${i === 0}">${n}</button>`).join("");
+  $("denTg").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { den = +b.dataset.i; $("denTg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); rChurn(); }));
+  $("newShare").addEventListener("input", () => rChurn());
+  function denVal(g) { return den === 0 ? g.base : den === 1 ? g.base + g.neu : (g.base + g.end) / 2; }
+  function rChurn() {
+    const segs = bySeg(ACC), all = agg(ACC);
+    $("denFormula").textContent = T.den_f[den];
+    const vals = segs.map(g => g.ch / denVal(g)), tv = all.ch / denVal(all);
+    // bars: churn by segment (selected denominator) with ghost = start-of-year method for comparison
+    const svg = $("chBars"); svg.innerHTML = "";
+    const H = 280, W = fit(svg, H), box = { l: 44, t: 20, w: W - 44 - 10, h: H - 20 - 34 };
+    axisY(svg, box, 0.6, v => fmtP(v, 0));
+    const items = vals.concat([tv]), gw = box.w / 4, bw = Math.min(56, gw * 0.5);
+    items.forEach((v, j) => {
+      const x = box.l + j * gw + (gw - bw) / 2, y = box.t + box.h - v / 0.6 * box.h;
+      svgEl("path", { d: barPath(x, y, bw, box.t + box.h - y, 4), fill: j < 3 ? SC[j] : "var(--ink)" }, svg);
+      svgEl("text", { x: x + bw / 2, y: y - 6, "text-anchor": "middle", class: "lb" }, svg, fmtP(v));
+      svgEl("text", { x: x + bw / 2, y: H - 10, "text-anchor": "middle", class: "ax" }, svg, j < 3 ? T.seg_names[j] : T.th_total);
+      const g = j < 3 ? segs[j] : all;
+      const hit = svgEl("rect", { x: box.l + j * gw, y: box.t, width: gw, height: box.h, fill: "transparent" }, svg);
+      bindTip(hit, `<b>${j < 3 ? T.seg_names[j] : T.th_total}</b><br>${fmtN(g.ch)} / ${fmtD(denVal(g), 0)} = <b>${fmtP(v)}</b>`);
+    });
+    $("chBarsLeg").innerHTML = `<span>${T.den_names[den]}</span>`;
+    $("chTbl").innerHTML = `<thead><tr><th>${T.th_seg}</th>${T.den_short.map((n, i) => `<th class="r"${i === den ? ' style="color:var(--ink)"' : ""}>${n}</th>`).join("")}</tr></thead><tbody>` +
+      segs.concat([all]).map((g, j) => `<tr><td>${j < 3 ? segDot(j) : `<b>${T.th_total}</b>`}</td>${[0, 1, 2].map(d => { const dv = d === 0 ? g.base : d === 1 ? g.base + g.neu : (g.base + g.end) / 2; return `<td class="r"${d === den ? ' style="font-weight:700;background:color-mix(in srgb, var(--mb) 10%, transparent)"' : ""}>${fmtP(g.ch / dv)}</td>`; }).join("")}</tr>`).join("") + "</tbody>";
+    $("denNote").textContent = T.den_notes[den];
+
+    // range: churn of the start-of-year cohort if x% of the churned joined this year
+    const x = +$("newShare").value / 100;
+    $("newShareV").textContent = fmtP(x, 0);
+    $("ranges").innerHTML = segs.concat([all]).map((g, j) => {
+      const hi = g.ch / g.base, lo = g.ch * (1 - x) / g.base, sc = 0.7;
+      return `<div style="display:grid;grid-template-columns:150px minmax(0,1fr) 150px;gap:10px;align-items:center;font-size:13.5px">
+        <span>${j < 3 ? segDot(j) : `<b>${T.th_total}</b>`}</span>
+        <div class="rangebar"><div class="tr"></div><div class="band" style="left:${lo / sc * 100}%;width:${(hi - lo) / sc * 100}%"></div>
+          <div class="mk" style="left:${hi / sc * 100}%"><span>${fmtP(hi, 0)}</span></div><div class="mk" style="left:${lo / sc * 100}%;background:var(--mb)"><span>${fmtP(lo, 0)}</span></div></div>
+        <span style="text-align:right;color:var(--ink-2)">${tpl(T.range_t, { lo: fmtP(lo, 0), hi: fmtP(hi, 0) })}</span></div>`;
+    }).join("");
+
+    hbars($("retBars"), segs.map((g, s) => ({ label: segDot(s), val: 1 - g.churn, max: 1, color: SC[s], txt: fmtP(1 - g.churn), sub: tpl(T.ret_sub, { n: fmtN(g.base - g.ch), b: fmtN(g.base) }) })));
+  }
+
+  // ---------- 4 MONEY ----------
+  let cac = [3000, 12000, 45000];
+  function rMoney() {
+    const list = sel(), a = agg(list), segs = bySeg(sel(true));
+    const nrr = a.grr;
+    $("mKpis").innerHTML = [
+      [T.mk_arr0, usd(a.arr0), ""], [T.mk_new, "+" + usd(a.arrNew), ""], [T.mk_lost, "−" + usd(a.arrLost), ""],
+      [T.mk_end, usd(a.arrEnd), `<span class="${a.arrEnd >= a.arr0 ? "up" : "down"}">${sgn((a.arrEnd - a.arr0) / a.arr0, v => fmtP(v))}</span>`],
+      [T.mk_logo, fmtP(a.churn), T.mk_logo_d], [T.mk_rev, fmtP(1 - nrr), T.mk_rev_d], [T.mk_grr, fmtP(a.grr), T.mk_grr_d]
+    ].map(x => `<div class="kpi"><span class="eyebrow">${x[0]}</span><span class="v">${x[1]}</span><span class="d">${x[2]}</span></div>`).join("");
+
+    // waterfall
+    const svg = $("mWf"); svg.innerHTML = "";
+    const H = 280, W = fit(svg, H), box = { l: 74, t: 22, w: W - 74 - 10, h: H - 22 - 34 };
+    const steps = [{ l: T.wf[0], from: 0, to: a.arr0, c: "var(--base-bar)" }, { l: T.wf[1], from: a.arr0, to: a.arr0 + a.arrNew, c: "var(--good)" },
+      { l: T.wf[2], from: a.arr0 + a.arrNew, to: a.arrEnd, c: "var(--bad)" }, { l: T.wf[3], from: 0, to: a.arrEnd, c: "var(--ink)" }];
+    const max = niceMax(a.arr0 + a.arrNew);
+    axisY(svg, box, max, v => usd(v, 0, true));
+    const gw = box.w / 4, bw = Math.min(70, gw * 0.55);
+    steps.forEach((s, j) => {
+      const y1 = box.t + box.h - Math.max(s.from, s.to) / max * box.h, y2 = box.t + box.h - Math.min(s.from, s.to) / max * box.h, x = box.l + j * gw + (gw - bw) / 2;
+      svgEl("rect", { x, y: y1, width: bw, height: Math.max(2, y2 - y1), rx: 4, fill: s.c }, svg);
+      const d = s.to - s.from;
+      const nar = gw < 95, dd = nar ? 1 : 2;
+      svgEl("text", { x: x + bw / 2, y: y1 - 6, "text-anchor": "middle", class: nar ? "lb2" : "lb" }, svg, j === 0 || j === 3 ? usd(s.to, dd) : sgn(d, v => usd(v, dd)));
+      svgEl("text", { x: x + bw / 2, y: H - 10, "text-anchor": "middle", class: "ax" }, svg, s.l);
+      if (j < 3) svgEl("line", { x1: x + bw, x2: x + gw, y1: box.t + box.h - s.to / max * box.h, y2: box.t + box.h - s.to / max * box.h, stroke: "var(--muted)", "stroke-dasharray": "3 3" }, svg);
+    });
+
+    // lost ARR by segment
+    const s2 = $("mLost"); s2.innerHTML = "";
+    const W2 = fit(s2, H), b2 = { l: 74, t: 22, w: W2 - 74 - 10, h: H - 22 - 34 };
+    const m2 = niceMax(Math.max(...segs.map(g => g.arrLost)) || 1);
+    axisY(s2, b2, m2, v => usd(v, 1, true));
+    const g2 = b2.w / 3, bw2 = Math.min(70, g2 * 0.5);
+    segs.forEach((g, s) => {
+      const x = b2.l + s * g2 + (g2 - bw2) / 2, y = b2.t + b2.h - g.arrLost / m2 * b2.h;
+      const top = segs.reduce((m, q, i) => q.arrLost > segs[m].arrLost ? i : m, 0) === s;
+      svgEl("path", { d: barPath(x, y, bw2, b2.t + b2.h - y, 4), fill: SC[s], opacity: F.seg >= 0 && F.seg !== s ? .3 : 1 }, s2);
+      svgEl("text", { x: x + bw2 / 2, y: y - 6, "text-anchor": "middle", class: "lb" }, s2, usd(g.arrLost) + (top ? " ★" : ""));
+      svgEl("text", { x: x + bw2 / 2, y: H - 10, "text-anchor": "middle", class: "ax" }, s2, T.seg_names[s]);
+      const hit = svgEl("rect", { x: b2.l + s * g2, y: b2.t, width: g2, height: b2.h, fill: "transparent", class: "hit" }, s2);
+      bindTip(hit, `<b>${T.seg_names[s]}</b><br>${fmtN(g.ch)} × ${usd(SEG[s].price)} = <b>${usd(g.arrLost)}</b><br>${T.mk_rev}: ${fmtP(g.arrLost / g.arr0)}`);
+      hit.addEventListener("click", () => { hideTip(); F.seg = s; aChip = "churned"; syncControls(); go("accounts"); });
+    });
+
+    // share of customers vs share of money (100% stacked rows)
+    const s3 = $("mShare"); s3.innerHTML = "";
+    const H3 = 250, W3 = fit(s3, H3), sl = Math.min(150, Math.round(W3 * 0.3)), b3 = { l: sl, t: 10, w: W3 - sl - 10, h: H3 - 20 };
+    const rowsDef = [["base", T.sh_rows[0]], ["ch", T.sh_rows[1]], ["arr0", T.sh_rows[2]], ["arrLost", T.sh_rows[3]]];
+    const rh = b3.h / rowsDef.length;
+    rowsDef.forEach(([key, lab], r) => {
+      const tot = segs.reduce((s, g) => s + g[key], 0); let acc = 0;
+      const y = b3.t + r * rh + rh * 0.2, h = rh * 0.6;
+      svgEl("text", { x: b3.l - 12, y: y + h / 2 + 4, "text-anchor": "end", class: "lb" }, s3, lab);
+      segs.forEach((g, s) => {
+        const sh = g[key] / tot, x = b3.l + acc * b3.w, w = sh * b3.w;
+        const rc = svgEl("rect", { x, y, width: Math.max(0, w - 2), height: h, rx: 3, fill: SC[s] }, s3);
+        if (sh > 0.08) svgEl("text", { x: x + w / 2, y: y + h / 2 + 4, "text-anchor": "middle", class: "lb", style: "fill:#fff" }, s3, fmtP(sh, 0));
+        bindTip(rc, `<b>${lab}</b><br>${T.seg_names[s]}: <b>${fmtP(sh)}</b><br>${key.startsWith("arr") ? usd(g[key]) : fmtN(g[key])}`);
+        acc += sh;
+      });
+    });
+    $("mShareLeg").innerHTML = T.seg_names.map((n, s) => `<span><i style="background:${SC[s]}"></i>${n}</span>`).join("");
+
+    // LTV : CAC
+    $("ltv").innerHTML = [0, 1, 2].map(s => {
+      const g = segs[s], life = 1 / (g.ch / g.base), ltv = SEG[s].price * life, r = ltv / cac[s];
+      const vd = r >= 3 ? ["ok", T.ltv_ok] : r >= 1 ? ["mid", T.ltv_mid] : ["bad", T.ltv_bad];
+      const mx = [10000, 40000, 150000][s], st = [500, 1000, 5000][s];
+      return `<div class="card" style="border-top:4px solid ${SC[s]}"><h3>${T.seg_names[s]}</h3>
+        <div class="row"><span>${T.ltv_arpa}</span><b>${usd(SEG[s].price)}</b></div>
+        <div class="row"><span>${T.ltv_life}</span><b>${fmtD(life, 1)} ${T.yrs}</b></div>
+        <div class="row"><span>LTV</span><b>${usdF(ltv)}</b></div>
+        <div><label class="row" for="cac${s}"><span>${T.ltv_cac}</span><b>${usdF(cac[s])}</b></label><input type="range" id="cac${s}" min="${st}" max="${mx}" step="${st}" value="${cac[s]}"></div>
+        <div class="row" style="align-items:center"><span>LTV : CAC</span><span class="ratio">${fmtD(r, 1)}</span></div>
+        <span class="verdict ${vd[0]}">${vd[1]}</span></div>`;
+    }).join("");
+    [0, 1, 2].forEach(s => $("cac" + s).addEventListener("input", e => { cac[s] = +e.target.value; const y = window.scrollY; rMoney(); window.scrollTo(0, y); $("cac" + s).focus(); }));
+  }
+
+  // ---------- 5 PRIORITY ----------
+  let lens = 0;
+  $("lensTg").innerHTML = T.lens_names.map((n, i) => `<button type="button" data-i="${i}" aria-pressed="${i === 0}">${n}</button>`).join("");
+  $("lensTg").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { lens = +b.dataset.i; $("lensTg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); rPriority(); }));
+  const CTRL = [0.3, 0.8, 0.7]; // judgement: how much of the churn the product can influence (see text)
+  function rPriority() {
+    const segs = bySeg(ACC);
+    const M = [g => g.churn, g => g.ch, g => g.arrLost, (g, s) => g.arrLost * CTRL[s]][lens];
+    const F2 = [v => fmtP(v), fmtN, v => usd(v), v => usd(v)][lens];
+    const vals = segs.map((g, s) => M(g, s)), mx = Math.max(...vals);
+    hbars($("lensBars"), segs.map((g, s) => ({ label: segDot(s), val: vals[s], max: mx * 1.05, color: SC[s], txt: F2(vals[s]) + (vals[s] === mx ? " ★" : ""), sub: vals[s] === mx ? T.lens_top : "" })));
+    $("lensNote").textContent = T.lens_notes[lens];
+
+    // matrix: x = controllability, y = lost ARR, r = churned accounts
+    const svg = $("pMatrix"); svg.innerHTML = "";
+    const H = 380, W = fit(svg, H), box = { l: 64, t: 20, w: W - 64 - 20, h: H - 20 - 46 };
+    const ymax = 1.5e6;
+    axisY(svg, box, ymax, v => usd(v, 1, true), 3);
+    svgEl("line", { x1: box.l + box.w / 2, x2: box.l + box.w / 2, y1: box.t, y2: box.t + box.h, stroke: "var(--line)", "stroke-dasharray": "4 4" }, svg);
+    svgEl("rect", { x: box.l + box.w / 2, y: box.t, width: box.w / 2, height: box.h / 2, fill: "color-mix(in srgb, var(--good) 8%, transparent)" }, svg);
+    svgEl("text", { x: box.l + box.w - 8, y: box.t + box.h / 2 - 8, "text-anchor": "end", class: "lb", style: "fill:var(--good)" }, svg, T.mx_q1);
+    svgEl("text", { x: box.l + 8, y: box.t + 16, class: "ax" }, svg, T.mx_q2);
+    svgEl("text", { x: box.l + box.w / 2, y: H - 8, "text-anchor": "middle", class: "ax" }, svg, T.mx_x);
+    svgEl("text", { x: box.l, y: H - 26, class: "ax" }, svg, T.mx_lo);
+    svgEl("text", { x: box.l + box.w, y: H - 26, "text-anchor": "end", class: "ax" }, svg, T.mx_hi);
+    segs.forEach((g, s) => {
+      const cx = box.l + CTRL[s] * box.w, cy = box.t + box.h - g.arrLost / ymax * box.h, r = 10 + Math.sqrt(g.ch) * 1.5;
+      const c = svgEl("circle", { cx, cy, r, fill: SC[s], "fill-opacity": .85, stroke: "var(--surface)", "stroke-width": 2 }, svg);
+      const right = cx + r + 8 + 110 < box.l + box.w;
+      svgEl("text", { x: right ? cx + r + 8 : cx - r - 8, y: cy + 4, "text-anchor": right ? "start" : "end", class: "lb", style: halo }, svg, T.seg_names[s]);
+      bindTip(c, `<b>${T.seg_names[s]}</b><br>${T.lens_names[2]}: ${usd(g.arrLost)}<br>${T.lens_names[1]}: ${fmtN(g.ch)}<br>${T.mx_x}: ${T.ctrl_lv[s]}`);
+    });
+
+    $("scoreBox").innerHTML = segs.map((g, s) => {
+      const rows = [[T.sc_rows[0], g.churn, 0.6, fmtP(g.churn)], [T.sc_rows[1], g.arrLost, 1.4e6, usd(g.arrLost)], [T.sc_rows[2], CTRL[s], 1, T.ctrl_lv[s]], [T.sc_rows[3], Math.max(0, (g.end - g.base) < 0 ? 1 : 0.2), 1, sgn(g.end - g.base, fmtN)]];
+      return `<div class="scard${s === 1 ? " win" : ""}"><h3><i style="--c:${SC[s]}"></i>${T.seg_names[s]}${s === 1 ? ` <span class="verdict bad" style="margin-left:auto">${T.sc_main}</span>` : ""}</h3>
+        ${rows.map(r => `<div class="axis2"><span>${r[0]}</span><div class="tr"><i style="--c:${SC[s]};width:${Math.min(100, r[1] / r[2] * 100)}%"></i></div><b>${r[3]}</b></div>`).join("")}
+        <p style="font-size:13.5px;color:var(--ink-2)">${T.sc_txt[s]}</p></div>`;
+    }).join("");
+  }
+
+  // ---------- 6 CAUSES ----------
+  function rCauses() {
+    const list = sel(), ch = list.filter(a => a.churned), segsAll = bySeg(ACC);
+    const basic = ch.filter(a => !a.full).length, full = ch.length - basic;
+    // donut
+    const svg = $("uDonut"); svg.innerHTML = "";
+    const H = 240, W = fit(svg, H), cx = Math.min(130, W / 4), cy = H / 2, R = 92, r0 = 58;
+    const parts = [[basic, "var(--st)", T.use_names[1]], [full, "var(--mb)", T.use_names[0]]];
+    let a0 = -Math.PI / 2;
+    parts.forEach(([v, c, l], k) => {
+      if (!ch.length) return;
+      const a1 = a0 + v / ch.length * Math.PI * 2 - 0.02;
+      const p = (rr, a) => [cx + rr * Math.cos(a), cy + rr * Math.sin(a)];
+      const big = a1 - a0 > Math.PI ? 1 : 0, [x1, y1] = p(R, a0), [x2, y2] = p(R, a1), [x3, y3] = p(r0, a1), [x4, y4] = p(r0, a0);
+      const path = svgEl("path", { d: `M${x1},${y1}A${R},${R} 0 ${big} 1 ${x2},${y2}L${x3},${y3}A${r0},${r0} 0 ${big} 0 ${x4},${y4}Z`, fill: c }, svg);
+      bindTip(path, `<b>${l}</b><br>${fmtN(v)} (${fmtP(v / ch.length, 0)})`);
+      const ly = cy - 30 + k * 64, lx = cx + R + 40;
+      svgEl("rect", { x: lx, y: ly - 10, width: 12, height: 12, rx: 3, fill: c }, svg);
+      svgEl("text", { x: lx + 20, y: ly, class: "lb" }, svg, l);
+      svgEl("text", { x: lx + 20, y: ly + 22, class: "lb", style: "font-size:20px;font-family:var(--f-display)" }, svg, fmtP(v / ch.length, 0));
+      svgEl("text", { x: lx + 80, y: ly + 22, class: "ax" }, svg, tpl(T.n_acc, { n: fmtN(v) }));
+      a0 = a1 + 0.02;
+    });
+    svgEl("text", { x: cx, y: cy + 2, "text-anchor": "middle", class: "lb", style: "font-size:20px;font-family:var(--f-display)" }, svg, fmtN(ch.length));
+    svgEl("text", { x: cx, y: cy + 20, "text-anchor": "middle", class: "ax" }, svg, T.churned_lc);
+
+    // per-segment split (demo)
+    const s2 = $("uSeg"); s2.innerHTML = "";
+    const H2 = 230, W2 = fit(s2, H2), b2 = { l: 130, t: 10, w: W2 - 130 - 10, h: H2 - 20 };
+    const rh = b2.h / 3;
+    [0, 1, 2].forEach(s => {
+      const c = ACC.filter(a => a.churned && a.seg === s), bs = c.filter(a => !a.full).length / c.length;
+      const y = b2.t + s * rh + rh * 0.22, h = rh * 0.56;
+      svgEl("text", { x: b2.l - 12, y: y + h / 2 + 4, "text-anchor": "end", class: "lb" }, s2, T.seg_names[s]);
+      const r1 = svgEl("rect", { x: b2.l, y, width: Math.max(0, bs * b2.w - 2), height: h, rx: 3, fill: "var(--st)" }, s2);
+      const r2 = svgEl("rect", { x: b2.l + bs * b2.w, y, width: (1 - bs) * b2.w, height: h, rx: 3, fill: "var(--mb)" }, s2);
+      svgEl("text", { x: b2.l + 8, y: y + h / 2 + 4, class: "lb", style: "fill:#fff" }, s2, fmtP(bs, 0));
+      svgEl("text", { x: b2.l + b2.w - 8, y: y + h / 2 + 4, "text-anchor": "end", class: "lb", style: "fill:#fff" }, s2, fmtP(1 - bs, 0));
+      bindTip(r1, `<b>${T.seg_names[s]}</b><br>${T.use_names[1]}: ${fmtN(c.length - c.filter(a => a.full).length)}`);
+      bindTip(r2, `<b>${T.seg_names[s]}</b><br>${T.use_names[0]}: ${fmtN(c.filter(a => a.full).length)}`);
+    });
+    $("uSegLeg").innerHTML = `<span><i style="background:var(--st)"></i>${T.use_names[1]}</span><span><i style="background:var(--mb)"></i>${T.use_names[0]}</span>`;
+
+    // reasons (demo)
+    const cnt = T.reasons.map(() => [0, 0]);
+    ch.forEach(a => cnt[a.reason][a.full ? 1 : 0]++);
+    const mx = Math.max(...cnt.map(c => c[0] + c[1])) || 1;
+    hbars($("uReasons"), cnt.map((c, r) => ({ label: T.reasons[r], val: c[0], ghost: c[0] + c[1], ghostColor: "var(--mb)", max: mx * 1.05, color: "var(--st)", txt: fmtN(c[0] + c[1]),
+      sub: ch.length ? fmtP((c[0] + c[1]) / ch.length, 0) : "", tip: `<b>${T.reasons[r]}</b><br>${T.use_names[1]}: ${fmtN(c[0])}<br>${T.use_names[0]}: ${fmtN(c[1])}`,
+      onClick: () => { aChip = "churned"; aReason = r; go("accounts"); } })));
+
+    // health of renewed vs churned
+    const groups = [[T.hl_g[0], list.filter(a => a.cohort === 0 && !a.churned)], [T.hl_g[1], list.filter(a => a.churned)]];
+    const avg = (l, f) => l.length ? l.reduce((s, a) => s + f(a), 0) / l.length : NaN;
+    const rows = [[T.hl_r[0], a => a.keyUsed, v => fmtD(v, 1) + " / 7"], [T.hl_r[1], a => a.seatsUsed / a.seatsPaid, v => fmtP(v, 0)], [T.hl_r[2], a => a.lastLogin, v => fmtD(v, 0) + " " + T.days], [T.hl_r[3], a => a.tickets, v => fmtD(v, 1)], [T.hl_r[4], a => a.health, v => fmtD(v, 0)]];
+    $("uHealth").innerHTML = `<thead><tr><th>${T.hl_th}</th>${groups.map(g => `<th class="r">${g[0]} · ${fmtN(g[1].length)}</th>`).join("")}</tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${r[0]}</td>${groups.map(g => `<td class="r">${isFinite(avg(g[1], r[1])) ? r[2](avg(g[1], r[1])) : "—"}</td>`).join("")}</tr>`).join("") + "</tbody>";
+  }
+
+  // ---------- 8 METRICS ----------
+  let mSel = "adopt";
+  const MT = T.mt;
+  function rMetrics() {
+    const box = (k) => `<button type="button" class="mbox${MT[k].lag ? " lag" : ""}" data-k="${k}" aria-pressed="${k === mSel}" style="--c:${MT[k].c ? SC[MT[k].c - 1] : "var(--muted)"}"><span class="tag2">${MT[k].tag}</span><b>${MT[k].n}</b><span>${MT[k].s}</span></button>`;
+    $("mtree").innerHTML = `<div class="lvl">${box("nrr")}</div><div class="lvl l2">${box("grr")}${box("exp")}</div><div class="lvl l3">${box("adopt")}${box("health")}${box("upg")}</div><div class="lvl l3">${box("ttv")}${box("exit")}${box("seg")}</div>`;
+    $("mtree").querySelectorAll(".mbox").forEach(b => b.addEventListener("click", () => { mSel = b.dataset.k; rMetrics(); }));
+    const m = MT[mSel];
+    $("mdetail").innerHTML = `<b>${m.n}</b><span><b>${T.md_f}</b> ${m.f}</span><span><b>${T.md_why}</b> ${m.why}</span><span><b>${T.md_when}</b> ${m.when}</span>`;
+    $("kTbl").innerHTML = `<thead><tr>${T.kt_th.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>` +
+      T.kt.map(r => `<tr><td><b>${r[0]}</b></td><td><span class="pill ${r[1] === T.lead ? "y" : "m"}">${r[1]}</span></td><td class="wrap">${r[2]}</td><td>${r[3]}</td><td class="wrap">${r[4]}</td></tr>`).join("") + "</tbody>";
+  }
+
+  // ---------- 9 SIMULATOR ----------
+  const PRE = [[0, 0, 0, 0], [5, 10, 5, 5], [8, 15, 8, 10]];
+  $("xPre").innerHTML = T.x_pre.map((n, i) => `<button type="button" data-i="${i}" aria-pressed="${i === 1}">${n}</button>`).join("");
+  $("xPre").querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+    ["xSt", "xMb", "xCo", "xUp"].forEach((id, k) => $(id).value = PRE[+b.dataset.i][k]);
+    $("xPre").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); rSim();
+  }));
+  ["xSt", "xMb", "xCo", "xUp"].forEach(id => $(id).addEventListener("input", () => { $("xPre").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", "false")); rSim(); }));
+  function rSim() {
+    const segs = bySeg(ACC), all = agg(ACC);
+    const pp = [+$("xSt").value, +$("xMb").value, +$("xCo").value].map(v => v / 100), up = +$("xUp").value / 100;
+    $("xStV").textContent = "−" + fmtD(pp[0] * 100, 0) + T.pp; $("xMbV").textContent = "−" + fmtD(pp[1] * 100, 0) + T.pp; $("xCoV").textContent = "−" + fmtD(pp[2] * 100, 0) + T.pp;
+    $("xUpV").textContent = fmtP(up, 0);
+    const lostNew = segs.map((g, s) => Math.max(0, g.churn - pp[s]) * g.base * SEG[s].price);
+    const saved = segs.reduce((s, g, i) => s + g.arrLost - lostNew[i], 0);
+    const retainedSt = segs[0].base * (1 - Math.max(0, segs[0].churn - pp[0]));
+    const upg = Math.round(retainedSt * up), exp = upg * (SEG[1].price - SEG[0].price);
+    const lostTot = lostNew.reduce((a, b) => a + b, 0);
+    const grr = (all.arr0 - lostTot) / all.arr0, nrr = (all.arr0 - lostTot + exp) / all.arr0;
+    $("xRes").innerHTML = [[usd(saved), T.xr[0]], [usd(exp), tpl(T.xr[1], { n: fmtN(upg) })], [fmtP(all.grr) + " → " + fmtP(grr), T.xr[2]], [fmtP(all.grr) + " → " + fmtP(nrr), T.xr[3]]]
+      .map(r => `<div><b>${r[0]}</b><span>${r[1]}</span></div>`).join("");
+    const mx = Math.max(...segs.map(g => g.arrLost));
+    hbars($("xBars"), segs.map((g, s) => ({ label: segDot(s), val: lostNew[s], ghost: g.arrLost, max: mx * 1.05, color: SC[s], txt: usd(lostNew[s]), sub: tpl(T.x_was, { v: usd(g.arrLost) }) })));
+    const share = saved ? (segs[1].arrLost - lostNew[1]) / saved : 0;
+    $("xNote2").textContent = tpl(T.x_note2, { s: fmtP(share, 0) });
+  }
+
+  // ---------- ACCOUNTS ----------
+  let aChip = "all", aPage = 0, aSort = { k: "arr", d: -1 }, aReason = -1, openId = null;
+  const PAGE = 25;
+  const status = a => a.churned ? 2 : a.cohort === 1 ? 1 : 0; // 0 renewed, 1 new active, 2 churned
+  const risk = a => !a.churned && a.health < 45;
+  const CHIPS = { all: a => true, renewed: a => status(a) === 0, newact: a => status(a) === 1, churned: a => a.churned, risk: risk };
+  $("q").addEventListener("input", () => { aPage = 0; if (view !== "accounts") go("accounts"); else rAccounts(); });
+  const COLS = [["id", T.ac[0], a => a.id], ["name", T.ac[1], a => a.name], ["seg", T.ac[2], a => a.seg], ["emp", T.ac[3], a => a.emp, 1], ["arr", T.ac[4], a => a.price, 1],
+    ["key", T.ac[5], a => a.keyUsed, 1], ["seats", T.ac[6], a => a.seatsUsed / a.seatsPaid, 1], ["login", T.ac[7], a => a.lastLogin, 1], ["health", T.ac[8], a => a.health, 1], ["st", T.ac[9], status]];
+  function rAccounts() {
+    const q = $("q").value.trim().toLowerCase();
+    let base = sel();
+    if (q) base = base.filter(a => a.id.toLowerCase().includes(q) || a.name.toLowerCase().includes(q));
+    $("aChips").innerHTML = Object.keys(CHIPS).map(k => `<button type="button" class="chip" data-k="${k}" aria-pressed="${k === aChip}">${T.chips[k]} <b>${fmtN(base.filter(CHIPS[k]).length)}</b></button>`).join("") +
+      (aReason >= 0 ? `<span class="af">${T.reasons[aReason]}<button type="button" id="rsX" aria-label="${T.f_reset}">×</button></span>` : "");
+    $("aChips").querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => { aChip = b.dataset.k; aPage = 0; rAccounts(); }));
+    if ($("rsX")) $("rsX").addEventListener("click", () => { aReason = -1; rAccounts(); });
+    let list = base.filter(CHIPS[aChip]);
+    if (aReason >= 0) list = list.filter(a => a.reason === aReason);
+    const col = COLS.find(c => c[0] === aSort.k);
+    list.sort((x, y) => { const a = col[2](x), b = col[2](y); return (a < b ? -1 : a > b ? 1 : 0) * aSort.d; });
+    const ag = agg(list);
+    $("aStats").innerHTML = tpl(T.a_stats, { n: fmtN(list.length), arr: usd(list.reduce((s, a) => s + a.price, 0)), ch: fmtN(ag.ch), h: list.length ? fmtD(list.reduce((s, a) => s + a.health, 0) / list.length, 0) : "—" });
+    const pages = Math.max(1, Math.ceil(list.length / PAGE)); aPage = Math.min(aPage, pages - 1);
+    const pill = a => a.churned ? `<span class="pill n">${T.st_names[2]}</span>` : risk(a) ? `<span class="pill" style="background:var(--warn-bg);color:var(--warn)">${T.st_risk}</span>` : `<span class="pill ${status(a) === 0 ? "y" : "t1"}">${T.st_names[status(a)]}</span>`;
+    const hcol = h => h < 45 ? "bad" : h >= 70 ? "good" : "";
+    $("aTbl").innerHTML = `<thead><tr>${COLS.map(c => `<th class="sort${c[3] ? " r" : ""}" data-k="${c[0]}"${aSort.k === c[0] ? ` aria-sort="${aSort.d > 0 ? "ascending" : "descending"}"` : ""}>${c[1]}${aSort.k === c[0] ? (aSort.d > 0 ? " ↑" : " ↓") : ""}</th>`).join("")}</tr></thead><tbody>` +
+      list.slice(aPage * PAGE, (aPage + 1) * PAGE).map(a => `<tr class="click${openId === a.id ? " on" : ""}" data-id="${a.id}"><td class="uid">${a.id}</td><td>${a.name}</td><td>${segDot(a.seg)}</td><td class="r">${fmtN(a.emp)}</td><td class="r">${usd(a.price)}</td>
+        <td class="r">${a.keyUsed}/7</td><td class="r">${a.seatsUsed}/${a.seatsPaid}</td><td class="r">${a.lastLogin} ${T.days}</td><td class="r ${hcol(a.health)}">${a.health}</td><td>${pill(a)}</td></tr>`).join("") +
+      (list.length ? "" : `<tr><td colspan="10" style="color:var(--muted)">${T.a_empty}</td></tr>`) + "</tbody>";
+    $("aTbl").querySelectorAll("th.sort").forEach(th => th.addEventListener("click", () => { const k = th.dataset.k; aSort = { k, d: aSort.k === k ? -aSort.d : (COLS.find(c => c[0] === k)[3] ? -1 : 1) }; rAccounts(); }));
+    $("aTbl").querySelectorAll("tr.click").forEach(tr => tr.addEventListener("click", () => openAcc(tr.dataset.id)));
+    $("aPager").innerHTML = `<span>${tpl(T.pg_shown, { a: fmtN(list.length ? aPage * PAGE + 1 : 0), b: fmtN(Math.min(list.length, (aPage + 1) * PAGE)), n: fmtN(list.length) })}</span><div><button type="button" class="btn" id="pgPrev" ${aPage === 0 ? "disabled" : ""}>${T.pg_prev}</button><button type="button" class="btn" id="pgNext" ${aPage >= pages - 1 ? "disabled" : ""}>${T.pg_next}</button></div>`;
+    $("pgPrev").addEventListener("click", () => { aPage--; rAccounts(); });
+    $("pgNext").addEventListener("click", () => { aPage++; rAccounts(); });
+  }
+  const drawer = $("drawer"), scrim = $("scrim");
+  function openAcc(id) {
+    const a = ACC.find(x => x.id === id); if (!a) return;
+    openId = id;
+    const st = status(a);
+    const ev = [];
+    ev.push([a.cohort === 0 ? tpl(T.ev_join_old, { m: -a.joinM }) : T.mshort[a.joinM], T.ev_join, "var(--muted)"]);
+    ev.push(["", tpl(T.ev_onb, { k: a.keyUsed }), a.full ? "var(--good)" : "var(--warn)"]);
+    if (a.seg === 2) ev.push(["", a.csm ? T.ev_csm_y : T.ev_csm_n, a.csm ? "var(--good)" : "var(--warn)"]);
+    if (a.tickets) ev.push(["", tpl(T.ev_tickets, { n: a.tickets }), "var(--s0)"]);
+    ev.push(["", tpl(T.ev_login, { d: a.lastLogin }), a.lastLogin > 21 ? "var(--bad)" : "var(--good)"]);
+    if (a.churned) ev.push([T.mshort[a.churnM], tpl(T.ev_churn, { r: T.reasons[a.reason] }), "var(--bad)"]);
+    else if (st === 0) ev.push([T.mshort[a.renewM], T.ev_renew, "var(--good)"]);
+    const play = a.churned ? T.play_win[a.seg] : risk(a) ? T.play_risk[a.seg] : T.play_ok[a.seg];
+    drawer.innerHTML = `<div class="dh"><span class="av" style="--c:${SC[a.seg]}">${a.name.split(" ").map(w => w[0]).join("")}</span><div><h3>${a.name}</h3><span>${a.id} · ${T.seg_names[a.seg]} · ${T.ind_names[a.ind]}</span></div><button type="button" class="x" id="dClose" aria-label="${T.dr_close}">×</button></div>
+      <div class="dstats"><div><b>${usd(a.price)}</b><span>ARR</span></div><div><b>${a.health}</b><span>${T.ac[8]}</span></div><div><b>${a.keyUsed}/7</b><span>${T.ac[5]}</span></div><div><b>${a.seatsUsed}/${a.seatsPaid}</b><span>${T.ac[6]}</span></div></div>
+      <div><span class="lab">${T.dr_status}</span><p style="margin-top:6px">${a.churned ? `<span class="pill n">${T.st_names[2]}</span>` : risk(a) ? `<span class="pill" style="background:var(--warn-bg);color:var(--warn)">${T.st_risk}</span>` : `<span class="pill y">${T.st_names[st]}</span>`} <span style="font-size:13px;color:var(--ink-2)">${T.coh_names[a.cohort]} · ${a.full ? T.use_names[0] : T.use_names[1]}</span></p></div>
+      <div><span class="lab">${T.dr_tl}</span><ul class="tl">${ev.map(e => `<li><span class="d">${e[0]}</span><i style="--c:${e[2]}"></i><span>${e[1]}</span></li>`).join("")}</ul></div>
+      <div><span class="lab">${T.dr_play}</span><div class="rec" style="margin-top:8px">${play}</div></div>
+      <p class="note" style="margin-top:0">${T.demo_pill}</p>`;
+    drawer.classList.add("on"); scrim.classList.add("on"); drawer.setAttribute("aria-hidden", "false");
+    $("dClose").addEventListener("click", closeAcc); $("dClose").focus();
+    document.querySelectorAll("#aTbl tr.click").forEach(tr => tr.classList.toggle("on", tr.dataset.id === id));
+  }
+  function closeAcc() { openId = null; drawer.classList.remove("on"); scrim.classList.remove("on"); drawer.setAttribute("aria-hidden", "true"); document.querySelectorAll("#aTbl tr.on").forEach(tr => tr.classList.remove("on")); }
+  scrim.addEventListener("click", closeAcc);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") { closeAcc(); hideTip(); } });
+
+  syncControls();
+  const h0 = location.hash.slice(1);
+  go(VIEWS.includes(h0) ? h0 : "task", false);
+})();
+</script>

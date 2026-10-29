@@ -1,0 +1,1369 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>ProjectPro · Retention B2B SaaS</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: same CRM shell as the BookLover dashboard — left sidebar of numbered steps, sticky top bar with global filters (segment, cohort, feature usage, industry), one view at a time, account card in a right drawer. */
+:root {
+  --bg: #f3f5f8; --surface: #ffffff; --surface-2: #edf0f4; --ink: #131a26; --ink-2: #485264; --muted: #7a8496; --line: #dde2ea;
+  --side: #121a27; --side-ink: #c9d1de; --side-muted: #7f8aa0; --side-act: #1f2a3c;
+  --focus: #2a78d6; --good: #11764f; --good-bg: #e3f4ec; --bad: #b4441a; --bad-bg: #fbe9e1; --warn: #8a5a00; --warn-bg: #fff4de;
+  --s0: #2a78d6; --s1: #1baf7a; --s2: #e87ba4; --s3: #6250d6; --s4: #eda100; --s5: #eb6834;
+  --base-bar: #c3c8d1; --heat: 42, 120, 214; --shadow: 0 10px 40px rgb(15 23 42 / .18);
+  --f-display: "Unbounded", "Onest", system-ui, sans-serif;
+  --f-body: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1118; --surface: #151b25; --surface-2: #1d2531; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #283041;
+    --side: #0a0e14; --side-ink: #c9d1de; --side-muted: #6f7a8f; --side-act: #1a2230;
+    --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --bad: #f08a5d; --bad-bg: #3a1f14; --warn: #f0c46a; --warn-bg: #33270f;
+    --s0: #3987e5; --s1: #199e70; --s2: #d55181; --s3: #9085e9; --s4: #c98500; --s5: #d95926;
+    --base-bar: #4a5263; --heat: 57, 135, 229; --shadow: 0 10px 40px rgb(0 0 0 / .5); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1118; --surface: #151b25; --surface-2: #1d2531; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #283041;
+  --side: #0a0e14; --side-ink: #c9d1de; --side-muted: #6f7a8f; --side-act: #1a2230;
+  --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --bad: #f08a5d; --bad-bg: #3a1f14; --warn: #f0c46a; --warn-bg: #33270f;
+  --s0: #3987e5; --s1: #199e70; --s2: #d55181; --s3: #9085e9; --s4: #c98500; --s5: #d95926;
+  --base-bar: #4a5263; --heat: 57, 135, 229; --shadow: 0 10px 40px rgb(0 0 0 / .5); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 14.5px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+p { margin: 0; }
+button, select, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+.num { font-variant-numeric: tabular-nums; }
+.eyebrow { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+/* shell */
+.app { display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: 100vh; }
+.side { background: var(--side); color: var(--side-ink); position: sticky; top: 0; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; padding: 18px 12px calc(18px + env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); gap: 4px; }
+.brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 16px; }
+.brand .logo { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--s0), var(--s1)); display: grid; place-items: center; color: #fff; font-family: var(--f-display); font-weight: 700; font-size: 13px; }
+.brand b { display: block; font-size: 14px; color: #fff; }
+.brand span { font-size: 11.5px; color: var(--side-muted); }
+.navgroup { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--side-muted); padding: 12px 10px 4px; }
+.nav-btn { display: flex; align-items: center; gap: 10px; width: 100%; border: 0; background: transparent; color: var(--side-ink); text-align: left; padding: 8px 10px; border-radius: 9px; cursor: pointer; font-size: 14px; }
+.nav-btn svg { width: 17px; height: 17px; flex: none; opacity: .85; }
+.nav-btn .cnt { margin-left: auto; font-size: 11.5px; color: var(--side-muted); font-variant-numeric: tabular-nums; }
+.nav-btn:hover { background: var(--side-act); }
+.nav-btn[aria-current="page"] { background: var(--side-act); color: #fff; box-shadow: inset 3px 0 0 var(--s0); }
+.side .foot { margin-top: auto; display: grid; gap: 6px; padding: 14px 8px 0; font-size: 12.5px; }
+.side .foot a { color: var(--side-ink); text-decoration: none; }
+.side .foot a:hover { color: #fff; }
+.side .demo { font-size: 11.5px; color: var(--side-muted); line-height: 1.4; }
+.main { min-width: 0; display: flex; flex-direction: column; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 8; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); padding-block: 10px; padding-left: 24px; padding-right: max(24px, env(safe-area-inset-right, 0px)); display: grid; gap: 8px; }
+.top-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.top h1 { font-family: var(--f-display); font-size: 18px; font-weight: 700; letter-spacing: -.01em; margin-right: auto; }
+.ctl { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; font-size: 13.5px; }
+select.ctl { padding-right: 6px; max-width: 200px; }
+.fgroup { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); }
+.search { position: relative; }
+.search input { width: 190px; padding-left: 30px; font-family: var(--f-mono); font-size: 13px; }
+.search svg { position: absolute; left: 9px; top: 50%; width: 15px; height: 15px; transform: translateY(-50%); color: var(--muted); }
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 7px 12px; font-size: 13.5px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+a.btn.lang { font-family: var(--f-mono); font-weight: 700; }
+.btn:hover { border-color: var(--ink-2); }
+.btn.pri { background: var(--ink); color: var(--bg); border-color: var(--ink); font-weight: 600; }
+.active-filters { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; font-size: 12.5px; color: var(--muted); }
+.af { font-size: 12.5px; background: var(--surface-2); color: var(--ink); border-radius: 999px; padding: 3px 5px 3px 11px; display: inline-flex; gap: 6px; align-items: center; }
+.af button { border: 0; background: var(--line); border-radius: 50%; width: 18px; height: 18px; line-height: 1; cursor: pointer; font-size: 12px; padding: 0; }
+.linkbtn { border: 0; background: transparent; color: var(--focus); cursor: pointer; font-size: 12.5px; padding: 2px 4px; }
+
+.view { padding: 22px 24px 48px; padding-right: max(24px, env(safe-area-inset-right, 0px)); display: grid; gap: 16px; align-content: start; }
+.vhead { display: grid; gap: 6px; max-width: 840px; }
+.vhead h2 { font-family: var(--f-display); font-size: clamp(20px, 2.4vw, 26px); font-weight: 700; letter-spacing: -.015em; line-height: 1.15; }
+.vhead p { color: var(--ink-2); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; min-width: 0; }
+.card h3 { font-size: 15.5px; font-weight: 600; }
+.card .sub { font-size: 13px; color: var(--muted); margin: 2px 0 12px; }
+.g2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.g3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.g75 { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 16px; }
+.hint { display: inline-flex; gap: 6px; align-items: center; font-size: 12px; color: var(--focus); background: color-mix(in srgb, var(--focus) 12%, transparent); padding: 3px 10px; border-radius: 999px; width: fit-content; margin-bottom: 8px; }
+.note { font-size: 13px; color: var(--ink-2); background: var(--surface-2); border-radius: 10px; padding: 10px 12px; margin-top: 12px; }
+.findings { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.finding { background: var(--ink); color: var(--bg); border-radius: 14px; padding: 16px 18px; display: grid; gap: 4px; align-content: start; }
+.finding b { font-family: var(--f-display); font-size: 18px; font-weight: 700; line-height: 1.2; }
+.finding span { font-size: 13.5px; color: color-mix(in srgb, var(--bg) 80%, var(--ink)); }
+.kpis { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 13px; display: grid; gap: 3px; min-width: 0; align-content: start; }
+.kpi .v { font-family: var(--f-display); font-size: clamp(17px, 1.6vw, 21px); font-weight: 700; font-variant-numeric: tabular-nums; }
+.kpi .d { font-size: 12px; color: var(--muted); }
+.up { color: var(--good); } .down { color: var(--bad); }
+
+/* charts */
+svg text { font-family: var(--f-body); }
+.chart { width: 100%; height: auto; display: block; }
+.ax { fill: var(--muted); font-size: 11px; }
+.gl { stroke: var(--line); }
+.lb { fill: var(--ink); font-size: 11.5px; font-weight: 600; }
+.lb2 { fill: var(--ink-2); font-size: 11px; }
+.legend { display: flex; gap: 8px 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-2); margin-top: 8px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.legend button { border: 0; background: transparent; padding: 2px 0; cursor: pointer; color: inherit; font-size: inherit; }
+.legend button:hover { color: var(--ink); text-decoration: underline; }
+.hit { cursor: pointer; }
+.hit:hover { fill: color-mix(in srgb, var(--ink) 6%, transparent); }
+
+/* tables */
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 5px 12px; font-size: 13px; cursor: pointer; display: inline-flex; gap: 7px; align-items: center; }
+.chip b { font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ink-2); font-size: 12px; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip[aria-pressed="true"] b { color: var(--bg); opacity: .8; }
+.stats { font-size: 13px; color: var(--ink-2); margin-bottom: 10px; }
+.tw { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+table.crm { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 760px; }
+table.crm th { text-align: left; font-family: var(--f-mono); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding: 10px 12px; background: var(--surface-2); border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.crm th.sort { cursor: pointer; }
+table.crm th.sort:hover, table.crm th[aria-sort] { color: var(--ink); }
+table.crm th.r, table.crm td.r { text-align: right; }
+table.crm td { padding: 9px 12px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; white-space: nowrap; }
+table.crm tbody tr.click { cursor: pointer; }
+table.crm tbody tr.click:hover td { background: var(--surface-2); }
+table.crm tbody tr.on td { background: color-mix(in srgb, var(--focus) 10%, transparent); }
+table.crm tbody tr:last-child td { border-bottom: 0; }
+td .sw { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 8px; background: var(--c); }
+td.bad { color: var(--bad); font-weight: 600; }
+td.good { color: var(--good); font-weight: 600; }
+.pill { font-size: 11.5px; padding: 2px 8px; border-radius: 999px; font-weight: 600; white-space: nowrap; }
+.pill.y { background: var(--good-bg); color: var(--good); }
+.pill.n { background: var(--bad-bg); color: var(--bad); }
+.pill.m { background: var(--surface-2); color: var(--ink-2); font-weight: 500; }
+.uid { font-family: var(--f-mono); font-size: 12.5px; color: var(--focus); }
+.pager { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; font-size: 13px; color: var(--ink-2); flex-wrap: wrap; }
+.pager div { display: flex; gap: 6px; }
+
+/* heat */
+.scroll { overflow-x: auto; }
+table.heat { border-collapse: separate; border-spacing: 3px; font-size: 12.5px; min-width: 560px; width: 100%; }
+table.heat th { font-weight: 500; color: var(--muted); font-size: 11.5px; text-align: center; padding: 4px; white-space: nowrap; }
+table.heat th.row { text-align: left; color: var(--ink); font-weight: 600; font-size: 12.5px; }
+table.heat td { text-align: center; padding: 8px 4px; border-radius: 6px; font-variant-numeric: tabular-nums; color: var(--ink); }
+table.heat td.click { cursor: pointer; }
+table.heat td.click:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
+table.heat td.empty { color: var(--muted); }
+table.heat td.size { color: var(--ink-2); text-align: right; padding-right: 10px; }
+.toggle { display: inline-flex; background: var(--surface-2); padding: 3px; border-radius: 999px; gap: 3px; flex-wrap: wrap; }
+.toggle button { border: 0; background: transparent; padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: 13px; color: var(--ink-2); }
+.toggle button[aria-pressed="true"] { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: 0 1px 2px rgb(0 0 0 / .12); }
+.chead { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+
+/* funnel */
+.fsteps { display: grid; gap: 10px; }
+.fstep { display: grid; grid-template-columns: 210px minmax(0, 1fr) 120px; gap: 12px; align-items: center; font-size: 13.5px; }
+.fstep .tr { height: 26px; background: var(--surface-2); border-radius: 6px; overflow: hidden; }
+.fstep .tr i { display: block; height: 100%; border-radius: 6px; background: var(--s0); transition: width .4s; }
+.fstep.hl .tr i { background: var(--s5); }
+.fstep .v { text-align: right; font-variant-numeric: tabular-nums; }
+.fstep .v b { display: block; font-size: 15px; }
+.fstep .v span { font-size: 11.5px; color: var(--muted); }
+
+/* simulator */
+.sim { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 20px; }
+.ctrls { display: grid; gap: 16px; align-content: start; }
+.ctrls label { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: var(--ink-2); margin-bottom: 6px; }
+.ctrls label b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.ctrls select { width: 100%; max-width: none; }
+input[type="range"] { width: 100%; accent-color: var(--s0); }
+.cmp { width: 100%; border-collapse: collapse; font-size: 14px; }
+.cmp th, .cmp td { padding: 10px 8px; border-bottom: 1px solid var(--line); text-align: right; font-variant-numeric: tabular-nums; }
+.cmp th:first-child, .cmp td:first-child { text-align: left; color: var(--ink-2); }
+.cmp thead th { font-family: var(--f-mono); font-size: 11px; font-weight: 500; text-transform: uppercase; color: var(--muted); }
+.cmp td b { font-size: 15.5px; }
+.cmp .dl { display: block; font-size: 12px; font-weight: 600; }
+
+/* experiments */
+.big { font-family: var(--f-display); font-size: clamp(26px, 3vw, 36px); font-weight: 700; font-variant-numeric: tabular-nums; }
+.res2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.res2 div { background: var(--surface-2); border-radius: 12px; padding: 14px; }
+.res2 span { font-size: 12.5px; color: var(--ink-2); }
+.res2 .big { font-size: clamp(26px, 3vw, 36px); color: var(--ink); }
+.rules { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 6px; font-size: 13.5px; color: var(--ink-2); }
+
+/* method */
+.mcards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.mcards .card p { font-size: 13.5px; color: var(--ink-2); margin-top: 6px; }
+.links { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* drawer */
+.scrim { position: fixed; inset: 0; background: rgb(10 14 20 / .35); z-index: 30; opacity: 0; pointer-events: none; transition: opacity .2s; }
+.scrim.on { opacity: 1; pointer-events: auto; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(500px, 100%); background: var(--surface); z-index: 31; box-shadow: var(--shadow); transform: translateX(105%); transition: transform .25s cubic-bezier(.2,.8,.2,1); overflow-y: auto; padding: calc(18px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) 20px; display: grid; gap: 16px; align-content: start; }
+.drawer.on { transform: none; }
+.drawer pre.code { white-space: pre; max-height: none; }
+.dh { display: flex; align-items: center; gap: 12px; }
+.dh .av { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 13px; background: var(--c); }
+.dh h3 { font-family: var(--f-mono); font-size: 18px; }
+.dh span { font-size: 13px; color: var(--muted); }
+.dh .x { margin-left: auto; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; width: 34px; height: 34px; cursor: pointer; font-size: 18px; }
+.dstats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.dstats div { background: var(--surface-2); border-radius: 10px; padding: 9px 10px; }
+.dstats b { display: block; font-family: var(--f-display); font-size: 16px; }
+.dstats span { font-size: 11.5px; color: var(--ink-2); }
+.lab { font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.tl { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 0; }
+.tl li { display: grid; grid-template-columns: 64px 14px minmax(0, 1fr); gap: 10px; font-size: 13.5px; padding-bottom: 12px; position: relative; }
+.tl li .d { font-family: var(--f-mono); font-size: 12px; color: var(--muted); text-align: right; padding-top: 1px; }
+.tl li i { width: 10px; height: 10px; border-radius: 50%; background: var(--c, var(--s0)); margin-top: 5px; position: relative; z-index: 1; }
+.tl li:not(:last-child)::after { content: ""; position: absolute; left: 78px; top: 14px; bottom: -2px; width: 2px; background: var(--line); }
+.rec { background: color-mix(in srgb, var(--focus) 10%, transparent); border-radius: 10px; padding: 12px; font-size: 13.5px; }
+
+/* step-by-step case */
+.nav-btn .no { width: 22px; height: 22px; flex: none; border-radius: 7px; display: grid; place-items: center; font-family: var(--f-mono); font-size: 11.5px; font-weight: 600; background: var(--side-act); color: var(--side-ink); }
+.nav-btn[aria-current="page"] .no { background: var(--s0); color: #fff; }
+.stepno { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--s0); font-weight: 600; }
+.stepnav { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin-top: 8px; }
+.stepnav button { text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: 14px; padding: 14px 16px; cursor: pointer; display: grid; gap: 2px; min-width: 0; }
+.stepnav button:hover { border-color: var(--ink-2); }
+.stepnav button.next { text-align: right; background: var(--ink); color: var(--bg); border-color: var(--ink); grid-column: 2; }
+.stepnav button span { font-size: 12px; opacity: .7; }
+.stepnav button b { font-size: 15px; }
+.hero-h { font-size: clamp(28px, 4vw, 44px) !important; }
+.hero-h span { color: var(--muted); font-weight: 500; }
+.notepill { display: inline-flex; width: fit-content; max-width: 100%; font-size: 13px; color: var(--warn); background: var(--warn-bg); padding: 5px 12px; border-radius: 999px; }
+.kpis4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.kpis4 .v { font-size: clamp(20px, 2.2vw, 28px); }
+.sumgrid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 12px; align-items: start; }
+.sumgrid .finding b { font-size: clamp(28px, 3.4vw, 40px); }
+.sumlist { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.sumlist li { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 6px; align-content: start; font-size: 14.5px; color: var(--ink-2); }
+.sumlist b { font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; font-weight: 500; color: var(--muted); }
+.bucket { display: grid; gap: 12px; align-content: start; }
+.bucket h3 { font-family: var(--f-display); font-size: 17px; }
+.fac { display: grid; gap: 5px; padding-top: 12px; border-top: 1px solid var(--line); }
+.bucket h3 + .fac { border-top: 0; padding-top: 0; }
+.fac .pill { width: fit-content; }
+.fac b { font-weight: 600; font-size: 14.5px; }
+.fac > span:last-child { font-size: 13px; color: var(--ink-2); }
+.fixcard { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 14px; align-items: center; }
+.fixcard .n { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-family: var(--f-display); font-weight: 700; background: var(--good-bg); color: var(--good); }
+.fixcard b { display: block; font-size: 15.5px; }
+.fixcard span { font-size: 13.5px; color: var(--ink-2); }
+.hcard { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 20px; }
+.hcard h3 { font-family: var(--f-display); font-size: 18px; margin: 4px 0 12px; }
+.chain { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+.chain li { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 10px; font-size: 13.5px; color: var(--ink-2); }
+.chain li b { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; font-weight: 500; color: var(--muted); padding-top: 2px; }
+.stmt { background: var(--surface-2); border-radius: 10px; padding: 14px 16px; font-size: 15.5px; line-height: 1.6; }
+.stmt em { font-style: normal; font-family: var(--f-mono); font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--s0); margin-right: 4px; }
+.hmore { display: grid; gap: 8px; margin-top: 12px; font-size: 13.5px; color: var(--ink-2); }
+.hmore b { color: var(--ink); }
+table.crm td.wrap { white-space: normal; min-width: 220px; color: var(--ink-2); }
+.pill.t1 { background: color-mix(in srgb, var(--s0) 14%, transparent); color: var(--s0); }
+.tree { font-family: var(--f-mono); font-size: 13px; line-height: 1.7; margin-top: 8px; }
+.weeks { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.weeks li { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 6px; align-content: start; font-size: 13.5px; color: var(--ink-2); }
+.weeks b { color: var(--ink); font-size: 15px; }
+pre.code { margin: 0; background: var(--surface-2); border-radius: 10px; padding: 14px; overflow-x: auto; font-family: var(--f-mono); font-size: 12px; line-height: 1.6; }
+.msteps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; counter-reset: m; }
+.msteps li { counter-increment: m; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px 14px 52px; position: relative; display: grid; gap: 4px; font-size: 13.5px; color: var(--ink-2); }
+.msteps li::before { content: counter(m); position: absolute; left: 16px; top: 14px; width: 24px; height: 24px; border-radius: 50%; background: var(--ink); color: var(--bg); display: grid; place-items: center; font-size: 12px; font-weight: 600; }
+.msteps b { color: var(--ink); font-size: 14.5px; }
+.sumh { font-family: var(--f-display); font-size: 17px !important; margin-bottom: 12px; }
+.slist { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.slist li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; font-size: 14.5px; color: var(--ink-2); }
+.slist li b { display: block; color: var(--ink); font-weight: 600; }
+.slist .n { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; font-family: var(--f-mono); font-size: 12px; font-weight: 600; background: var(--surface-2); color: var(--ink); }
+.slist .n.fix { background: var(--good-bg); color: var(--good); }
+a.stepref { color: var(--focus); font-weight: 600; cursor: pointer; white-space: nowrap; }
+a.stepref:hover { text-decoration: underline; }
+.res { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; font-size: 13.5px; }
+.res a { color: var(--focus); font-weight: 600; text-decoration: none; }
+.res a:hover { text-decoration: underline; }
+@media (max-width: 900px) {
+  .kpis4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sumgrid, .hcard, .msteps, .weeks, .sumlist { grid-template-columns: minmax(0, 1fr); }
+  .stepnav { grid-template-columns: minmax(0, 1fr); }
+  .stepnav button.next { grid-column: 1; grid-row: 1; }
+  .chain li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+}
+
+.tip { position: fixed; pointer-events: none; z-index: 40; background: var(--ink); color: var(--bg); font-size: 12.5px; line-height: 1.45; padding: 7px 10px; border-radius: 8px; max-width: 260px; opacity: 0; transition: opacity .12s; }
+.tip.on { opacity: 1; }
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 9px 14px; border-radius: 10px; font-size: 13px; z-index: 41; opacity: 0; transition: opacity .2s; pointer-events: none; }
+.toast.on { opacity: 1; }
+
+@media (max-width: 1200px) { .kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 900px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .side { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; height: auto; flex-direction: row; overflow-x: auto; padding: 8px max(10px, env(safe-area-inset-right, 0px)) 8px max(10px, env(safe-area-inset-left, 0px)); gap: 4px; scrollbar-width: none; }
+  .brand, .navgroup, .side .foot { display: none; }
+  .nav-btn { width: auto; flex: none; white-space: nowrap; padding: 7px 10px; }
+  .nav-btn .cnt { display: none; }
+  .top { position: static; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .view { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .g2, .g3, .g75, .findings, .sim, .mcards { grid-template-columns: minmax(0, 1fr); }
+  .fstep { grid-template-columns: minmax(0, 1fr) 96px; }
+  .fstep .t { grid-column: 1 / -1; }
+}
+@media (max-width: 520px) {
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .search input { width: 150px; }
+  select.ctl { max-width: 160px; }
+  .dstats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .card { padding: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+/* ProjectPro additions */
+#mKpis .kpi .v { font-size: clamp(15px, 1.35vw, 19px); white-space: nowrap; }
+:root { --st: #eb6834; --mb: #2a78d6; --co: #1baf7a; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --st: #d95926; --mb: #3987e5; --co: #199e70; } }
+:root[data-theme="dark"] { --st: #d95926; --mb: #3987e5; --co: #199e70; }
+.brand .logo { background: linear-gradient(135deg, var(--mb), var(--co)); }
+.nav-btn[aria-current="page"] { box-shadow: inset 3px 0 0 var(--mb); }
+.nav-btn[aria-current="page"] .no { background: var(--mb); }
+.stepno { color: var(--mb); }
+.segpill { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; }
+.segpill i { width: 9px; height: 9px; border-radius: 50%; background: var(--c); display: inline-block; }
+table.src { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 560px; }
+table.src th, table.src td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: right; font-variant-numeric: tabular-nums; }
+table.src th:first-child, table.src td:first-child { text-align: left; }
+table.src thead th { font-family: var(--f-mono); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); background: var(--surface-2); }
+table.src tfoot td { font-weight: 700; border-bottom: 0; }
+table.src td.hl { background: color-mix(in srgb, var(--mb) 10%, transparent); font-weight: 700; }
+.gaps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.gaps li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; font-size: 13.5px; color: var(--ink-2); }
+.gaps li i { width: 26px; height: 26px; border-radius: 8px; background: var(--warn-bg); color: var(--warn); display: grid; place-items: center; font-style: normal; font-weight: 700; font-size: 13px; }
+.gaps b { color: var(--ink); display: block; }
+.ctrlrow { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+.ctrlrow .rng { min-width: 240px; flex: 1; max-width: 420px; }
+.ctrlrow .rng label { display: flex; justify-content: space-between; font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+.ctrlrow .rng label b { color: var(--ink); }
+.formula { font-family: var(--f-mono); font-size: 13px; background: var(--surface-2); border-radius: 10px; padding: 10px 12px; color: var(--ink); overflow-x: auto; white-space: nowrap; }
+.rangebar { position: relative; height: 34px; margin: 18px 0 6px; }
+.rangebar .tr { position: absolute; left: 0; right: 0; top: 14px; height: 6px; border-radius: 3px; background: var(--surface-2); }
+.rangebar .band { position: absolute; top: 12px; height: 10px; border-radius: 5px; background: color-mix(in srgb, var(--mb) 35%, transparent); }
+.rangebar .mk { position: absolute; top: 4px; width: 3px; height: 26px; border-radius: 2px; background: var(--ink); transform: translateX(-1px); }
+.rangebar .mk span { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 11.5px; white-space: nowrap; color: var(--ink-2); font-weight: 600; }
+.ltv { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.ltv .card { display: grid; gap: 8px; align-content: start; }
+.ltv .row { display: flex; justify-content: space-between; font-size: 13.5px; color: var(--ink-2); gap: 8px; }
+.ltv .row b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.ratio { font-family: var(--f-display); font-size: 26px; font-weight: 700; }
+.verdict { font-size: 12.5px; font-weight: 600; padding: 3px 10px; border-radius: 999px; width: fit-content; }
+.verdict.ok { background: var(--good-bg); color: var(--good); }
+.verdict.mid { background: var(--warn-bg); color: var(--warn); }
+.verdict.bad { background: var(--bad-bg); color: var(--bad); }
+.scorebox { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.scard { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 10px; background: var(--surface); align-content: start; }
+.scard.win { border: 2px solid var(--ink); }
+.scard h3 { display: flex; align-items: center; gap: 8px; font-size: 16px; }
+.scard h3 i { width: 12px; height: 12px; border-radius: 50%; background: var(--c); }
+.axis2 { display: grid; grid-template-columns: 110px minmax(0, 1fr) 70px; gap: 8px; align-items: center; font-size: 13px; color: var(--ink-2); }
+.axis2 .tr { height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+.axis2 .tr i { display: block; height: 100%; border-radius: 4px; background: var(--c); }
+.axis2 b { text-align: right; color: var(--ink); font-variant-numeric: tabular-nums; }
+.tree2 { display: grid; gap: 10px; }
+.tnode { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: var(--surface); display: grid; gap: 4px; font-size: 13.5px; color: var(--ink-2); }
+.tnode b { color: var(--ink); font-size: 14.5px; }
+.tnode.root { background: var(--ink); color: color-mix(in srgb, var(--bg) 80%, var(--ink)); border-color: var(--ink); }
+.tnode.root b { color: var(--bg); }
+.tbranch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.tcol { display: grid; gap: 8px; align-content: start; padding-left: 14px; border-left: 2px solid var(--line); }
+.tag2 { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.strat { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.strat .card { display: grid; gap: 10px; align-content: start; border-top: 4px solid var(--c); }
+.strat .card.main { box-shadow: 0 0 0 2px var(--ink); }
+.strat h3 { font-family: var(--f-display); font-size: 17px !important; }
+.strat .focus { font-size: 14.5px; color: var(--ink); background: var(--surface-2); border-radius: 10px; padding: 10px 12px; }
+.strat ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 13.5px; color: var(--ink-2); }
+.strat .no { font-size: 13px; color: var(--ink-2); border-top: 1px dashed var(--line); padding-top: 10px; }
+.strat .no b, .strat .mt b { color: var(--ink); }
+.strat .mt { font-size: 13px; color: var(--ink-2); }
+.mtree { display: grid; gap: 10px; }
+.mtree .lvl { display: grid; gap: 10px; }
+.mtree .lvl.l2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.mtree .lvl.l3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.mbox { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: var(--surface); display: grid; gap: 3px; font-size: 13px; color: var(--ink-2); cursor: pointer; text-align: left; }
+.mbox:hover, .mbox[aria-pressed="true"] { border-color: var(--ink); }
+.mbox b { color: var(--ink); font-size: 14px; }
+.mbox .tag2 { color: var(--c, var(--muted)); }
+.mbox.lag { background: var(--surface-2); }
+.mdetail { background: var(--surface-2); border-radius: 12px; padding: 14px 16px; display: grid; gap: 6px; font-size: 13.5px; color: var(--ink-2); }
+.mdetail b { color: var(--ink); }
+.simres { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.simres div { background: var(--surface-2); border-radius: 12px; padding: 12px 14px; display: grid; gap: 2px; }
+.simres b { font-family: var(--f-display); font-size: clamp(20px, 2.2vw, 26px); font-variant-numeric: tabular-nums; }
+.simres span { font-size: 12.5px; color: var(--ink-2); }
+.hbar { display: grid; gap: 12px; }
+.hrow { display: grid; grid-template-columns: 150px minmax(0, 1fr) 96px; gap: 10px; align-items: center; font-size: 13.5px; }
+.hrow .tr { position: relative; height: 26px; background: var(--surface-2); border-radius: 6px; overflow: hidden; }
+.hrow .tr i { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 6px; transition: width .35s; }
+.hrow .tr i.ghost { background: var(--base-bar); }
+.hrow .v { text-align: right; font-variant-numeric: tabular-nums; }
+.hrow .v b { display: block; }
+.hrow .v span { font-size: 11.5px; color: var(--muted); }
+.lessons { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.lessons li { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; font-size: 13.5px; color: var(--ink-2); display: grid; gap: 4px; }
+.lessons b { color: var(--ink); font-size: 14.5px; }
+.play { display: grid; gap: 8px; }
+.play li { font-size: 13.5px; }
+@media (max-width: 1100px) { .ltv, .scorebox, .strat { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 900px) {
+  .tbranch, .mtree .lvl.l2, .mtree .lvl.l3, .lessons, .simres { grid-template-columns: minmax(0, 1fr); }
+  .hrow { grid-template-columns: minmax(0, 1fr) 90px; }
+  .hrow .t { grid-column: 1 / -1; }
+}
+</style>
+</head>
+<body>
+
+
+<div class="app">
+  <aside class="side" aria-label="Разделы">
+    <div class="brand"><span class="logo">PP</span><div><b>ProjectPro · Retention</b><span>Учебный кейс · B2B SaaS</span></div></div>
+    <div class="navgroup">Кейс по шагам</div>
+    <button class="nav-btn" data-view="task"><span class="no">1</span>Задача и данные</button>
+    <button class="nav-btn" data-view="overview"><span class="no">2</span>Обзор базы</button>
+    <button class="nav-btn" data-view="churn"><span class="no">3</span>Churn и Retention</button>
+    <button class="nav-btn" data-view="money"><span class="no">4</span>Деньги</button>
+    <button class="nav-btn" data-view="priority"><span class="no">5</span>Главный сегмент</button>
+    <button class="nav-btn" data-view="causes"><span class="no">6</span>Причины оттока</button>
+    <button class="nav-btn" data-view="strategy"><span class="no">7</span>Стратегия</button>
+    <button class="nav-btn" data-view="metrics"><span class="no">8</span>Метрики</button>
+    <button class="nav-btn" data-view="sim"><span class="no">9</span>Симулятор</button>
+    <button class="nav-btn" data-view="summary"><span class="no">10</span>Итог</button>
+    <div class="navgroup">Приложения</div>
+    <button class="nav-btn" data-view="accounts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg>Клиенты · CRM<span class="cnt" id="cntA"></span></button>
+    <button class="nav-btn" data-view="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg>Методика и формулы</button>
+    <div class="foot">
+      <a href="./">← Портфолио</a>
+      <p class="demo">Итоговые цифры — из условия кейса. Карточки клиентов, месяцы, причины и health score — демо-данные, сгенерированные так, чтобы суммы совпадали с условием.</p>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="top">
+      <div class="top-row">
+        <h1 id="vTitle">Задача и данные</h1>
+        <label class="search" for="q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input class="ctl" id="q" placeholder="Клиент или ID" autocomplete="off" aria-label="Клиент или ID"></label>
+        <a class="btn lang" href="en/projectpro-retention.html">EN</a>
+      </div>
+      <div class="top-row" id="fRow">
+        <select class="ctl" id="fSeg" aria-label="Сегмент"></select>
+        <select class="ctl" id="fCoh" aria-label="Когорта"></select>
+        <select class="ctl" id="fUse" aria-label="Функции"></select>
+        <select class="ctl" id="fInd" aria-label="Отрасль"></select>
+        <div class="active-filters" id="af"></div>
+      </div>
+    </div>
+
+    <!-- 1 TASK -->
+    <section class="view" data-view="task">
+      <div class="vhead"><span class="eyebrow">Учебный кейс · курс по продукт-менеджменту · B2B SaaS</span><h2 class="hero-h">ProjectPro: клиентов прибавилось на 20, а потеряно $3,24 млн выручки</h2><p>ProjectPro — B2B-платформа для управления проектами, 3 года на рынке. Новых подписчиков всё больше, но и отток растёт. Нужно посчитать churn и retention по сегментам, оценить потери в деньгах, выбрать самый проблемный сегмент, предложить стратегию удержания и метрики, по которым будет видно, что она работает.</p><span class="notepill">Данные — из условия курса. Разбор: Томирис (Гулсара) Жайлаубеккызы</span></div>
+      <div class="kpis4">
+        <div class="kpi"><span class="eyebrow">Клиенты за год</span><span class="v">1 400 → 1 420</span><span class="d">+645 новых, −625 ушли</span></div>
+        <div class="kpi"><span class="eyebrow">Годовой churn</span><span class="v down">44,6%</span><span class="d">625 из 1 400 на начало года</span></div>
+        <div class="kpi"><span class="eyebrow">Потерянный ARR</span><span class="v down">$3,24 млн</span><span class="d">30% выручки на начало года</span></div>
+        <div class="kpi"><span class="eyebrow">ARR за год</span><span class="v up">+11,8%</span><span class="d">$10,75 млн → $12,02 млн</span></div>
+      </div>
+      <div class="card">
+        <div class="chead"><div><h3>Исходные данные из условия</h3><p class="sub">Всё, что дано в кейсе. Остальные цифры на сайте выведены из этой таблицы.</p></div></div>
+        <div class="tw"><table class="src" id="srcTbl"></table></div>
+        <p class="note">Среди не продливших: 40% пользовались всеми ключевыми функциями, 60% — только базовыми. Разбивки этих долей по сегментам в условии нет.</p>
+      </div>
+      <div class="g2">
+        <div class="card"><h3>Что нужно сделать</h3><p class="sub">Шесть вопросов из условия — по одному шагу кейса на каждый</p>
+          <ol class="rules"><li>Рассчитать годовой churn rate в целом и по сегментам → шаг 3</li><li>Рассчитать годовой retention rate по сегментам → шаг 3</li><li>Оценить потерянный годовой доход по сегментам → шаг 4</li><li>Определить самый проблемный сегмент → шаг 5</li><li>Предложить стратегию удержания с учётом сегментов (только главные фокусы) → шаги 6–7</li><li>Выбрать метрики для отслеживания стратегии и объяснить выбор → шаги 8–9</li></ol></div>
+        <div class="card"><h3>Чего в данных нет — и почему это важно</h3><p class="sub">Прежде чем считать, сениор проверяет, правильно ли собраны данные</p>
+          <ul class="gaps">
+            <li><i>?</i><span><b>Когда пришли ушедшие</b>Среди 625 ушедших могут быть клиенты, пришедшие в этом же году. Тогда churn базы на начало года завышен. Нужна когортная разбивка.</span></li>
+            <li><i>?</i><span><b>Переходы между сегментами</b>Стартап, выросший до 30 человек, мог попасть в отток стартапов, хотя он остался клиентом. Часть оттока может быть успехом.</span></li>
+            <li><i>?</i><span><b>Доли 60/40 по сегментам</b>Без разбивки нельзя сказать, у какого сегмента проблема с освоением продукта, а у какого — с ценой или конкурентами.</span></li>
+            <li><i>?</i><span><b>CAC и причины ухода</b>Стоимость привлечения и exit-опрос нужны, чтобы оценить окупаемость сегментов и проверить гипотезы о причинах.</span></li>
+          </ul></div>
+      </div>
+    </section>
+
+    <!-- 2 OVERVIEW -->
+    <section class="view" data-view="overview" hidden>
+      <div class="vhead"><h2>База клиентов почти не изменилась, а выручка выросла</h2><p>Первый вопрос сениора: что происходит с базой и с деньгами? Количество клиентов стоит на месте, но сегменты платят по-разному (стартап в 15 раз дешевле корпорации), поэтому деньги ведут себя иначе.</p></div>
+      <div class="findings">
+        <div class="finding"><b>Пришло 645, ушло 625</b><span>Привлечение почти целиком уходит на компенсацию оттока: чистый прирост за год +20 клиентов (+1,4%).</span></div>
+        <div class="finding"><b>Стартапы сжимаются: −43</b><span>Единственный сегмент, где ушло больше, чем пришло (425 против 468). Средний бизнес +34, корпорации +29.</span></div>
+        <div class="finding"><b>ARR вырос на 11,8%</b><span>Отток сосредоточен в дешёвом сегменте, а рост — в дорогих. Поэтому в клиентах теряем 44,6%, а в деньгах — 30,1%.</span></div>
+      </div>
+      <div class="kpis" id="kpis"></div>
+      <div class="g2">
+        <div class="card"><h3>Движение клиентов по сегментам</h3><p class="sub">Начало года → новые → ушли → конец года</p><span class="hint">Наведите — подробности, нажмите — клиенты</span>
+          <svg class="chart" id="ovBridge" viewBox="0 0 560 280" role="img" aria-label="Движение клиентов по сегментам"></svg>
+          <div class="legend" id="ovBridgeLeg"></div></div>
+        <div class="card"><h3>Чистое изменение базы</h3><p class="sub">Новые минус ушедшие, клиентов</p>
+          <svg class="chart" id="ovNet" viewBox="0 0 560 280" role="img" aria-label="Чистое изменение базы"></svg>
+          <p class="note">Стартапы — единственный сегмент, который теряет клиентов быстрее, чем набирает. Это сигнал, но ещё не вывод о главной проблеме: см. шаг 5.</p></div>
+      </div>
+      <div class="card"><h3>Когда уходят клиенты</h3><p class="sub">Отказы от продления по месяцам, клиентов</p>
+        <svg class="chart" id="ovMonths" viewBox="0 0 900 260" role="img" aria-label="Когда уходят клиенты"></svg>
+        <div class="legend" id="ovMonthsLeg"></div>
+        <p class="note">В условии нет помесячных данных — распределение демонстрационное. В реальной работе этот график показывает, совпадают ли пики оттока с датами продления, повышением цен или релизами.</p></div>
+    </section>
+
+    <!-- 3 CHURN -->
+    <section class="view" data-view="churn" hidden>
+      <div class="vhead"><h2>Churn и retention: главное — выбрать знаменатель</h2><p>Формула простая — ушедшие, делённые на базу. Но какую базу брать? От этого один и тот же бизнес выглядит то катастрофой, то «терпимо». Переключите способ расчёта и посмотрите, как меняются цифры.</p></div>
+      <div class="card">
+        <div class="chead"><div><h3>Способ расчёта</h3><p class="sub">Стандарт — база на начало периода</p></div>
+          <div class="toggle" role="group" aria-label="Способ расчёта" id="denTg"></div></div>
+        <div class="formula" id="denFormula"></div>
+        <div class="g75" style="margin-top:14px">
+          <div><svg class="chart" id="chBars" viewBox="0 0 560 280" role="img" aria-label="Churn по сегментам"></svg><div class="legend" id="chBarsLeg"></div></div>
+          <div class="tw" style="align-self:start"><table class="crm" id="chTbl" style="min-width:380px"></table></div>
+        </div>
+        <p class="note" id="denNote"></p>
+      </div>
+      <div class="card">
+        <div class="chead"><div><h3>Честный ответ — диапазон, а не одна цифра</h3><p class="sub">Если часть ушедших пришла в этом же году, churn базы на начало года ниже. Сколько их — в условии нет.</p></div></div>
+        <div class="ctrlrow"><div class="rng"><label for="newShare">Доля новичков среди ушедших <b id="newShareV"></b></label><input type="range" id="newShare" min="0" max="60" step="5" value="20"></div></div>
+        <div id="ranges"></div>
+        <p class="note">Как это сказать на встрече: «Churn от X% до Y%, точнее скажу после когортного анализа». Это честнее одной цифры и сразу называет, какие данные нужны.</p>
+      </div>
+      <div class="g2">
+        <div class="card"><h3>Retention по сегментам</h3><p class="sub">Retention = 1 − churn: доля клиентов на начало года, которые продлили подписку</p><div class="hbar" id="retBars"></div></div>
+        <div class="card"><h3>Что видно на этом шаге</h3>
+          <ul class="rules"><li>У стартапов ушло больше половины базы (55,1%), а не «почти половина» — на встрече такая неточность бьёт по доверию.</li><li>Чем крупнее клиент, тем лучше удержание: 44,9% → 68,1% → 82,3%. Это типично для B2B: крупной компании дорого менять инструмент.</li><li>Самый плохой процент — ещё не самая большая проблема. Сначала посмотрим на деньги.</li></ul></div>
+      </div>
+    </section>
+
+    <!-- 4 MONEY -->
+    <section class="view" data-view="money" hidden>
+      <div class="vhead"><h2>Деньги: больше всего теряем не на стартапах</h2><p>Потерянный годовой доход = ушедшие клиенты × годовая подписка. Прежде чем смотреть на график, сделайте прогноз: где компания потеряла больше всего долларов — у многочисленных дешёвых стартапов, у редких дорогих корпораций или у среднего бизнеса?</p></div>
+      <div class="kpis" id="mKpis"></div>
+      <div class="g2">
+        <div class="card"><h3>Как изменился ARR за год</h3><p class="sub">Без апгрейдов и скидок: в условии их нет</p>
+          <svg class="chart" id="mWf" viewBox="0 0 560 280" role="img" aria-label="Как изменился ARR за год"></svg></div>
+        <div class="card"><h3>Потерянный ARR по сегментам</h3><p class="sub">Ушедшие × годовая подписка</p><span class="hint">Наведите — подробности, нажмите — клиенты</span>
+          <svg class="chart" id="mLost" viewBox="0 0 560 280" role="img" aria-label="Потерянный ARR по сегментам"></svg>
+          <p class="note">Средний бизнес теряет больше всех — $1,29 млн, хотя по проценту оттока выглядит «нормально». Самый громкий процент ≠ самая большая проблема.</p></div>
+      </div>
+      <div class="card"><h3>Доля клиентов против доли денег</h3><p class="sub">Как каждый сегмент распределён по клиентам, оттоку и выручке</p>
+        <svg class="chart" id="mShare" viewBox="0 0 900 250" role="img" aria-label="Доля клиентов против доли денег"></svg>
+        <div class="legend" id="mShareLeg"></div>
+        <p class="note">Стартапы — 61% клиентов и 75% ушедших, но только 19% выручки. Корпорации — 9% клиентов и 44% выручки. Поэтому для B2B нужно смотреть churn и в клиентах, и в деньгах.</p></div>
+      <div class="card">
+        <div class="chead"><div><h3>Окупаемость сегментов: LTV к CAC</h3><p class="sub">CAC в условии нет — двигайте ползунки и смотрите, при какой стоимости привлечения сегмент перестаёт окупаться</p></div></div>
+        <div class="formula">LTV = подписка в год × срок жизни клиента;  срок жизни ≈ 1 / churn</div>
+        <div class="ltv" id="ltv" style="margin-top:14px"></div>
+        <p class="note">Это вопрос к маркетингу: сколько стоит привлечь одного клиента в каждом сегменте. Если стартап обходится в $3 000, платит $2 400 и живёт меньше двух лет, сегмент едва окупается — значит, его надо обслуживать дешевле, а не удерживать любой ценой.</p>
+      </div>
+    </section>
+
+    <!-- 5 PRIORITY -->
+    <section class="view" data-view="priority" hidden>
+      <div class="vhead"><h2>Какой сегмент самый проблемный</h2><p>Ответ зависит от того, через какую линзу смотреть. Сениор оценивает проблему по двум осям: сколько денег на кону и можем ли мы повлиять на неё продуктом.</p></div>
+      <div class="card">
+        <div class="chead"><div><h3>Переключите линзу</h3><p class="sub">Один и тот же вопрос — разные «победители»</p></div>
+          <div class="toggle" role="group" aria-label="Переключите линзу" id="lensTg"></div></div>
+        <div class="hbar" id="lensBars"></div>
+        <p class="note" id="lensNote"></p>
+      </div>
+      <div class="card"><h3>Матрица: влияние × управляемость</h3><p class="sub">По вертикали — потерянный ARR, по горизонтали — насколько продукт может повлиять на причины. Размер круга — число ушедших.</p>
+        <svg class="chart" id="pMatrix" viewBox="0 0 900 380" role="img" aria-label="Матрица: влияние × управляемость"></svg></div>
+      <div class="scorebox" id="scoreBox"></div>
+      <div class="finding"><b>Вывод: главный фокус — средний бизнес</b><span>Он теряет больше всего денег ($1,29 млн), и его отток, скорее всего, вызван продуктом — значит, его можно исправить. Стартапы — тревожный сигнал, но их отток во многом структурный. Корпорации держатся хорошо, но за ними нужно следить точечно. Рамка «деньги × управляемость» работает почти для любой задачи приоритизации.</span></div>
+    </section>
+
+    <!-- 6 CAUSES -->
+    <section class="view" data-view="causes" hidden>
+      <div class="vhead"><h2>Почему уходят: 60% не дошли до ценности</h2><p>Единственная подсказка о причинах в условии — глубина использования продукта. Её нужно прочитать правильно и не выдать гипотезу за факт.</p></div>
+      <div class="g75">
+        <div class="card"><h3>Ушедшие по глубине использования</h3><p class="sub">Данные условия (меняется с фильтрами по демо-разбивке)</p>
+          <svg class="chart" id="uDonut" viewBox="0 0 560 240" role="img" aria-label="Ушедшие по глубине использования"></svg></div>
+        <div class="card"><h3>Как это читать</h3><ul class="rules"><li>Продукт плохой или клиент до ценности не дошёл? 60% ушедших использовали только базовые функции — скорее второе: они платили за инструмент, который не освоили.</li><li>Но 40% пользовались всеми функциями и всё равно ушли. Онбординг решает только часть проблемы: у этих клиентов другие причины.</li><li>Обе ветки — гипотезы. Их проверяют каздевом с ушедшими и активными клиентами и exit-опросом при отказе от продления.</li></ul></div>
+      </div>
+      <div class="card"><h3>Дерево гипотез</h3><p class="sub">От наблюдения к проверке: что предполагаем и как узнаем, правы ли мы</p>
+        <div class="tree2">
+          <div class="tnode root"><b>625 клиентов не продлили подписку</b><span>Почему? Делим по глубине использования</span></div>
+          <div class="tbranch">
+            <div class="tcol">
+              <div class="tnode"><span class="tag2">60%</span><b>Только базовые функции</b><span>Платили, но использовали малую часть продукта</span></div>
+              <div class="tnode"><span class="tag2">гипотеза</span><b>Не дошли до ключевой ценности</b><span>Не поняли, зачем им отчёты, загрузка команды, интеграции; продукт не встроился в работу команды</span></div>
+              <div class="tnode"><span class="tag2">как проверить</span><span>Сравнить путь активных и ушедших в первые 30 дней; каздев: что было непонятно, какие задачи решали в другом инструменте</span></div>
+            </div>
+            <div class="tcol">
+              <div class="tnode"><span class="tag2">40%</span><b>Все ключевые функции</b><span>Освоили продукт и всё равно ушли</span></div>
+              <div class="tnode"><span class="tag2">гипотеза</span><b>Цена, конкурент, недостающая функция, смена процессов</b><span>Продукт понятен, но проигрывает по соотношению ценности и цены или не закрывает важный сценарий</span></div>
+              <div class="tnode"><span class="tag2">как проверить</span><span>Exit-опрос при отмене (один вопрос с вариантами) + 8–10 интервью; сравнить с ценами и функциями конкурентов</span></div>
+            </div>
+          </div>
+        </div></div>
+      <div class="g2">
+        <div class="card"><h3>Доля «только базовых» по сегментам</h3><p class="sub">Разбивка подобрана так, чтобы в сумме дать 60/40 из условия</p><span class="notepill">Демо-данные: в условии этой разбивки нет</span>
+          <svg class="chart" id="uSeg" viewBox="0 0 560 230" role="img" aria-label="Доля «только базовых» по сегментам"></svg><div class="legend" id="uSegLeg"></div></div>
+        <div class="card"><h3>Что показал бы exit-опрос</h3><p class="sub">Пример отчёта по причинам ухода. Нажмите на причину — откроются клиенты.</p><span class="notepill">Демо-данные: в условии этой разбивки нет</span><span class="hint" style="margin-left:6px">Наведите — подробности, нажмите — клиенты</span>
+          <div class="hbar" id="uReasons" style="margin-top:8px"></div><div class="legend"><span><i style="background:var(--st)"></i>Только базовые функции</span><span><i style="background:var(--mb)"></i>Все ключевые функции</span></div></div>
+      </div>
+      <div class="card"><h3>Чем ушедшие отличаются от продливших</h3><p class="sub">Средние значения по аккаунтам — так в CRM ищут ранние сигналы риска</p><span class="notepill">Демо-данные: в условии этой разбивки нет</span>
+        <div class="tw" style="margin-top:10px"><table class="crm" id="uHealth" style="min-width:560px"></table></div></div>
+    </section>
+
+    <!-- 7 STRATEGY -->
+    <section class="view" data-view="strategy" hidden>
+      <div class="vhead"><h2>Стратегия: три фокуса, а не 15 улучшений</h2><p>Стратегия отвечает на вопрос «что мы меняем», а каздев и exit-опрос — «как убедимся, что правы». Для каждого сегмента — один фокус, что делаем и на что сознательно не тратим ресурсы.</p></div>
+      <div class="strat">
+        <div class="card main" style="--c:var(--mb)"><span class="eyebrow">Главный фокус · $1,29 млн</span><h3>Средний бизнес</h3>
+          <div class="focus">Довести клиента до ключевой ценности в первые 30 дней (adoption)</div>
+          <ul><li>Онбординг под роль: руководитель видит загрузку команды и отчёты в первую неделю, а не только задачи</li><li>Подсказки и чек-лист «3 ключевые функции» внутри продукта; сигнал менеджеру, если аккаунт застрял на базовых</li><li>Exit-опрос при отмене, чтобы понять, что увело тех 40%, кто освоил всё</li></ul>
+          <div class="no"><b>Не делаем:</b> апселл на дорогие функции. Задача — чтобы клиент начал пользоваться тем, за что уже платит. Когда продукт встроен в работу, от него не уходят.</div><div class="mt"><b>Метрика:</b> доля аккаунтов, освоивших ключевые функции за 30 дней; time to value</div></div>
+        <div class="card" style="--c:var(--st)"><span class="eyebrow">Воронка роста</span><h3>Стартапы</h3>
+          <div class="focus">Дешёвое обслуживание и путь роста в тариф среднего бизнеса</div>
+          <ul><li>Самообслуживание: онбординг без менеджера, база знаний, шаблоны проектов</li><li>Ловить момент роста (команда > 15, новые места) и плавно переводить на тариф среднего бизнеса</li><li>Разметить в данных переходы между сегментами, чтобы рост не считался оттоком</li></ul>
+          <div class="no"><b>Не делаем:</b> отбор «перспективных» стартапов и дорогие ручные продажи. Предсказать, кто выживет, не могут даже фонды, а фильтр отрежет приток.</div><div class="mt"><b>Метрика:</b> доля стартапов, перешедших на тариф среднего бизнеса (upgrade rate); CAC payback</div></div>
+        <div class="card" style="--c:var(--co)"><span class="eyebrow">Точечная защита · $36 000 за клиента</span><h3>Корпорации</h3>
+          <div class="focus">Customer Success Manager и раннее предупреждение рисков</div>
+          <ul><li>Персональный CSM на каждый корпоративный аккаунт: регулярные встречи, план развития</li><li>Health score аккаунта и сигнал за 90 дней до продления, если он падает</li><li>Квартальный обзор ценности с руководителем клиента: что сэкономили, что дальше</li></ul>
+          <div class="no"><b>Не делаем:</b> массовые изменения продукта ради 23 аккаунтов. Работаем с каждым клиентом отдельно.</div><div class="mt"><b>Метрика:</b> health score, доля аккаунтов в зоне риска, NRR сегмента</div></div>
+      </div>
+      <div class="g2">
+        <div class="card"><h3>С чего начать: проверить гипотезы</h3><p class="sub">Сначала самое дешёвое знание — дни работы, а не месяцы разработки</p>
+          <ul class="slist"><li><span class="n">1</span><span><b>Когортный анализ</b>Ушедших — по месяцу прихода и сегменту. Отвечает: уходят старые клиенты или новички, не прошедшие онбординг.</span></li><li><span class="n">2</span><span><b>Каздев со средним бизнесом</b>8–10 ушедших и 8–10 активных: что было непонятно, какие задачи решали в другом инструменте, о каких функциях не знали.</span></li><li><span class="n">3</span><span><b>Exit-опрос</b>Одна форма при отмене: цена, конкурент, не хватило функции X, изменилась команда, не разобрались. Без этого можно полгода строить не то.</span></li></ul></div>
+        <div class="card"><h3>Почему именно так</h3><ul class="rules"><li>Ресурсы идут туда, где больше денег и где продукт может что-то изменить.</li><li>Стартапы становятся воронкой для самого ценного сегмента, а не дырой, которую затыкают.</li><li>Для дорогих клиентов человек окупается: один CSM на 15–20 аккаунтов по $36 000 — это защита $0,5–0,7 млн ARR.</li></ul></div>
+      </div>
+    </section>
+
+    <!-- 8 METRICS -->
+    <section class="view" data-view="metrics" hidden>
+      <div class="vhead"><h2>Метрики: churn покажет результат только через год</h2><p>Churn видно при следующем продлении — слишком поздно, чтобы понять, работает ли стратегия. Нужны опережающие метрики, которые меняются через 1–2 месяца, и запаздывающие — чтобы отчитаться о результате.</p></div>
+      <div class="card"><h3>Дерево метрик</h3><p class="sub">Сверху — итог для бизнеса, снизу — то, чем можно управлять каждую неделю</p><span class="hint">Нажмите на метрику — формула и зачем она</span>
+        <div class="mtree" id="mtree"></div>
+        <div class="mdetail" id="mdetail" style="margin-top:12px"></div></div>
+      <div class="card"><h3>Метрики стратегии</h3><p class="sub">Опережающие показывают, работает ли стратегия, запаздывающие — каков итог</p>
+        <div class="tw"><table class="crm" id="kTbl" style="min-width:860px"></table></div></div>
+      <div class="card"><h3>Правила, по которым выбраны метрики</h3><ul class="rules"><li>Метрика — это число, которое можно посчитать и сравнить с прошлым месяцем. «Отслеживать» и «спрашивать» — действия, а не метрики.</li><li>Для каждого фокуса стратегии — своя опережающая метрика. Если она не двигается за 1–2 месяца, меняем тактику, не дожидаясь годового churn.</li><li>Запаздывающие метрики считаем в клиентах и в деньгах: кейс показал, что они рассказывают разные истории.</li></ul></div>
+    </section>
+
+    <!-- 9 SIMULATOR -->
+    <section class="view" data-view="sim" hidden>
+      <div class="vhead"><h2>Симулятор: что даст стратегия</h2><p>Двигайте ползунки: на сколько процентных пунктов снизится churn в каждом сегменте и какая доля удержанных стартапов перейдёт на тариф среднего бизнеса. Расчёт — на цифрах условия.</p></div>
+      <div class="card"><div class="sim">
+        <div class="ctrls">
+          <div><label for="xSt">Churn стартапов <b id="xStV"></b></label><input type="range" id="xSt" min="0" max="20" step="1" value="5"></div>
+          <div><label for="xMb">Churn среднего бизнеса <b id="xMbV"></b></label><input type="range" id="xMb" min="0" max="20" step="1" value="10"></div>
+          <div><label for="xCo">Churn корпораций <b id="xCoV"></b></label><input type="range" id="xCo" min="0" max="15" step="1" value="5"></div>
+          <div><label for="xUp">Апгрейд стартапов в средний тариф <b id="xUpV"></b></label><input type="range" id="xUp" min="0" max="15" step="1" value="5"></div>
+          <div class="toggle" role="group" aria-label="Сценарии" id="xPre"></div>
+          <p class="note" style="margin-top:0">Снижение для среднего бизнеса больше, потому что там основная ставка стратегии и больше управляемость. Сценарии — допущения для разговора, а не прогноз.</p>
+        </div>
+        <div style="display:grid;gap:14px;align-content:start">
+          <div class="simres" id="xRes"></div>
+          <div class="hbar" id="xBars"></div>
+          <p class="note" id="xNote2"></p>
+        </div>
+      </div></div>
+    </section>
+
+    <!-- 10 SUMMARY -->
+    <section class="view" data-view="summary" hidden>
+      <div class="vhead"><h2>Итог: кейс за одну минуту</h2></div>
+      <div class="sumgrid">
+        <div class="finding"><span class="eyebrow" style="color:inherit;opacity:.7">Главный сегмент</span><b>Средний бизнес</b><span>$1,29 млн потерь в год, отток вероятнее всего вызван продуктом — значит, исправим</span></div>
+        <div class="card"><h3 class="sumh">Что показал анализ</h3>
+          <ul class="slist">
+            <li><span class="n">1</span><span><b>Churn 44,6%, retention 55,4%</b>Стартапы 55,1% / 44,9%, средний бизнес 31,9% / 68,1%, корпорации 17,7% / 82,3%. Знаменатель — база на начало года; честный ответ — диапазон до когортного анализа. <a class="stepref" data-go="churn">→ шаг 3</a></span></li>
+            <li><span class="n">2</span><span><b>Потеряно $3,24 млн ARR</b>Средний бизнес $1,29 млн, стартапы $1,12 млн, корпорации $0,83 млн. При этом ARR вырос на 11,8% за счёт крупных клиентов. <a class="stepref" data-go="money">→ шаг 4</a></span></li>
+            <li><span class="n">3</span><span><b>Деньги × управляемость</b>Стартапы — худший процент, но их отток во многом структурный. Средний бизнес — самые большие потери и исправимые причины. <a class="stepref" data-go="priority">→ шаг 5</a></span></li>
+            <li><span class="n">4</span><span><b>60% ушедших не дошли до ценности</b>Гипотеза: проблема в освоении, а не в продукте. Но 40% освоили всё и ушли — нужен exit-опрос. <a class="stepref" data-go="causes">→ шаг 6</a></span></li>
+          </ul></div>
+      </div>
+      <div class="g2">
+        <div class="card"><h3 class="sumh">Стратегия</h3>
+          <ul class="slist">
+            <li><span class="n fix">1</span><span><b>Средний бизнес</b>Adoption: довести до ключевой ценности за 30 дней + exit-опрос.</span></li>
+            <li><span class="n fix">2</span><span><b>Стартапы</b>Самообслуживание и путь роста в средний тариф.</span></li>
+            <li><span class="n fix">3</span><span><b>Корпорации</b>CSM и health score с сигналом за 90 дней до продления.</span></li>
+          </ul></div>
+        <div class="card"><h3 class="sumh">Метрики</h3>
+          <ul class="slist">
+            <li><span class="n">→</span><span><b>Опережающие</b>Feature Adoption Rate и Time to Value, Upgrade rate, Health score.</span></li>
+            <li><span class="n">→</span><span><b>Запаздывающие</b>Churn по сегментам в клиентах и в деньгах, NRR.</span></li>
+            <li><span class="n">→</span><span><b>Первые шаги</b>Когортный анализ, каздев со средним бизнесом, exit-опрос — дни работы и самое дешёвое знание.</span></li>
+          </ul></div>
+      </div>
+      <div class="card"><h3 class="sumh">Как думает сениор: 4 приёма из кейса</h3>
+        <ul class="lessons"><li><b>Проверить данные до расчёта</b>Знаменатель, смешанные когорты, переходы между сегментами.</li><li><b>Самый громкий процент ≠ самая большая проблема</b>Приоритет = деньги × управляемость.</li><li><b>Гипотеза — не факт</b>Формулировка: «предполагаю X, проверю через Y».</li><li><b>Стратегия = фокусы, метрики = числа</b>Опережающие — чтобы управлять, запаздывающие — чтобы отчитываться.</li></ul></div>
+    </section>
+
+    <!-- ACCOUNTS -->
+    <section class="view" data-view="accounts" hidden>
+      <div class="vhead"><span class="eyebrow">Приложение</span><h2>Клиенты: CRM на демо-данных</h2><p>2 045 аккаунтов, которые в сумме дают ровно цифры условия: база, новые и ушедшие по сегментам, доля «только базовых» среди ушедших. Используйте фильтры сверху, чипы и сортировку; нажмите на строку — откроется карточка клиента с историей и рекомендованным действием.</p></div>
+      <div class="card">
+        <div class="toolbar"><div class="chips" id="aChips"></div></div>
+        <p class="stats" id="aStats"></p>
+        <div class="tw"><table class="crm" id="aTbl"></table></div>
+        <div class="pager" id="aPager"></div>
+      </div>
+    </section>
+
+    <!-- METHOD -->
+    <section class="view" data-view="method" hidden>
+      <div class="vhead"><span class="eyebrow">Приложение</span><h2>Методика, формулы и допущения</h2><p>Что взято из условия, что выведено расчётом и что смоделировано для демонстрации.</p></div>
+      <div class="mcards">
+        <div class="card"><h3>Из условия</h3><p>Клиенты на начало года, новые и ушедшие по трём сегментам; средняя годовая подписка; доли 40/60 по использованию функций среди ушедших. Все итоговые цифры кейса построены только на них.</p></div>
+        <div class="card"><h3>Расчёт</h3><p>Churn, retention, потерянный и итоговый ARR, GRR, доли сегментов, срок жизни и LTV, чистое изменение базы, сценарии симулятора.</p></div>
+        <div class="card"><h3>Демо-данные</h3><p>Карточки 2 045 клиентов: названия, отрасли, сотрудники, месяцы, места, health score, причины ухода, разбивка 60/40 по сегментам (290 / 74 / 11 «только базовых» из 468 / 134 / 23). Суммы совпадают с условием; детали — иллюстрация, а не факт.</p></div>
+        <div class="card"><h3>Допущения</h3><p>20% ушедших в демо-данных пришли в этом же году. Управляемость сегментов (низкая / высокая) — экспертная оценка. CAC — ползунки, в условии его нет. Цена внутри сегмента одинаковая — средний чек.</p></div>
+      </div>
+      <div class="card"><h3>Формулы</h3>
+        <div style="display:grid;gap:8px;margin-top:10px">
+          <div class="formula">Churn = ушли за год / клиенты на начало года</div><div class="formula">Retention = 1 − churn = продлили / клиенты на начало года</div><div class="formula">Потерянный ARR = ушедшие × годовая подписка</div>
+          <div class="formula">GRR = 1 − потерянный ARR / ARR на начало</div><div class="formula">NRR = (ARR на начало − потери + апгрейды) / ARR на начало</div><div class="formula">LTV = подписка × 1 / churn;  LTV : CAC ≥ 3 — сегмент окупается</div>
+        </div></div>
+      <div class="card"><h3>Ловушки, которых избегает разбор</h3><ul class="rules"><li>Брать в знаменатель «начало + новые» — занижает churn и прячет проблему.</li><li>Считать только churn клиентов — в B2B с разными чеками это искажает картину.</li><li>Называть самым проблемным сегмент с худшим процентом, не глядя на деньги и управляемость.</li><li>Выдавать гипотезу («не дошли до ценности») за факт и строить продукт без каздева.</li><li>Путать удержание и апселл: цель — чтобы клиент пользовался тем, за что уже платит.</li></ul></div>
+    </section>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" aria-label="Карточка клиента"></aside>
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script>
+// ProjectPro demo accounts. The case gives only segment totals; this generator builds 2 045 accounts
+// that add up EXACTLY to those totals (base, new, churned per segment, 60/40 usage split among churned).
+// Everything below the totals (names, months, seats, health, reasons, per-segment usage split) is a demo assumption.
+function simulateProjectPro(opt) {
+  opt = opt || {};
+  let s = 20261029;
+  const rnd = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
+  const pick = a => a[Math.floor(rnd() * a.length)];
+  const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+  const SEG = [
+    { key: "st", base: 850, neu: 425, churn: 468, price: 2400, emp: [3, 20], basicChurn: 290, fullRet: 0.55 },
+    { key: "mb", base: 420, neu: 168, churn: 134, price: 9600, emp: [21, 100], basicChurn: 74, fullRet: 0.7 },
+    { key: "co", base: 130, neu: 52, churn: 23, price: 36000, emp: [101, 1500], basicChurn: 11, fullRet: 0.82 }
+  ];
+  // demo assumption: share of the churned who joined this same year (the case does not say) — adjustable on the page
+  const NEW_SHARE = opt.newShare != null ? opt.newShare : 0.2;
+  const A = ["Nova", "Blue", "Peak", "Kite", "Orbit", "Cedar", "Pixel", "Atlas", "North", "Sky", "Lumen", "Delta", "Echo", "Vertex", "Prime", "Bright", "Iron", "Silver", "Green", "Swift", "Polar", "Urban", "Quant", "Terra", "Nimbus", "Zen", "Bold", "Clear", "Sun", "Wave"];
+  const B = ["Labs", "Works", "Studio", "Systems", "Digital", "Group", "Logic", "Soft", "Media", "Tech", "Partners", "Build", "Cloud", "Data", "Solutions", "Ventures", "Craft", "Hub", "Line", "Point"];
+  const IND = 6; // industries: 0 IT, 1 agency, 2 e-com, 3 construction, 4 education, 5 finance
+  // churn reasons (demo): 0 no value reached / didn't onboard, 1 price, 2 competitor, 3 missing feature, 4 company closed, 5 team/process change
+  const reasonFor = (seg, full) => {
+    const r = rnd();
+    if (!full) {
+      if (seg === 0) return r < .55 ? 0 : r < .75 ? 4 : r < .9 ? 1 : 5;
+      return r < .7 ? 0 : r < .85 ? 1 : 5;
+    }
+    if (seg === 0) return r < .35 ? 4 : r < .6 ? 1 : r < .8 ? 2 : 3;
+    return r < .35 ? 2 : r < .65 ? 3 : r < .85 ? 1 : 5;
+  };
+
+  const acc = [];
+  const used = new Set();
+  const name = () => { let n; do { n = pick(A) + " " + pick(B); } while (used.has(n) && used.size < A.length * B.length); used.add(n); return n; };
+
+  SEG.forEach((g, si) => {
+    const churnNew = Math.round(g.churn * NEW_SHARE);
+    const churnBase = g.churn - churnNew;
+    // which churned accounts are "basic only": exactly g.basicChurn of them
+    const basicFlags = shuffle(Array.from({ length: g.churn }, (_, k) => k < g.basicChurn));
+    let ck = 0;
+    const mk = (cohort, churned) => {
+      const emp = Math.round(g.emp[0] + Math.pow(rnd(), 1.6) * (g.emp[1] - g.emp[0]));
+      const full = churned ? !basicFlags[ck++] : rnd() < g.fullRet;
+      const joinM = cohort === 0 ? -1 - Math.floor(rnd() * 34) : Math.floor(rnd() * 12); // base: months before the year (up to ~3 years); new: 0..11
+      const renewM = cohort === 0 ? Math.floor(rnd() * 12) : -1;
+      const churnM = churned ? (cohort === 0 ? renewM : Math.min(11, joinM + 1 + Math.floor(rnd() * Math.max(1, 11 - joinM)))) : -1;
+      const keyUsed = full ? 5 + Math.floor(rnd() * 3) : 1 + Math.floor(rnd() * 2); // of 7 key features
+      const seatsPaid = Math.max(2, Math.round(emp * (0.35 + rnd() * 0.5)));
+      let act = churned ? 0.15 + rnd() * 0.35 : 0.45 + rnd() * 0.5;
+      if (full) act = Math.min(0.98, act + 0.12);
+      const seatsUsed = Math.max(1, Math.round(seatsPaid * act));
+      const lastLogin = churned ? 20 + Math.floor(rnd() * 60) : Math.floor(Math.pow(rnd(), 2) * (full ? 10 : 30));
+      const health = Math.round(Math.max(5, Math.min(98, keyUsed / 7 * 45 + (seatsUsed / seatsPaid) * 35 + (1 - Math.min(lastLogin, 60) / 60) * 20 + (rnd() - .5) * 8)));
+      const tickets = Math.floor(rnd() * (churned ? 8 : 5));
+      acc.push({
+        seg: si, name: name(), ind: Math.floor(rnd() * IND), emp, cohort, joinM, renewM, churned, churnM, full,
+        keyUsed, seatsPaid, seatsUsed, lastLogin, health, tickets, price: g.price,
+        reason: churned ? reasonFor(si, full) : -1, csm: si === 2 && rnd() < 0.35 // demo: only some corporates have a CSM today
+      });
+    };
+    for (let k = 0; k < g.base; k++) mk(0, k < churnBase);
+    for (let k = 0; k < g.neu; k++) mk(1, k < churnNew);
+  });
+  shuffle(acc);
+  acc.forEach((a, i) => a.id = "PP-" + String(1001 + i));
+  return { acc, SEG, NEW_SHARE };
+}
+
+</script>
+<script>
+(function () {
+  const T = {"title": "ProjectPro · Retention B2B SaaS", "brand_sub": "Учебный кейс · B2B SaaS", "nav_label": "Разделы", "g_steps": "Кейс по шагам", "g_appx": "Приложения", "v_task": "Задача и данные", "v_overview": "Обзор базы", "v_churn": "Churn и Retention", "v_money": "Деньги", "v_priority": "Главный сегмент", "v_causes": "Причины оттока", "v_strategy": "Стратегия", "v_metrics": "Метрики", "v_sim": "Симулятор", "v_summary": "Итог", "v_accounts": "Клиенты · CRM", "v_method": "Методика и формулы", "foot_back": "← Портфолио", "foot_demo": "Итоговые цифры — из условия кейса. Карточки клиентов, месяцы, причины и health score — демо-данные, сгенерированные так, чтобы суммы совпадали с условием.", "q_ph": "Клиент или ID", "f_seg": "Сегмент", "f_coh": "Когорта", "f_use": "Функции", "f_ind": "Отрасль", "f_seg_all": "Все сегменты", "f_coh_all": "Все когорты", "f_use_all": "Любое использование", "f_ind_all": "Все отрасли", "f_active": "Фильтры:", "f_reset": "Сбросить", "step_of": "Шаг {n} из {t}", "step_prev": "Предыдущий шаг", "step_next": "Следующий шаг", "step_appx": "Приложение", "step_restart": "В начало", "hint_click": "Наведите — подробности, нажмите — клиенты", "hint_metric": "Нажмите на метрику — формула и зачем она", "demo_pill": "Демо-данные: в условии этой разбивки нет", "thou": " ", "dec": ",", "mln": " млн", "k": " тыс.", "pp": " п.п.", "yrs": "года", "days": "дн.", "seg_names": ["Стартапы", "Средний бизнес", "Корпорации"], "seg_st": "Стартапы", "seg_mb": "Средний бизнес", "seg_co": "Корпорации", "seg_size": ["до 20 сотр.", "21–100 сотр.", "101+ сотр."], "coh_names": ["Клиенты на начало года", "Новые за год"], "use_basic": "Только базовые функции", "use_full": "Все ключевые функции", "use_names": ["Все ключевые функции", "Только базовые функции"], "ind_names": ["IT и разработка", "Агентства", "E-commerce", "Строительство", "Образование", "Финансы"], "months": ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"], "mshort": ["Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"], "t_eyebrow": "Учебный кейс · курс по продукт-менеджменту · B2B SaaS", "t_h1": "ProjectPro: клиентов прибавилось на 20, а потеряно $3,24 млн выручки", "t_lead": "ProjectPro — B2B-платформа для управления проектами, 3 года на рынке. Новых подписчиков всё больше, но и отток растёт. Нужно посчитать churn и retention по сегментам, оценить потери в деньгах, выбрать самый проблемный сегмент, предложить стратегию удержания и метрики, по которым будет видно, что она работает.", "t_note": "Данные — из условия курса. Разбор: Томирис (Гулсара) Жайлаубеккызы", "t_k1_e": "Клиенты за год", "t_k1_v": "1 400 → 1 420", "t_k1_d": "+645 новых, −625 ушли", "t_k2_e": "Годовой churn", "t_k2_v": "44,6%", "t_k2_d": "625 из 1 400 на начало года", "t_k3_e": "Потерянный ARR", "t_k3_v": "$3,24 млн", "t_k3_d": "30% выручки на начало года", "t_k4_e": "ARR за год", "t_k4_v": "+11,8%", "t_k4_d": "$10,75 млн → $12,02 млн", "t_src_h": "Исходные данные из условия", "t_src_sub": "Всё, что дано в кейсе. Остальные цифры на сайте выведены из этой таблицы.", "th_seg": "Сегмент", "th_base": "На начало года", "th_new": "Новые за год", "th_churn": "Не продлили", "th_price": "Подписка в год", "th_total": "Всего", "t_src_note": "Среди не продливших: 40% пользовались всеми ключевыми функциями, 60% — только базовыми. Разбивки этих долей по сегментам в условии нет.", "t_q_h": "Что нужно сделать", "t_q_sub": "Шесть вопросов из условия — по одному шагу кейса на каждый", "t_q1": "Рассчитать годовой churn rate в целом и по сегментам → шаг 3", "t_q2": "Рассчитать годовой retention rate по сегментам → шаг 3", "t_q3": "Оценить потерянный годовой доход по сегментам → шаг 4", "t_q4": "Определить самый проблемный сегмент → шаг 5", "t_q5": "Предложить стратегию удержания с учётом сегментов (только главные фокусы) → шаги 6–7", "t_q6": "Выбрать метрики для отслеживания стратегии и объяснить выбор → шаги 8–9", "t_gap_h": "Чего в данных нет — и почему это важно", "t_gap_sub": "Прежде чем считать, сениор проверяет, правильно ли собраны данные", "t_g1_t": "Когда пришли ушедшие", "t_g1": "Среди 625 ушедших могут быть клиенты, пришедшие в этом же году. Тогда churn базы на начало года завышен. Нужна когортная разбивка.", "t_g2_t": "Переходы между сегментами", "t_g2": "Стартап, выросший до 30 человек, мог попасть в отток стартапов, хотя он остался клиентом. Часть оттока может быть успехом.", "t_g3_t": "Доли 60/40 по сегментам", "t_g3": "Без разбивки нельзя сказать, у какого сегмента проблема с освоением продукта, а у какого — с ценой или конкурентами.", "t_g4_t": "CAC и причины ухода", "t_g4": "Стоимость привлечения и exit-опрос нужны, чтобы оценить окупаемость сегментов и проверить гипотезы о причинах.", "o_h": "База клиентов почти не изменилась, а выручка выросла", "o_p": "Первый вопрос сениора: что происходит с базой и с деньгами? Количество клиентов стоит на месте, но сегменты платят по-разному (стартап в 15 раз дешевле корпорации), поэтому деньги ведут себя иначе.", "o_f1": "Пришло 645, ушло 625", "o_f1_t": "Привлечение почти целиком уходит на компенсацию оттока: чистый прирост за год +20 клиентов (+1,4%).", "o_f2": "Стартапы сжимаются: −43", "o_f2_t": "Единственный сегмент, где ушло больше, чем пришло (425 против 468). Средний бизнес +34, корпорации +29.", "o_f3": "ARR вырос на 11,8%", "o_f3_t": "Отток сосредоточен в дешёвом сегменте, а рост — в дорогих. Поэтому в клиентах теряем 44,6%, а в деньгах — 30,1%.", "k_base": "На начало года", "k_base_d": "база для churn", "k_new": "Новые", "k_ch": "Ушли", "k_end": "На конец года", "k_churn": "Churn", "k_churn_d": "ушли / база на начало", "k_lost": "Потерянный ARR", "k_grr": "GRR", "k_grr_d": "сохранённая выручка", "o_c1": "Движение клиентов по сегментам", "o_c1_sub": "Начало года → новые → ушли → конец года", "bridge_leg": ["На начало года", "Новые", "Ушли", "На конец года"], "o_c2": "Чистое изменение базы", "o_c2_sub": "Новые минус ушедшие, клиентов", "net_tip": "Пришло {a}, ушло {b}: итог {c}", "net_shrink": "← сокращается", "net_grow": "растёт →", "o_c2_note": "Стартапы — единственный сегмент, который теряет клиентов быстрее, чем набирает. Это сигнал, но ещё не вывод о главной проблеме: см. шаг 5.", "o_c3": "Когда уходят клиенты", "o_c3_sub": "Отказы от продления по месяцам, клиентов", "o_c3_note": "В условии нет помесячных данных — распределение демонстрационное. В реальной работе этот график показывает, совпадают ли пики оттока с датами продления, повышением цен или релизами.", "c_h": "Churn и retention: главное — выбрать знаменатель", "c_p": "Формула простая — ушедшие, делённые на базу. Но какую базу брать? От этого один и тот же бизнес выглядит то катастрофой, то «терпимо». Переключите способ расчёта и посмотрите, как меняются цифры.", "c_den_h": "Способ расчёта", "c_den_sub": "Стандарт — база на начало периода", "den_names": ["База на начало года", "Начало + новые", "Средняя база"], "den_short": ["÷ начало", "÷ начало+новые", "÷ средняя"], "den_f": ["Churn = ушли / клиенты на начало года", "Churn = ушли / (клиенты на начало года + новые за год)", "Churn = ушли / ((начало года + конец года) / 2)"], "den_notes": ["Стандарт для годового churn. Новые клиенты — отдельная когорта: у них не было целого года, чтобы уйти. Минус: если среди ушедших есть новички, churn завышен (см. ниже).", "Занижает churn. Клиент, пришедший 15 декабря, считается так же, как клиент, который был весь год, хотя у него было две недели, чтобы уйти. Показать CEO 30,6% вместо 44,6% — значит недооценить проблему.", "Компромисс, который часто используют в отчётах. Сглаживает рост базы, но всё равно смешивает когорты и не отвечает на вопрос «кто именно уходит»."], "c_bars": "Churn по сегментам", "c_mix_h": "Честный ответ — диапазон, а не одна цифра", "c_mix_sub": "Если часть ушедших пришла в этом же году, churn базы на начало года ниже. Сколько их — в условии нет.", "c_mix_l": "Доля новичков среди ушедших", "range_t": "от {lo} до {hi}", "c_mix_note": "Как это сказать на встрече: «Churn от X% до Y%, точнее скажу после когортного анализа». Это честнее одной цифры и сразу называет, какие данные нужны.", "c_ret_h": "Retention по сегментам", "c_ret_sub": "Retention = 1 − churn: доля клиентов на начало года, которые продлили подписку", "ret_sub": "{n} из {b}", "c_lessons_h": "Что видно на этом шаге", "c_l1": "У стартапов ушло больше половины базы (55,1%), а не «почти половина» — на встрече такая неточность бьёт по доверию.", "c_l2": "Чем крупнее клиент, тем лучше удержание: 44,9% → 68,1% → 82,3%. Это типично для B2B: крупной компании дорого менять инструмент.", "c_l3": "Самый плохой процент — ещё не самая большая проблема. Сначала посмотрим на деньги.", "m_h": "Деньги: больше всего теряем не на стартапах", "m_p": "Потерянный годовой доход = ушедшие клиенты × годовая подписка. Прежде чем смотреть на график, сделайте прогноз: где компания потеряла больше всего долларов — у многочисленных дешёвых стартапов, у редких дорогих корпораций или у среднего бизнеса?", "mk_arr0": "ARR на начало", "mk_new": "Новый ARR", "mk_lost": "Потерянный ARR", "mk_end": "ARR на конец", "mk_logo": "Churn клиентов", "mk_logo_d": "по количеству", "mk_rev": "Churn выручки", "mk_rev_d": "потери / ARR на начало", "mk_grr": "GRR", "mk_grr_d": "1 − churn выручки", "m_wf": "Как изменился ARR за год", "m_wf_sub": "Без апгрейдов и скидок: в условии их нет", "wf": ["Начало года", "Новые", "Отток", "Конец года"], "m_lost": "Потерянный ARR по сегментам", "m_lost_sub": "Ушедшие × годовая подписка", "m_lost_note": "Средний бизнес теряет больше всех — $1,29 млн, хотя по проценту оттока выглядит «нормально». Самый громкий процент ≠ самая большая проблема.", "m_share": "Доля клиентов против доли денег", "m_share_sub": "Как каждый сегмент распределён по клиентам, оттоку и выручке", "sh_rows": ["Клиенты на начало", "Ушедшие клиенты", "ARR на начало", "Потерянный ARR"], "m_share_note": "Стартапы — 61% клиентов и 75% ушедших, но только 19% выручки. Корпорации — 9% клиентов и 44% выручки. Поэтому для B2B нужно смотреть churn и в клиентах, и в деньгах.", "m_ltv_h": "Окупаемость сегментов: LTV к CAC", "m_ltv_sub": "CAC в условии нет — двигайте ползунки и смотрите, при какой стоимости привлечения сегмент перестаёт окупаться", "m_ltv_f": "LTV = подписка в год × срок жизни клиента;  срок жизни ≈ 1 / churn", "ltv_arpa": "Подписка в год", "ltv_life": "Срок жизни", "ltv_cac": "CAC (допущение)", "ltv_ok": "Окупается: LTV:CAC ≥ 3", "ltv_mid": "На грани: 1–3", "ltv_bad": "Не окупается: < 1", "m_ltv_note": "Это вопрос к маркетингу: сколько стоит привлечь одного клиента в каждом сегменте. Если стартап обходится в $3 000, платит $2 400 и живёт меньше двух лет, сегмент едва окупается — значит, его надо обслуживать дешевле, а не удерживать любой ценой.", "p_h": "Какой сегмент самый проблемный", "p_p": "Ответ зависит от того, через какую линзу смотреть. Сениор оценивает проблему по двум осям: сколько денег на кону и можем ли мы повлиять на неё продуктом.", "p_lens_h": "Переключите линзу", "p_lens_sub": "Один и тот же вопрос — разные «победители»", "lens_names": ["Процент оттока", "Ушедшие клиенты", "Потерянный ARR", "ARR, на который можем повлиять"], "lens_top": "максимум", "lens_notes": ["По проценту лидируют стартапы. Так обычно отвечают новички.", "По количеству — тоже стартапы: 468 из 625 ушедших.", "По деньгам — средний бизнес: $1,29 млн против $1,12 млн у стартапов.", "Потери × управляемость: какую часть оттока продукт реально может предотвратить. Средний бизнес лидирует с большим отрывом. Управляемость — экспертная оценка, см. карточки ниже."], "p_mx_h": "Матрица: влияние × управляемость", "p_mx_sub": "По вертикали — потерянный ARR, по горизонтали — насколько продукт может повлиять на причины. Размер круга — число ушедших.", "mx_q1": "Фокус: дорого и исправимо", "mx_q2": "Причины вне продукта", "mx_x": "Управляемость продуктом", "mx_lo": "низкая", "mx_hi": "высокая", "ctrl_lv": ["низкая", "высокая", "высокая"], "sc_rows": ["Churn", "Потерянный ARR", "Управляемость", "Изменение базы"], "sc_main": "главный фокус", "sc_txt": ["Худший процент и сжимающийся сегмент. Но значительная часть оттока структурная: стартапы закрываются или вырастают. На выживание их бизнеса продукт не влияет.", "Самые большие потери в деньгах. Это устоявшиеся компании: им не нужно выживать. Если они уходят с инструмента за $9 600, скорее всего, продукт не дал им ценности — а это исправимо.", "Лучшее удержание, но каждая потеря стоит $36 000. Нужна точечная работа с каждым аккаунтом, а не массовые изменения продукта."], "p_verdict": "Вывод: главный фокус — средний бизнес", "p_verdict_t": "Он теряет больше всего денег ($1,29 млн), и его отток, скорее всего, вызван продуктом — значит, его можно исправить. Стартапы — тревожный сигнал, но их отток во многом структурный. Корпорации держатся хорошо, но за ними нужно следить точечно. Рамка «деньги × управляемость» работает почти для любой задачи приоритизации.", "u_h": "Почему уходят: 60% не дошли до ценности", "u_p": "Единственная подсказка о причинах в условии — глубина использования продукта. Её нужно прочитать правильно и не выдать гипотезу за факт.", "u_split": "Ушедшие по глубине использования", "u_split_sub": "Данные условия (меняется с фильтрами по демо-разбивке)", "n_acc": "{n} клиентов", "churned_lc": "ушли", "u_read": "Как это читать", "u_r1": "Продукт плохой или клиент до ценности не дошёл? 60% ушедших использовали только базовые функции — скорее второе: они платили за инструмент, который не освоили.", "u_r2": "Но 40% пользовались всеми функциями и всё равно ушли. Онбординг решает только часть проблемы: у этих клиентов другие причины.", "u_r3": "Обе ветки — гипотезы. Их проверяют каздевом с ушедшими и активными клиентами и exit-опросом при отказе от продления.", "u_tree": "Дерево гипотез", "u_tree_sub": "От наблюдения к проверке: что предполагаем и как узнаем, правы ли мы", "u_hyp": "гипотеза", "u_check": "как проверить", "u_t0": "625 клиентов не продлили подписку", "u_t0_t": "Почему? Делим по глубине использования", "u_ta": "Только базовые функции", "u_ta_t": "Платили, но использовали малую часть продукта", "u_ta1": "Не дошли до ключевой ценности", "u_ta1_t": "Не поняли, зачем им отчёты, загрузка команды, интеграции; продукт не встроился в работу команды", "u_ta2": "Сравнить путь активных и ушедших в первые 30 дней; каздев: что было непонятно, какие задачи решали в другом инструменте", "u_tb": "Все ключевые функции", "u_tb_t": "Освоили продукт и всё равно ушли", "u_tb1": "Цена, конкурент, недостающая функция, смена процессов", "u_tb1_t": "Продукт понятен, но проигрывает по соотношению ценности и цены или не закрывает важный сценарий", "u_tb2": "Exit-опрос при отмене (один вопрос с вариантами) + 8–10 интервью; сравнить с ценами и функциями конкурентов", "u_seg": "Доля «только базовых» по сегментам", "u_seg_sub": "Разбивка подобрана так, чтобы в сумме дать 60/40 из условия", "u_rs": "Что показал бы exit-опрос", "u_rs_sub": "Пример отчёта по причинам ухода. Нажмите на причину — откроются клиенты.", "reasons": ["Не разобрались, не увидели ценности", "Цена", "Ушли к конкуренту", "Не хватило функции", "Компания закрылась", "Сменилась команда или процесс"], "u_hl": "Чем ушедшие отличаются от продливших", "u_hl_sub": "Средние значения по аккаунтам — так в CRM ищут ранние сигналы риска", "hl_g": ["Продлили", "Ушли"], "hl_th": "Показатель", "hl_r": ["Ключевых функций используется", "Занятых мест из оплаченных", "Дней с последнего входа", "Обращений в поддержку", "Health score"], "s_h": "Стратегия: три фокуса, а не 15 улучшений", "s_p": "Стратегия отвечает на вопрос «что мы меняем», а каздев и exit-опрос — «как убедимся, что правы». Для каждого сегмента — один фокус, что делаем и на что сознательно не тратим ресурсы.", "s_not": "Не делаем:", "s_metric": "Метрика:", "s1_e": "Главный фокус · $1,29 млн", "s1_f": "Довести клиента до ключевой ценности в первые 30 дней (adoption)", "s1_a1": "Онбординг под роль: руководитель видит загрузку команды и отчёты в первую неделю, а не только задачи", "s1_a2": "Подсказки и чек-лист «3 ключевые функции» внутри продукта; сигнал менеджеру, если аккаунт застрял на базовых", "s1_a3": "Exit-опрос при отмене, чтобы понять, что увело тех 40%, кто освоил всё", "s1_n": "апселл на дорогие функции. Задача — чтобы клиент начал пользоваться тем, за что уже платит. Когда продукт встроен в работу, от него не уходят.", "s1_m": "доля аккаунтов, освоивших ключевые функции за 30 дней; time to value", "s2_e": "Воронка роста", "s2_f": "Дешёвое обслуживание и путь роста в тариф среднего бизнеса", "s2_a1": "Самообслуживание: онбординг без менеджера, база знаний, шаблоны проектов", "s2_a2": "Ловить момент роста (команда > 15, новые места) и плавно переводить на тариф среднего бизнеса", "s2_a3": "Разметить в данных переходы между сегментами, чтобы рост не считался оттоком", "s2_n": "отбор «перспективных» стартапов и дорогие ручные продажи. Предсказать, кто выживет, не могут даже фонды, а фильтр отрежет приток.", "s2_m": "доля стартапов, перешедших на тариф среднего бизнеса (upgrade rate); CAC payback", "s3_e": "Точечная защита · $36 000 за клиента", "s3_f": "Customer Success Manager и раннее предупреждение рисков", "s3_a1": "Персональный CSM на каждый корпоративный аккаунт: регулярные встречи, план развития", "s3_a2": "Health score аккаунта и сигнал за 90 дней до продления, если он падает", "s3_a3": "Квартальный обзор ценности с руководителем клиента: что сэкономили, что дальше", "s3_n": "массовые изменения продукта ради 23 аккаунтов. Работаем с каждым клиентом отдельно.", "s3_m": "health score, доля аккаунтов в зоне риска, NRR сегмента", "s_first_h": "С чего начать: проверить гипотезы", "s_first_sub": "Сначала самое дешёвое знание — дни работы, а не месяцы разработки", "s_f1_t": "Когортный анализ", "s_f1": "Ушедших — по месяцу прихода и сегменту. Отвечает: уходят старые клиенты или новички, не прошедшие онбординг.", "s_f2_t": "Каздев со средним бизнесом", "s_f2": "8–10 ушедших и 8–10 активных: что было непонятно, какие задачи решали в другом инструменте, о каких функциях не знали.", "s_f3_t": "Exit-опрос", "s_f3": "Одна форма при отмене: цена, конкурент, не хватило функции X, изменилась команда, не разобрались. Без этого можно полгода строить не то.", "s_why_h": "Почему именно так", "s_w1": "Ресурсы идут туда, где больше денег и где продукт может что-то изменить.", "s_w2": "Стартапы становятся воронкой для самого ценного сегмента, а не дырой, которую затыкают.", "s_w3": "Для дорогих клиентов человек окупается: один CSM на 15–20 аккаунтов по $36 000 — это защита $0,5–0,7 млн ARR.", "k_h": "Метрики: churn покажет результат только через год", "k_p": "Churn видно при следующем продлении — слишком поздно, чтобы понять, работает ли стратегия. Нужны опережающие метрики, которые меняются через 1–2 месяца, и запаздывающие — чтобы отчитаться о результате.", "k_tree": "Дерево метрик", "k_tree_sub": "Сверху — итог для бизнеса, снизу — то, чем можно управлять каждую неделю", "md_f": "Формула:", "md_why": "Зачем:", "md_when": "Когда видно:", "mt": {"nrr": {"tag": "Главная · запаздывающая", "n": "NRR — удержание выручки", "s": "Сколько денег осталось от прошлогодних клиентов с учётом апгрейдов", "f": "(ARR на начало − потери + апгрейды) / ARR на начало", "why": "Кейс показал, что количество клиентов вводит в заблуждение. NRR показывает то, что важно бизнесу: если стартапы переходят в средний тариф, NRR растёт, даже если часть стартапов уходит.", "when": "квартал, год", "c": 0, "lag": true}, "grr": {"tag": "Запаздывающая", "n": "GRR и churn по сегментам", "s": "Удержание без апгрейдов — в клиентах и в долларах", "f": "1 − потерянный ARR / ARR на начало; churn = ушли / база на начало", "why": "Показывает чистый отток без маскировки апгрейдами. Считаем по сегментам, иначе дешёвые стартапы исказят картину.", "when": "при продлении, раз в квартал", "c": 0, "lag": true}, "exp": {"tag": "Запаздывающая", "n": "Expansion ARR", "s": "Рост выручки от существующих клиентов", "f": "Σ (новая цена − старая цена) по апгрейдам", "why": "Измеряет, работает ли путь роста стартапов в средний тариф.", "when": "ежемесячно", "c": 1, "lag": true}, "adopt": {"tag": "Опережающая · средний бизнес", "n": "Feature Adoption Rate", "s": "Доля аккаунтов, освоивших ключевые функции за 30 дней", "f": "аккаунты с ≥ 3 ключевыми функциями в первые 30 дней / новые аккаунты", "why": "Прямо проверяет главную гипотезу: 60% ушедших не дошли до ценности. Если adoption растёт, через год должен упасть churn.", "when": "через 4–6 недель", "c": 2, "lag": false}, "health": {"tag": "Опережающая · корпорации", "n": "Health score", "s": "Сводный показатель здоровья аккаунта", "f": "активность мест + глубина функций + давность входа + обращения", "why": "CSM видит риск за месяцы до продления, а не в день отказа.", "when": "еженедельно", "c": 3, "lag": false}, "upg": {"tag": "Опережающая · стартапы", "n": "Upgrade rate", "s": "Доля стартапов, перешедших на тариф среднего бизнеса", "f": "апгрейды за период / активные стартапы", "why": "Измеряет стратегию «вырастить и перевести», а не «удержать любой ценой».", "when": "ежемесячно", "c": 1, "lag": false}, "ttv": {"tag": "Опережающая", "n": "Time to Value", "s": "Сколько дней до первой ценности", "f": "медиана дней от регистрации до первого отчёта по загрузке команды", "why": "Чем быстрее клиент видит ценность, тем меньше шанс, что он застрянет на базовых функциях.", "when": "через 2–4 недели", "c": 2, "lag": false}, "exit": {"tag": "Диагностика", "n": "Причины ухода", "s": "Распределение ответов exit-опроса", "f": "доля каждой причины среди отказов", "why": "Без неё стратегия для тех 40%, кто освоил всё, — гадание.", "when": "с первого месяца", "c": 0, "lag": false}, "seg": {"tag": "Гигиена данных", "n": "Переходы между сегментами", "s": "Сколько «ушедших» стартапов на самом деле выросли", "f": "аккаунты, сменившие сегмент / ушедшие из сегмента", "why": "Чтобы рост не считался оттоком и стартапы не выглядели хуже, чем есть.", "when": "сразу после разметки", "c": 1, "lag": false}}, "k_tbl": "Метрики стратегии", "k_tbl_sub": "Опережающие показывают, работает ли стратегия, запаздывающие — каков итог", "kt_th": ["Метрика", "Тип", "Как считать", "Сегмент", "Почему именно она"], "lead": "Опережающая", "kt": [["Feature Adoption Rate", "Опережающая", "аккаунты с ≥ 3 ключевыми функциями за 30 дней / новые аккаунты", "Средний бизнес", "Проверяет главную гипотезу «не дошли до ценности»; меняется за недели"], ["Time to Value", "Опережающая", "медиана дней до первого отчёта по загрузке команды", "Средний бизнес", "Ранний признак того, что онбординг работает"], ["Upgrade rate", "Опережающая", "апгрейды / активные стартапы", "Стартапы", "Измеряет путь роста вместо борьбы со структурным оттоком"], ["Health score и доля в зоне риска", "Опережающая", "композит активности; доля аккаунтов с health < 45", "Корпорации", "Даёт CSM месяцы на реакцию до продления"], ["Churn по сегментам (клиенты и $)", "Запаздывающая", "ушли / база на начало; потерянный ARR / ARR на начало", "Все", "Итог стратегии; без разбивки стартапы искажают картину"], ["NRR", "Запаздывающая", "(ARR на начало − потери + апгрейды) / ARR на начало", "Все", "Главная метрика для B2B: учитывает и отток, и рост клиентов"]], "k_rule_h": "Правила, по которым выбраны метрики", "k_r1": "Метрика — это число, которое можно посчитать и сравнить с прошлым месяцем. «Отслеживать» и «спрашивать» — действия, а не метрики.", "k_r2": "Для каждого фокуса стратегии — своя опережающая метрика. Если она не двигается за 1–2 месяца, меняем тактику, не дожидаясь годового churn.", "k_r3": "Запаздывающие метрики считаем в клиентах и в деньгах: кейс показал, что они рассказывают разные истории.", "x_h": "Симулятор: что даст стратегия", "x_p": "Двигайте ползунки: на сколько процентных пунктов снизится churn в каждом сегменте и какая доля удержанных стартапов перейдёт на тариф среднего бизнеса. Расчёт — на цифрах условия.", "x_st": "Churn стартапов", "x_mb": "Churn среднего бизнеса", "x_co": "Churn корпораций", "x_up": "Апгрейд стартапов в средний тариф", "x_presets": "Сценарии", "x_pre": ["Без изменений", "Реалистичный", "Амбициозный"], "x_note": "Снижение для среднего бизнеса больше, потому что там основная ставка стратегии и больше управляемость. Сценарии — допущения для разговора, а не прогноз.", "xr": ["Сохранённый ARR в год", "Expansion ARR ({n} апгрейдов)", "GRR", "NRR"], "x_was": "было {v}", "x_note2": "Средний бизнес даёт {s} сохранённой выручки — поэтому он главный фокус.", "z_h": "Итог: кейс за одну минуту", "z_e": "Главный сегмент", "z_big": "Средний бизнес", "z_big_t": "$1,29 млн потерь в год, отток вероятнее всего вызван продуктом — значит, исправим", "z_see": "→ шаг", "z_c_h": "Что показал анализ", "z_c1_t": "Churn 44,6%, retention 55,4%", "z_c1": "Стартапы 55,1% / 44,9%, средний бизнес 31,9% / 68,1%, корпорации 17,7% / 82,3%. Знаменатель — база на начало года; честный ответ — диапазон до когортного анализа.", "z_c2_t": "Потеряно $3,24 млн ARR", "z_c2": "Средний бизнес $1,29 млн, стартапы $1,12 млн, корпорации $0,83 млн. При этом ARR вырос на 11,8% за счёт крупных клиентов.", "z_c3_t": "Деньги × управляемость", "z_c3": "Стартапы — худший процент, но их отток во многом структурный. Средний бизнес — самые большие потери и исправимые причины.", "z_c4_t": "60% ушедших не дошли до ценности", "z_c4": "Гипотеза: проблема в освоении, а не в продукте. Но 40% освоили всё и ушли — нужен exit-опрос.", "z_s_h": "Стратегия", "z_s1": "Adoption: довести до ключевой ценности за 30 дней + exit-опрос.", "z_s2": "Самообслуживание и путь роста в средний тариф.", "z_s3": "CSM и health score с сигналом за 90 дней до продления.", "z_m_h": "Метрики", "z_m1_t": "Опережающие", "z_m1": "Feature Adoption Rate и Time to Value, Upgrade rate, Health score.", "z_m2_t": "Запаздывающие", "z_m2": "Churn по сегментам в клиентах и в деньгах, NRR.", "z_m3_t": "Первые шаги", "z_m3": "Когортный анализ, каздев со средним бизнесом, exit-опрос — дни работы и самое дешёвое знание.", "z_l_h": "Как думает сениор: 4 приёма из кейса", "z_l1_t": "Проверить данные до расчёта", "z_l1": "Знаменатель, смешанные когорты, переходы между сегментами.", "z_l2_t": "Самый громкий процент ≠ самая большая проблема", "z_l2": "Приоритет = деньги × управляемость.", "z_l3_t": "Гипотеза — не факт", "z_l3": "Формулировка: «предполагаю X, проверю через Y».", "z_l4_t": "Стратегия = фокусы, метрики = числа", "z_l4": "Опережающие — чтобы управлять, запаздывающие — чтобы отчитываться.", "a_h": "Клиенты: CRM на демо-данных", "a_p": "2 045 аккаунтов, которые в сумме дают ровно цифры условия: база, новые и ушедшие по сегментам, доля «только базовых» среди ушедших. Используйте фильтры сверху, чипы и сортировку; нажмите на строку — откроется карточка клиента с историей и рекомендованным действием.", "chips": {"all": "Все", "renewed": "Продлили", "newact": "Новые", "churned": "Ушли", "risk": "Зона риска"}, "ac": ["ID", "Компания", "Сегмент", "Сотр.", "ARR", "Функции", "Места", "Вход", "Health", "Статус"], "st_names": ["Продлил", "Новый", "Ушёл"], "st_risk": "Риск", "a_stats": "{n} клиентов · ARR {arr} · ушли {ch} · средний health {h}", "a_empty": "Нет клиентов под эти фильтры", "pg_shown": "{a}–{b} из {n}", "pg_prev": "← Назад", "pg_next": "Дальше →", "dr_label": "Карточка клиента", "dr_close": "Закрыть", "dr_status": "Статус", "dr_tl": "История", "dr_play": "Что делать по стратегии", "ev_join": "Подключился к ProjectPro", "ev_join_old": "−{m} мес.", "ev_onb": "Освоил {k} из 7 ключевых функций", "ev_csm_y": "Закреплён CSM", "ev_csm_n": "CSM не закреплён", "ev_tickets": "Обращений в поддержку: {n}", "ev_login": "Последний вход {d} дн. назад", "ev_churn": "Не продлил подписку. Причина (демо): {r}", "ev_renew": "Продлил подписку", "play_win": ["Не возвращать любой ценой: если компания выросла — предложить тариф среднего бизнеса; если закрылась — отметить причину и закрыть карточку.", "Win-back: короткий звонок о причине ухода, показать функции, которыми не пользовались (отчёты, загрузка команды), предложить онбординг с менеджером.", "Разбор с руководителем клиента: что не сработало, какие сценарии не закрыли. Причину — в отчёт для продуктовой команды."], "play_risk": ["Автоматическое письмо с шаблонами и подсказкой по ключевой функции; если команда растёт — предложить тариф среднего бизнеса.", "Аккаунт застрял: менеджер проводит 30-минутную сессию по ключевым функциям и ставит цель на 30 дней.", "CSM назначает встречу в ближайшие 2 недели, готовит обзор ценности и план до продления."], "play_ok": ["Самообслуживание; следить за ростом команды — сигнал для перехода в средний тариф.", "Поддерживать: квартальное письмо с итогами использования и новыми функциями.", "Квартальный обзор ценности с CSM; искать расширение на другие отделы."], "me_h": "Методика, формулы и допущения", "me_p": "Что взято из условия, что выведено расчётом и что смоделировано для демонстрации.", "me1_t": "Из условия", "me1": "Клиенты на начало года, новые и ушедшие по трём сегментам; средняя годовая подписка; доли 40/60 по использованию функций среди ушедших. Все итоговые цифры кейса построены только на них.", "me2_t": "Расчёт", "me2": "Churn, retention, потерянный и итоговый ARR, GRR, доли сегментов, срок жизни и LTV, чистое изменение базы, сценарии симулятора.", "me3_t": "Демо-данные", "me3": "Карточки 2 045 клиентов: названия, отрасли, сотрудники, месяцы, места, health score, причины ухода, разбивка 60/40 по сегментам (290 / 74 / 11 «только базовых» из 468 / 134 / 23). Суммы совпадают с условием; детали — иллюстрация, а не факт.", "me4_t": "Допущения", "me4": "20% ушедших в демо-данных пришли в этом же году. Управляемость сегментов (низкая / высокая) — экспертная оценка. CAC — ползунки, в условии его нет. Цена внутри сегмента одинаковая — средний чек.", "me_f_h": "Формулы", "me_f1": "Churn = ушли за год / клиенты на начало года", "me_f2": "Retention = 1 − churn = продлили / клиенты на начало года", "me_f3": "Потерянный ARR = ушедшие × годовая подписка", "me_f4": "GRR = 1 − потерянный ARR / ARR на начало", "me_f5": "NRR = (ARR на начало − потери + апгрейды) / ARR на начало", "me_f6": "LTV = подписка × 1 / churn;  LTV : CAC ≥ 3 — сегмент окупается", "me_tr_h": "Ловушки, которых избегает разбор", "me_tr1": "Брать в знаменатель «начало + новые» — занижает churn и прячет проблему.", "me_tr2": "Считать только churn клиентов — в B2B с разными чеками это искажает картину.", "me_tr3": "Называть самым проблемным сегмент с худшим процентом, не глядя на деньги и управляемость.", "me_tr4": "Выдавать гипотезу («не дошли до ценности») за факт и строить продукт без каздева.", "me_tr5": "Путать удержание и апселл: цель — чтобы клиент пользовался тем, за что уже платит."};
+  const D = simulateProjectPro();
+  const ACC = D.acc, SEG = D.SEG;
+  const SC = ["var(--st)", "var(--mb)", "var(--co)"];
+  const NS = "http://www.w3.org/2000/svg";
+  const $ = id => document.getElementById(id);
+  const tpl = (s, o) => s.replace(/\{(\w+)\}/g, (_, k) => o[k]);
+
+  // ---------- formatting ----------
+  const fmtN = n => (n < 0 ? "−" : "") + Math.round(Math.abs(n)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, T.thou);
+  const fmtD = (x, d) => (x < 0 ? "−" : "") + Math.abs(x).toFixed(d).replace(".", T.dec);
+  const fmtP = (x, d = 1) => isFinite(x) ? fmtD(x * 100, d) + "%" : "—";
+  const usd = (v, d = 2, short = false) => !isFinite(v) ? "—" : (v < 0 ? "−" : "") + (Math.abs(v) >= (short ? 1e6 : 1e5) ? "$" + fmtD(Math.abs(v) / 1e6, d) + T.mln : short && Math.abs(v) >= 1e4 ? "$" + fmtD(Math.abs(v) / 1e3, 0) + T.k : "$" + fmtN(Math.abs(v)));
+  const usdF = v => "$" + fmtN(v);
+  const sgn = (v, f) => (v > 0 ? "+" : v < 0 ? "−" : "") + f(Math.abs(v));
+  const segDot = s => `<span class="segpill"><i style="--c:${SC[s]}"></i>${T.seg_names[s]}</span>`;
+
+  // ---------- filters ----------
+  const F = { seg: -1, coh: -1, use: -1, ind: -1 };
+  function pass(a, ignoreSeg) {
+    if (!ignoreSeg && F.seg >= 0 && a.seg !== F.seg) return false;
+    if (F.coh >= 0 && a.cohort !== F.coh) return false;
+    if (F.use >= 0 && (a.full ? 0 : 1) !== F.use) return false;
+    if (F.ind >= 0 && a.ind !== F.ind) return false;
+    return true;
+  }
+  const sel = ignoreSeg => ACC.filter(a => pass(a, ignoreSeg));
+  function agg(list) {
+    const r = { n: list.length, base: 0, neu: 0, ch: 0, chB: 0, chN: 0, arr0: 0, arrNew: 0, arrLost: 0, basic: 0, full: 0, chBasic: 0 };
+    for (const a of list) {
+      if (a.cohort === 0) { r.base++; r.arr0 += a.price; } else { r.neu++; r.arrNew += a.price; }
+      if (a.churned) { r.ch++; r.arrLost += a.price; if (a.cohort === 0) r.chB++; else r.chN++; if (!a.full) r.chBasic++; }
+    }
+    r.end = r.base + r.neu - r.ch;
+    r.arrEnd = r.arr0 + r.arrNew - r.arrLost;
+    r.churn = r.ch / r.base;
+    r.grr = (r.arr0 - r.arrLost) / r.arr0;
+    return r;
+  }
+  const bySeg = list => [0, 1, 2].map(s => agg(list.filter(a => a.seg === s)));
+  const fill = (el, items, all) => el.innerHTML = `<option value="-1">${all}</option>` + items.map((t, i) => `<option value="${i}">${t}</option>`).join("");
+  fill($("fSeg"), T.seg_names, T.f_seg_all); fill($("fCoh"), T.coh_names, T.f_coh_all);
+  fill($("fUse"), T.use_names, T.f_use_all); fill($("fInd"), T.ind_names, T.f_ind_all);
+  const FL = { seg: ["fSeg", T.seg_names], coh: ["fCoh", T.coh_names], use: ["fUse", T.use_names], ind: ["fInd", T.ind_names] };
+  Object.keys(FL).forEach(k => $(FL[k][0]).addEventListener("change", e => { F[k] = +e.target.value; changed(); }));
+  function syncControls() {
+    const af = [];
+    Object.keys(FL).forEach(k => { $(FL[k][0]).value = F[k]; if (F[k] >= 0) af.push([k, FL[k][1][F[k]]]); });
+    $("af").innerHTML = af.length ? `<span>${T.f_active}</span>` + af.map(a => `<span class="af">${a[1]}<button type="button" data-k="${a[0]}" aria-label="${T.f_reset}: ${a[1]}">×</button></span>`).join("") + `<button type="button" class="linkbtn" id="afReset">${T.f_reset}</button>` : "";
+    $("af").querySelectorAll(".af button").forEach(b => b.addEventListener("click", () => { F[b.dataset.k] = -1; changed(); }));
+    const r = $("afReset"); if (r) r.addEventListener("click", () => { Object.keys(F).forEach(k => F[k] = -1); changed(); });
+  }
+
+  // ---------- svg helpers ----------
+  const tip = $("tip");
+  function svgEl(tag, attrs, parent, text) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (text != null) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function showTip(html, x, y) {
+    tip.innerHTML = html; tip.classList.add("on");
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    tip.style.left = Math.max(8, Math.min(x + 14, innerWidth - w - 8)) + "px";
+    tip.style.top = Math.max(8, y - h - 12) + "px";
+  }
+  const hideTip = () => tip.classList.remove("on");
+  function bindTip(node, html) {
+    node.addEventListener("mousemove", e => showTip(typeof html === "function" ? html() : html, e.clientX, e.clientY));
+    node.addEventListener("mouseleave", hideTip);
+    node.addEventListener("click", e => { if (e.pointerType === "touch") showTip(typeof html === "function" ? html() : html, e.clientX, e.clientY); });
+  }
+  function fit(svg, H) {
+    const w = Math.max(300, Math.round(svg.getBoundingClientRect().width || svg.parentElement.clientWidth || 560));
+    svg.setAttribute("viewBox", `0 0 ${w} ${H}`);
+    return w;
+  }
+  const barPath = (x, y, w, h, r) => { if (h <= 0) return ""; r = Math.min(r, w / 2, h); return `M${x},${y + h}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h}Z`; };
+  function niceMax(v) { const p = Math.pow(10, Math.floor(Math.log10(v || 1))); for (const m of [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]) if (m * p >= v) return m * p; return 10 * p; }
+  function axisY(svg, box, max, fmt, steps = 4, min = 0) {
+    for (let k = 0; k <= steps; k++) {
+      const v = min + (max - min) * k / steps, y = box.t + box.h - box.h * k / steps;
+      svgEl("line", { x1: box.l, x2: box.l + box.w, y1: y, y2: y, class: "gl" }, svg);
+      svgEl("text", { x: box.l - 8, y: y + 4, "text-anchor": "end", class: "ax" }, svg, fmt(v));
+    }
+  }
+  const halo = "paint-order: stroke; stroke: var(--surface); stroke-width: 4px";
+  // horizontal bar rows (HTML): rows = [{label, val, max, color, txt, sub, ghost, onClick, tip}]
+  function hbars(el, rows) {
+    el.innerHTML = rows.map((r, k) => `<div class="hrow"><span class="t">${r.label}</span><div class="tr" data-k="${k}" style="${r.onClick ? "cursor:pointer" : ""}">${r.ghost != null ? `<i class="ghost" style="width:${Math.max(0, r.ghost / r.max * 100)}%${r.ghostColor ? ";background:" + r.ghostColor : ""}"></i>` : ""}<i style="width:${Math.max(0, r.val / r.max * 100)}%;background:${r.color}"></i></div><span class="v"><b>${r.txt}</b>${r.sub ? `<span>${r.sub}</span>` : ""}</span></div>`).join("");
+    el.querySelectorAll(".tr").forEach(t => { const r = rows[+t.dataset.k]; if (r.tip) bindTip(t, r.tip); if (r.onClick) t.addEventListener("click", () => { hideTip(); r.onClick(); }); });
+  }
+
+  // ---------- views ----------
+  const STEPS = ["task", "overview", "churn", "money", "priority", "causes", "strategy", "metrics", "sim", "summary"];
+  const VIEWS = STEPS.concat(["accounts", "method"]);
+  const TITLES = { task: T.v_task, overview: T.v_overview, churn: T.v_churn, money: T.v_money, priority: T.v_priority, causes: T.v_causes, strategy: T.v_strategy,
+    metrics: T.v_metrics, sim: T.v_sim, summary: T.v_summary, accounts: T.v_accounts, method: T.v_method };
+  const FILTERED = ["overview", "money", "causes", "accounts"];
+  let view = "task";
+  document.querySelectorAll(".view").forEach(sec => {
+    const v = sec.dataset.view, k = STEPS.indexOf(v);
+    const head = sec.querySelector(".vhead");
+    if (k >= 0 && head) head.insertAdjacentHTML("afterbegin", `<span class="stepno">${tpl(T.step_of, { n: k + 1, t: STEPS.length })}</span>`);
+    let h = "";
+    const prev = k > 0 ? STEPS[k - 1] : null;
+    const next = k >= 0 && k < STEPS.length - 1 ? STEPS[k + 1] : k === STEPS.length - 1 ? "accounts" : null;
+    if (prev) h += `<button type="button" data-go="${prev}"><span>← ${T.step_prev}</span><b>${k}. ${TITLES[prev]}</b></button>`;
+    if (next) h += `<button type="button" class="next" data-go="${next}"><span>${next === "accounts" ? T.step_appx : T.step_next} →</span><b>${STEPS.includes(next) ? (k + 2) + ". " : ""}${TITLES[next]}</b></button>`;
+    if (v === "accounts") h = `<button type="button" data-go="summary"><span>← ${T.step_prev}</span><b>${STEPS.length}. ${TITLES.summary}</b></button><button type="button" class="next" data-go="method"><span>${T.step_appx} →</span><b>${TITLES.method}</b></button>`;
+    if (v === "method") h = `<button type="button" data-go="accounts"><span>← ${T.step_appx}</span><b>${TITLES.accounts}</b></button><button type="button" class="next" data-go="task"><span>${T.step_restart} →</span><b>1. ${TITLES.task}</b></button>`;
+    if (h) sec.insertAdjacentHTML("beforeend", `<nav class="stepnav" aria-label="${T.nav_label}">${h}</nav>`);
+  });
+  document.querySelectorAll(".stepnav button, a.stepref").forEach(b => b.addEventListener("click", () => go(b.dataset.go)));
+  function go(v, push = true) {
+    if (!VIEWS.includes(v)) v = "task";
+    view = v;
+    document.querySelectorAll(".view").forEach(s => s.hidden = s.dataset.view !== v);
+    document.querySelectorAll(".nav-btn").forEach(b => b.setAttribute("aria-current", b.dataset.view === v ? "page" : "false"));
+    $("vTitle").textContent = (STEPS.includes(v) ? (STEPS.indexOf(v) + 1) + ". " : "") + TITLES[v];
+    $("fRow").hidden = !FILTERED.includes(v);
+    if (push) { try { history.replaceState(null, "", "#" + v); } catch (e) {} }
+    render();
+    window.scrollTo(0, 0);
+    const btn = document.querySelector(`.nav-btn[data-view="${v}"]`);
+    if (btn && btn.parentElement.scrollWidth > btn.parentElement.clientWidth) btn.parentElement.scrollLeft = btn.offsetLeft - 40;
+  }
+  document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.view)));
+  window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if (h && h !== view) go(h, false); });
+  let rT; window.addEventListener("resize", () => { clearTimeout(rT); rT = setTimeout(render, 150); });
+  function changed() { syncControls(); aPage = 0; render(); }
+  function render() {
+    const none = () => {};
+    ({ task: rTask, overview: rOverview, churn: rChurn, money: rMoney, priority: rPriority, causes: rCauses, strategy: none, metrics: rMetrics, sim: rSim, summary: none, accounts: rAccounts, method: none })[view]();
+    $("cntA").textContent = fmtN(sel().length);
+  }
+
+  // ---------- 1 TASK ----------
+  let taskDone = false;
+  function rTask() {
+    if (taskDone) return; taskDone = true;
+    const tot = { base: 0, neu: 0, ch: 0 };
+    const rows = SEG.map((g, s) => { tot.base += g.base; tot.neu += g.neu; tot.ch += g.churn;
+      return `<tr><td>${segDot(s)} <span style="color:var(--muted);font-size:12.5px">${T.seg_size[s]}</span></td><td>${fmtN(g.base)}</td><td>${fmtN(g.neu)}</td><td>${fmtN(g.churn)}</td><td>${usd(g.price)}</td></tr>`; }).join("");
+    $("srcTbl").innerHTML = `<thead><tr><th>${T.th_seg}</th><th>${T.th_base}</th><th>${T.th_new}</th><th>${T.th_churn}</th><th>${T.th_price}</th></tr></thead><tbody>${rows}</tbody>
+      <tfoot><tr><td>${T.th_total}</td><td>${fmtN(tot.base)}</td><td>${fmtN(tot.neu)}</td><td>${fmtN(tot.ch)}</td><td>—</td></tr></tfoot>`;
+  }
+
+  // ---------- 2 OVERVIEW ----------
+  function rOverview() {
+    const list = sel(), a = agg(list), segs = bySeg(sel(true));
+    const k = [
+      [T.k_base, fmtN(a.base), T.k_base_d],
+      [T.k_new, "+" + fmtN(a.neu), ""],
+      [T.k_ch, "−" + fmtN(a.ch), ""],
+      [T.k_end, fmtN(a.end), `<span class="${a.end - a.base >= 0 ? "up" : "down"}">${sgn(a.end - a.base, fmtN)}</span>`],
+      [T.k_churn, fmtP(a.churn), T.k_churn_d],
+      [T.k_lost, usd(a.arrLost), ""],
+      [T.k_grr, fmtP(a.grr), T.k_grr_d]
+    ];
+    $("kpis").innerHTML = k.map(x => `<div class="kpi"><span class="eyebrow">${x[0]}</span><span class="v">${x[1]}</span><span class="d">${x[2]}</span></div>`).join("");
+
+    // bridge: grouped bars per segment (start, new, churned, end)
+    const svg = $("ovBridge"); svg.innerHTML = "";
+    const H = 280, W = fit(svg, H), box = { l: 44, t: 18, w: W - 44 - 10, h: H - 18 - 34 };
+    const segIdx = F.seg >= 0 ? [F.seg] : [0, 1, 2];
+    const keys = ["base", "neu", "ch", "end"], fills = ["var(--base-bar)", null, "var(--ink-2)", null];
+    const max = niceMax(Math.max(...segIdx.map(s => Math.max(segs[s].base, segs[s].end))));
+    axisY(svg, box, max, fmtN);
+    const gw = box.w / segIdx.length, bw = Math.min(30, gw / 6);
+    segIdx.forEach((s, j) => {
+      const g = segs[s], x0 = box.l + j * gw + (gw - bw * 4 - 6) / 2;
+      keys.forEach((kk, q) => {
+        const v = g[kk], x = x0 + q * (bw + 2), y = box.t + box.h - v / max * box.h;
+        const col = q === 1 ? `color-mix(in srgb, ${SC[s]} 45%, var(--surface))` : q === 3 ? SC[s] : fills[q];
+        svgEl("path", { d: barPath(x, y, bw, box.t + box.h - y, 4), fill: col }, svg);
+        svgEl("text", { x: x + bw / 2, y: y - 5, "text-anchor": "middle", class: "lb2" }, svg, fmtN(v));
+      });
+      svgEl("text", { x: box.l + j * gw + gw / 2, y: H - 10, "text-anchor": "middle", class: "lb" }, svg, T.seg_names[s]);
+      const hit = svgEl("rect", { x: box.l + j * gw, y: box.t, width: gw, height: box.h, fill: "transparent", class: "hit" }, svg);
+      bindTip(hit, `<b>${T.seg_names[s]}</b><br>${T.k_base}: ${fmtN(g.base)}<br>${T.k_new}: +${fmtN(g.neu)}<br>${T.k_ch}: −${fmtN(g.ch)}<br>${T.k_end}: <b>${fmtN(g.end)}</b>`);
+      hit.addEventListener("click", () => { hideTip(); F.seg = s; aChip = "churned"; syncControls(); go("accounts"); });
+    });
+    const tri = op => `linear-gradient(90deg, ${["st", "mb", "co"].map((c, i) => `${op ? `color-mix(in srgb, var(--${c}) 45%, var(--surface))` : `var(--${c})`} ${i * 33.4}% ${(i + 1) * 33.4}%`).join(", ")})`;
+    $("ovBridgeLeg").innerHTML = T.bridge_leg.map((l, q) => `<span><i style="background:${q === 1 ? tri(true) : q === 3 ? tri(false) : fills[q]}"></i>${l}</span>`).join("");
+
+    // net change diverging
+    const s2 = $("ovNet"); s2.innerHTML = "";
+    const W2 = fit(s2, H), nl = Math.min(150, Math.round(W2 * 0.36)), b2 = { l: nl, t: 20, w: W2 - nl - 50, h: H - 40 };
+    const nets = [0, 1, 2].map(s => segs[s].end - segs[s].base);
+    const m2 = niceMax(Math.max(...nets.map(Math.abs)) || 1);
+    const zx = b2.l + b2.w / 2, rowH = b2.h / 3;
+    svgEl("line", { x1: zx, x2: zx, y1: b2.t - 6, y2: b2.t + b2.h, stroke: "var(--ink-2)", "stroke-width": 1 }, s2);
+    nets.forEach((v, s) => {
+      const y = b2.t + s * rowH + rowH * 0.25, h = rowH * 0.5, w = Math.abs(v) / m2 * b2.w / 2;
+      const x = v >= 0 ? zx : zx - w;
+      svgEl("rect", { x, y, width: Math.max(2, w), height: h, rx: 4, fill: SC[s] }, s2);
+      svgEl("text", { x: 0, y: y + h / 2 + 4, class: "lb" }, s2, T.seg_names[s]);
+      svgEl("text", { x: v >= 0 ? x + w + 6 : x - 6, y: y + h / 2 + 4, "text-anchor": v >= 0 ? "start" : "end", class: "lb", style: halo }, s2, sgn(v, fmtN));
+      const hit = svgEl("rect", { x: b2.l, y: b2.t + s * rowH, width: b2.w, height: rowH, fill: "transparent" }, s2);
+      bindTip(hit, `<b>${T.seg_names[s]}</b><br>${tpl(T.net_tip, { a: fmtN(segs[s].neu), b: fmtN(segs[s].ch), c: sgn(v, fmtN) })}`);
+    });
+    svgEl("text", { x: zx - 6, y: b2.t - 8, "text-anchor": "end", class: "ax" }, s2, T.net_shrink);
+    svgEl("text", { x: zx + 6, y: b2.t - 8, class: "ax" }, s2, T.net_grow);
+
+    // churn by renewal month (base cohort, demo distribution)
+    const s3 = $("ovMonths"); s3.innerHTML = "";
+    const H3 = 260, W3 = fit(s3, H3), b3 = { l: 44, t: 16, w: W3 - 44 - 10, h: H3 - 16 - 30 };
+    const mm = Array.from({ length: 12 }, () => [0, 0, 0]);
+    list.forEach(a => { if (a.churned) mm[a.churnM][a.seg]++; });
+    const m3 = niceMax(Math.max(...mm.map(r => r[0] + r[1] + r[2])) || 1);
+    axisY(s3, b3, m3, fmtN);
+    const gw3 = b3.w / 12, bw3 = gw3 * 0.62;
+    mm.forEach((r, m) => {
+      let acc = 0; const x = b3.l + m * gw3 + (gw3 - bw3) / 2;
+      r.forEach((v, s) => { if (!v) return; const h = v / m3 * b3.h, y = b3.t + b3.h - (acc + v) / m3 * b3.h; svgEl("rect", { x, y, width: bw3, height: Math.max(0, h - 2), rx: 2, fill: SC[s] }, s3); acc += v; });
+      if (gw3 >= 34 || m % 2 === 0) svgEl("text", { x: x + bw3 / 2, y: H3 - 10, "text-anchor": "middle", class: "ax" }, s3, T.mshort[m]);
+      const hit = svgEl("rect", { x: b3.l + m * gw3, y: b3.t, width: gw3, height: b3.h, fill: "transparent", class: "hit" }, s3);
+      bindTip(hit, `<b>${T.months[m]}</b>` + r.map((v, s) => `<br>${T.seg_names[s]}: ${fmtN(v)}`).join("") + `<br>${T.th_total}: <b>${fmtN(r[0] + r[1] + r[2])}</b>`);
+    });
+    $("ovMonthsLeg").innerHTML = T.seg_names.map((n, s) => `<span><i style="background:${SC[s]}"></i>${n}</span>`).join("") + `<span class="notepill" style="margin-left:auto">${T.demo_pill}</span>`;
+  }
+
+  // ---------- 3 CHURN ----------
+  let den = 0;
+  $("denTg").innerHTML = T.den_names.map((n, i) => `<button type="button" data-i="${i}" aria-pressed="${i === 0}">${n}</button>`).join("");
+  $("denTg").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { den = +b.dataset.i; $("denTg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); rChurn(); }));
+  $("newShare").addEventListener("input", () => rChurn());
+  function denVal(g) { return den === 0 ? g.base : den === 1 ? g.base + g.neu : (g.base + g.end) / 2; }
+  function rChurn() {
+    const segs = bySeg(ACC), all = agg(ACC);
+    $("denFormula").textContent = T.den_f[den];
+    const vals = segs.map(g => g.ch / denVal(g)), tv = all.ch / denVal(all);
+    // bars: churn by segment (selected denominator) with ghost = start-of-year method for comparison
+    const svg = $("chBars"); svg.innerHTML = "";
+    const H = 280, W = fit(svg, H), box = { l: 44, t: 20, w: W - 44 - 10, h: H - 20 - 34 };
+    axisY(svg, box, 0.6, v => fmtP(v, 0));
+    const items = vals.concat([tv]), gw = box.w / 4, bw = Math.min(56, gw * 0.5);
+    items.forEach((v, j) => {
+      const x = box.l + j * gw + (gw - bw) / 2, y = box.t + box.h - v / 0.6 * box.h;
+      svgEl("path", { d: barPath(x, y, bw, box.t + box.h - y, 4), fill: j < 3 ? SC[j] : "var(--ink)" }, svg);
+      svgEl("text", { x: x + bw / 2, y: y - 6, "text-anchor": "middle", class: "lb" }, svg, fmtP(v));
+      svgEl("text", { x: x + bw / 2, y: H - 10, "text-anchor": "middle", class: "ax" }, svg, j < 3 ? T.seg_names[j] : T.th_total);
+      const g = j < 3 ? segs[j] : all;
+      const hit = svgEl("rect", { x: box.l + j * gw, y: box.t, width: gw, height: box.h, fill: "transparent" }, svg);
+      bindTip(hit, `<b>${j < 3 ? T.seg_names[j] : T.th_total}</b><br>${fmtN(g.ch)} / ${fmtD(denVal(g), 0)} = <b>${fmtP(v)}</b>`);
+    });
+    $("chBarsLeg").innerHTML = `<span>${T.den_names[den]}</span>`;
+    $("chTbl").innerHTML = `<thead><tr><th>${T.th_seg}</th>${T.den_short.map((n, i) => `<th class="r"${i === den ? ' style="color:var(--ink)"' : ""}>${n}</th>`).join("")}</tr></thead><tbody>` +
+      segs.concat([all]).map((g, j) => `<tr><td>${j < 3 ? segDot(j) : `<b>${T.th_total}</b>`}</td>${[0, 1, 2].map(d => { const dv = d === 0 ? g.base : d === 1 ? g.base + g.neu : (g.base + g.end) / 2; return `<td class="r"${d === den ? ' style="font-weight:700;background:color-mix(in srgb, var(--mb) 10%, transparent)"' : ""}>${fmtP(g.ch / dv)}</td>`; }).join("")}</tr>`).join("") + "</tbody>";
+    $("denNote").textContent = T.den_notes[den];
+
+    // range: churn of the start-of-year cohort if x% of the churned joined this year
+    const x = +$("newShare").value / 100;
+    $("newShareV").textContent = fmtP(x, 0);
+    $("ranges").innerHTML = segs.concat([all]).map((g, j) => {
+      const hi = g.ch / g.base, lo = g.ch * (1 - x) / g.base, sc = 0.7;
+      return `<div style="display:grid;grid-template-columns:150px minmax(0,1fr) 150px;gap:10px;align-items:center;font-size:13.5px">
+        <span>${j < 3 ? segDot(j) : `<b>${T.th_total}</b>`}</span>
+        <div class="rangebar"><div class="tr"></div><div class="band" style="left:${lo / sc * 100}%;width:${(hi - lo) / sc * 100}%"></div>
+          <div class="mk" style="left:${hi / sc * 100}%"><span>${fmtP(hi, 0)}</span></div><div class="mk" style="left:${lo / sc * 100}%;background:var(--mb)"><span>${fmtP(lo, 0)}</span></div></div>
+        <span style="text-align:right;color:var(--ink-2)">${tpl(T.range_t, { lo: fmtP(lo, 0), hi: fmtP(hi, 0) })}</span></div>`;
+    }).join("");
+
+    hbars($("retBars"), segs.map((g, s) => ({ label: segDot(s), val: 1 - g.churn, max: 1, color: SC[s], txt: fmtP(1 - g.churn), sub: tpl(T.ret_sub, { n: fmtN(g.base - g.ch), b: fmtN(g.base) }) })));
+  }
+
+  // ---------- 4 MONEY ----------
+  let cac = [3000, 12000, 45000];
+  function rMoney() {
+    const list = sel(), a = agg(list), segs = bySeg(sel(true));
+    const nrr = a.grr;
+    $("mKpis").innerHTML = [
+      [T.mk_arr0, usd(a.arr0), ""], [T.mk_new, "+" + usd(a.arrNew), ""], [T.mk_lost, "−" + usd(a.arrLost), ""],
+      [T.mk_end, usd(a.arrEnd), `<span class="${a.arrEnd >= a.arr0 ? "up" : "down"}">${sgn((a.arrEnd - a.arr0) / a.arr0, v => fmtP(v))}</span>`],
+      [T.mk_logo, fmtP(a.churn), T.mk_logo_d], [T.mk_rev, fmtP(1 - nrr), T.mk_rev_d], [T.mk_grr, fmtP(a.grr), T.mk_grr_d]
+    ].map(x => `<div class="kpi"><span class="eyebrow">${x[0]}</span><span class="v">${x[1]}</span><span class="d">${x[2]}</span></div>`).join("");
+
+    // waterfall
+    const svg = $("mWf"); svg.innerHTML = "";
+    const H = 280, W = fit(svg, H), box = { l: 74, t: 22, w: W - 74 - 10, h: H - 22 - 34 };
+    const steps = [{ l: T.wf[0], from: 0, to: a.arr0, c: "var(--base-bar)" }, { l: T.wf[1], from: a.arr0, to: a.arr0 + a.arrNew, c: "var(--good)" },
+      { l: T.wf[2], from: a.arr0 + a.arrNew, to: a.arrEnd, c: "var(--bad)" }, { l: T.wf[3], from: 0, to: a.arrEnd, c: "var(--ink)" }];
+    const max = niceMax(a.arr0 + a.arrNew);
+    axisY(svg, box, max, v => usd(v, 0, true));
+    const gw = box.w / 4, bw = Math.min(70, gw * 0.55);
+    steps.forEach((s, j) => {
+      const y1 = box.t + box.h - Math.max(s.from, s.to) / max * box.h, y2 = box.t + box.h - Math.min(s.from, s.to) / max * box.h, x = box.l + j * gw + (gw - bw) / 2;
+      svgEl("rect", { x, y: y1, width: bw, height: Math.max(2, y2 - y1), rx: 4, fill: s.c }, svg);
+      const d = s.to - s.from;
+      const nar = gw < 95, dd = nar ? 1 : 2;
+      svgEl("text", { x: x + bw / 2, y: y1 - 6, "text-anchor": "middle", class: nar ? "lb2" : "lb" }, svg, j === 0 || j === 3 ? usd(s.to, dd) : sgn(d, v => usd(v, dd)));
+      svgEl("text", { x: x + bw / 2, y: H - 10, "text-anchor": "middle", class: "ax" }, svg, s.l);
+      if (j < 3) svgEl("line", { x1: x + bw, x2: x + gw, y1: box.t + box.h - s.to / max * box.h, y2: box.t + box.h - s.to / max * box.h, stroke: "var(--muted)", "stroke-dasharray": "3 3" }, svg);
+    });
+
+    // lost ARR by segment
+    const s2 = $("mLost"); s2.innerHTML = "";
+    const W2 = fit(s2, H), b2 = { l: 74, t: 22, w: W2 - 74 - 10, h: H - 22 - 34 };
+    const m2 = niceMax(Math.max(...segs.map(g => g.arrLost)) || 1);
+    axisY(s2, b2, m2, v => usd(v, 1, true));
+    const g2 = b2.w / 3, bw2 = Math.min(70, g2 * 0.5);
+    segs.forEach((g, s) => {
+      const x = b2.l + s * g2 + (g2 - bw2) / 2, y = b2.t + b2.h - g.arrLost / m2 * b2.h;
+      const top = segs.reduce((m, q, i) => q.arrLost > segs[m].arrLost ? i : m, 0) === s;
+      svgEl("path", { d: barPath(x, y, bw2, b2.t + b2.h - y, 4), fill: SC[s], opacity: F.seg >= 0 && F.seg !== s ? .3 : 1 }, s2);
+      svgEl("text", { x: x + bw2 / 2, y: y - 6, "text-anchor": "middle", class: "lb" }, s2, usd(g.arrLost) + (top ? " ★" : ""));
+      svgEl("text", { x: x + bw2 / 2, y: H - 10, "text-anchor": "middle", class: "ax" }, s2, T.seg_names[s]);
+      const hit = svgEl("rect", { x: b2.l + s * g2, y: b2.t, width: g2, height: b2.h, fill: "transparent", class: "hit" }, s2);
+      bindTip(hit, `<b>${T.seg_names[s]}</b><br>${fmtN(g.ch)} × ${usd(SEG[s].price)} = <b>${usd(g.arrLost)}</b><br>${T.mk_rev}: ${fmtP(g.arrLost / g.arr0)}`);
+      hit.addEventListener("click", () => { hideTip(); F.seg = s; aChip = "churned"; syncControls(); go("accounts"); });
+    });
+
+    // share of customers vs share of money (100% stacked rows)
+    const s3 = $("mShare"); s3.innerHTML = "";
+    const H3 = 250, W3 = fit(s3, H3), sl = Math.min(150, Math.round(W3 * 0.3)), b3 = { l: sl, t: 10, w: W3 - sl - 10, h: H3 - 20 };
+    const rowsDef = [["base", T.sh_rows[0]], ["ch", T.sh_rows[1]], ["arr0", T.sh_rows[2]], ["arrLost", T.sh_rows[3]]];
+    const rh = b3.h / rowsDef.length;
+    rowsDef.forEach(([key, lab], r) => {
+      const tot = segs.reduce((s, g) => s + g[key], 0); let acc = 0;
+      const y = b3.t + r * rh + rh * 0.2, h = rh * 0.6;
+      svgEl("text", { x: b3.l - 12, y: y + h / 2 + 4, "text-anchor": "end", class: "lb" }, s3, lab);
+      segs.forEach((g, s) => {
+        const sh = g[key] / tot, x = b3.l + acc * b3.w, w = sh * b3.w;
+        const rc = svgEl("rect", { x, y, width: Math.max(0, w - 2), height: h, rx: 3, fill: SC[s] }, s3);
+        if (sh > 0.08) svgEl("text", { x: x + w / 2, y: y + h / 2 + 4, "text-anchor": "middle", class: "lb", style: "fill:#fff" }, s3, fmtP(sh, 0));
+        bindTip(rc, `<b>${lab}</b><br>${T.seg_names[s]}: <b>${fmtP(sh)}</b><br>${key.startsWith("arr") ? usd(g[key]) : fmtN(g[key])}`);
+        acc += sh;
+      });
+    });
+    $("mShareLeg").innerHTML = T.seg_names.map((n, s) => `<span><i style="background:${SC[s]}"></i>${n}</span>`).join("");
+
+    // LTV : CAC
+    $("ltv").innerHTML = [0, 1, 2].map(s => {
+      const g = segs[s], life = 1 / (g.ch / g.base), ltv = SEG[s].price * life, r = ltv / cac[s];
+      const vd = r >= 3 ? ["ok", T.ltv_ok] : r >= 1 ? ["mid", T.ltv_mid] : ["bad", T.ltv_bad];
+      const mx = [10000, 40000, 150000][s], st = [500, 1000, 5000][s];
+      return `<div class="card" style="border-top:4px solid ${SC[s]}"><h3>${T.seg_names[s]}</h3>
+        <div class="row"><span>${T.ltv_arpa}</span><b>${usd(SEG[s].price)}</b></div>
+        <div class="row"><span>${T.ltv_life}</span><b>${fmtD(life, 1)} ${T.yrs}</b></div>
+        <div class="row"><span>LTV</span><b>${usdF(ltv)}</b></div>
+        <div><label class="row" for="cac${s}"><span>${T.ltv_cac}</span><b>${usdF(cac[s])}</b></label><input type="range" id="cac${s}" min="${st}" max="${mx}" step="${st}" value="${cac[s]}"></div>
+        <div class="row" style="align-items:center"><span>LTV : CAC</span><span class="ratio">${fmtD(r, 1)}</span></div>
+        <span class="verdict ${vd[0]}">${vd[1]}</span></div>`;
+    }).join("");
+    [0, 1, 2].forEach(s => $("cac" + s).addEventListener("input", e => { cac[s] = +e.target.value; const y = window.scrollY; rMoney(); window.scrollTo(0, y); $("cac" + s).focus(); }));
+  }
+
+  // ---------- 5 PRIORITY ----------
+  let lens = 0;
+  $("lensTg").innerHTML = T.lens_names.map((n, i) => `<button type="button" data-i="${i}" aria-pressed="${i === 0}">${n}</button>`).join("");
+  $("lensTg").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { lens = +b.dataset.i; $("lensTg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); rPriority(); }));
+  const CTRL = [0.3, 0.8, 0.7]; // judgement: how much of the churn the product can influence (see text)
+  function rPriority() {
+    const segs = bySeg(ACC);
+    const M = [g => g.churn, g => g.ch, g => g.arrLost, (g, s) => g.arrLost * CTRL[s]][lens];
+    const F2 = [v => fmtP(v), fmtN, v => usd(v), v => usd(v)][lens];
+    const vals = segs.map((g, s) => M(g, s)), mx = Math.max(...vals);
+    hbars($("lensBars"), segs.map((g, s) => ({ label: segDot(s), val: vals[s], max: mx * 1.05, color: SC[s], txt: F2(vals[s]) + (vals[s] === mx ? " ★" : ""), sub: vals[s] === mx ? T.lens_top : "" })));
+    $("lensNote").textContent = T.lens_notes[lens];
+
+    // matrix: x = controllability, y = lost ARR, r = churned accounts
+    const svg = $("pMatrix"); svg.innerHTML = "";
+    const H = 380, W = fit(svg, H), box = { l: 64, t: 20, w: W - 64 - 20, h: H - 20 - 46 };
+    const ymax = 1.5e6;
+    axisY(svg, box, ymax, v => usd(v, 1, true), 3);
+    svgEl("line", { x1: box.l + box.w / 2, x2: box.l + box.w / 2, y1: box.t, y2: box.t + box.h, stroke: "var(--line)", "stroke-dasharray": "4 4" }, svg);
+    svgEl("rect", { x: box.l + box.w / 2, y: box.t, width: box.w / 2, height: box.h / 2, fill: "color-mix(in srgb, var(--good) 8%, transparent)" }, svg);
+    svgEl("text", { x: box.l + box.w - 8, y: box.t + box.h / 2 - 8, "text-anchor": "end", class: "lb", style: "fill:var(--good)" }, svg, T.mx_q1);
+    svgEl("text", { x: box.l + 8, y: box.t + 16, class: "ax" }, svg, T.mx_q2);
+    svgEl("text", { x: box.l + box.w / 2, y: H - 8, "text-anchor": "middle", class: "ax" }, svg, T.mx_x);
+    svgEl("text", { x: box.l, y: H - 26, class: "ax" }, svg, T.mx_lo);
+    svgEl("text", { x: box.l + box.w, y: H - 26, "text-anchor": "end", class: "ax" }, svg, T.mx_hi);
+    segs.forEach((g, s) => {
+      const cx = box.l + CTRL[s] * box.w, cy = box.t + box.h - g.arrLost / ymax * box.h, r = 10 + Math.sqrt(g.ch) * 1.5;
+      const c = svgEl("circle", { cx, cy, r, fill: SC[s], "fill-opacity": .85, stroke: "var(--surface)", "stroke-width": 2 }, svg);
+      const right = cx + r + 8 + 110 < box.l + box.w;
+      svgEl("text", { x: right ? cx + r + 8 : cx - r - 8, y: cy + 4, "text-anchor": right ? "start" : "end", class: "lb", style: halo }, svg, T.seg_names[s]);
+      bindTip(c, `<b>${T.seg_names[s]}</b><br>${T.lens_names[2]}: ${usd(g.arrLost)}<br>${T.lens_names[1]}: ${fmtN(g.ch)}<br>${T.mx_x}: ${T.ctrl_lv[s]}`);
+    });
+
+    $("scoreBox").innerHTML = segs.map((g, s) => {
+      const rows = [[T.sc_rows[0], g.churn, 0.6, fmtP(g.churn)], [T.sc_rows[1], g.arrLost, 1.4e6, usd(g.arrLost)], [T.sc_rows[2], CTRL[s], 1, T.ctrl_lv[s]], [T.sc_rows[3], Math.max(0, (g.end - g.base) < 0 ? 1 : 0.2), 1, sgn(g.end - g.base, fmtN)]];
+      return `<div class="scard${s === 1 ? " win" : ""}"><h3><i style="--c:${SC[s]}"></i>${T.seg_names[s]}${s === 1 ? ` <span class="verdict bad" style="margin-left:auto">${T.sc_main}</span>` : ""}</h3>
+        ${rows.map(r => `<div class="axis2"><span>${r[0]}</span><div class="tr"><i style="--c:${SC[s]};width:${Math.min(100, r[1] / r[2] * 100)}%"></i></div><b>${r[3]}</b></div>`).join("")}
+        <p style="font-size:13.5px;color:var(--ink-2)">${T.sc_txt[s]}</p></div>`;
+    }).join("");
+  }
+
+  // ---------- 6 CAUSES ----------
+  function rCauses() {
+    const list = sel(), ch = list.filter(a => a.churned), segsAll = bySeg(ACC);
+    const basic = ch.filter(a => !a.full).length, full = ch.length - basic;
+    // donut
+    const svg = $("uDonut"); svg.innerHTML = "";
+    const H = 240, W = fit(svg, H), cx = Math.min(130, W / 4), cy = H / 2, R = 92, r0 = 58;
+    const parts = [[basic, "var(--st)", T.use_names[1]], [full, "var(--mb)", T.use_names[0]]];
+    let a0 = -Math.PI / 2;
+    parts.forEach(([v, c, l], k) => {
+      if (!ch.length) return;
+      const a1 = a0 + v / ch.length * Math.PI * 2 - 0.02;
+      const p = (rr, a) => [cx + rr * Math.cos(a), cy + rr * Math.sin(a)];
+      const big = a1 - a0 > Math.PI ? 1 : 0, [x1, y1] = p(R, a0), [x2, y2] = p(R, a1), [x3, y3] = p(r0, a1), [x4, y4] = p(r0, a0);
+      const path = svgEl("path", { d: `M${x1},${y1}A${R},${R} 0 ${big} 1 ${x2},${y2}L${x3},${y3}A${r0},${r0} 0 ${big} 0 ${x4},${y4}Z`, fill: c }, svg);
+      bindTip(path, `<b>${l}</b><br>${fmtN(v)} (${fmtP(v / ch.length, 0)})`);
+      const ly = cy - 30 + k * 64, lx = cx + R + 40;
+      svgEl("rect", { x: lx, y: ly - 10, width: 12, height: 12, rx: 3, fill: c }, svg);
+      svgEl("text", { x: lx + 20, y: ly, class: "lb" }, svg, l);
+      svgEl("text", { x: lx + 20, y: ly + 22, class: "lb", style: "font-size:20px;font-family:var(--f-display)" }, svg, fmtP(v / ch.length, 0));
+      svgEl("text", { x: lx + 80, y: ly + 22, class: "ax" }, svg, tpl(T.n_acc, { n: fmtN(v) }));
+      a0 = a1 + 0.02;
+    });
+    svgEl("text", { x: cx, y: cy + 2, "text-anchor": "middle", class: "lb", style: "font-size:20px;font-family:var(--f-display)" }, svg, fmtN(ch.length));
+    svgEl("text", { x: cx, y: cy + 20, "text-anchor": "middle", class: "ax" }, svg, T.churned_lc);
+
+    // per-segment split (demo)
+    const s2 = $("uSeg"); s2.innerHTML = "";
+    const H2 = 230, W2 = fit(s2, H2), b2 = { l: 130, t: 10, w: W2 - 130 - 10, h: H2 - 20 };
+    const rh = b2.h / 3;
+    [0, 1, 2].forEach(s => {
+      const c = ACC.filter(a => a.churned && a.seg === s), bs = c.filter(a => !a.full).length / c.length;
+      const y = b2.t + s * rh + rh * 0.22, h = rh * 0.56;
+      svgEl("text", { x: b2.l - 12, y: y + h / 2 + 4, "text-anchor": "end", class: "lb" }, s2, T.seg_names[s]);
+      const r1 = svgEl("rect", { x: b2.l, y, width: Math.max(0, bs * b2.w - 2), height: h, rx: 3, fill: "var(--st)" }, s2);
+      const r2 = svgEl("rect", { x: b2.l + bs * b2.w, y, width: (1 - bs) * b2.w, height: h, rx: 3, fill: "var(--mb)" }, s2);
+      svgEl("text", { x: b2.l + 8, y: y + h / 2 + 4, class: "lb", style: "fill:#fff" }, s2, fmtP(bs, 0));
+      svgEl("text", { x: b2.l + b2.w - 8, y: y + h / 2 + 4, "text-anchor": "end", class: "lb", style: "fill:#fff" }, s2, fmtP(1 - bs, 0));
+      bindTip(r1, `<b>${T.seg_names[s]}</b><br>${T.use_names[1]}: ${fmtN(c.length - c.filter(a => a.full).length)}`);
+      bindTip(r2, `<b>${T.seg_names[s]}</b><br>${T.use_names[0]}: ${fmtN(c.filter(a => a.full).length)}`);
+    });
+    $("uSegLeg").innerHTML = `<span><i style="background:var(--st)"></i>${T.use_names[1]}</span><span><i style="background:var(--mb)"></i>${T.use_names[0]}</span>`;
+
+    // reasons (demo)
+    const cnt = T.reasons.map(() => [0, 0]);
+    ch.forEach(a => cnt[a.reason][a.full ? 1 : 0]++);
+    const mx = Math.max(...cnt.map(c => c[0] + c[1])) || 1;
+    hbars($("uReasons"), cnt.map((c, r) => ({ label: T.reasons[r], val: c[0], ghost: c[0] + c[1], ghostColor: "var(--mb)", max: mx * 1.05, color: "var(--st)", txt: fmtN(c[0] + c[1]),
+      sub: ch.length ? fmtP((c[0] + c[1]) / ch.length, 0) : "", tip: `<b>${T.reasons[r]}</b><br>${T.use_names[1]}: ${fmtN(c[0])}<br>${T.use_names[0]}: ${fmtN(c[1])}`,
+      onClick: () => { aChip = "churned"; aReason = r; go("accounts"); } })));
+
+    // health of renewed vs churned
+    const groups = [[T.hl_g[0], list.filter(a => a.cohort === 0 && !a.churned)], [T.hl_g[1], list.filter(a => a.churned)]];
+    const avg = (l, f) => l.length ? l.reduce((s, a) => s + f(a), 0) / l.length : NaN;
+    const rows = [[T.hl_r[0], a => a.keyUsed, v => fmtD(v, 1) + " / 7"], [T.hl_r[1], a => a.seatsUsed / a.seatsPaid, v => fmtP(v, 0)], [T.hl_r[2], a => a.lastLogin, v => fmtD(v, 0) + " " + T.days], [T.hl_r[3], a => a.tickets, v => fmtD(v, 1)], [T.hl_r[4], a => a.health, v => fmtD(v, 0)]];
+    $("uHealth").innerHTML = `<thead><tr><th>${T.hl_th}</th>${groups.map(g => `<th class="r">${g[0]} · ${fmtN(g[1].length)}</th>`).join("")}</tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${r[0]}</td>${groups.map(g => `<td class="r">${isFinite(avg(g[1], r[1])) ? r[2](avg(g[1], r[1])) : "—"}</td>`).join("")}</tr>`).join("") + "</tbody>";
+  }
+
+  // ---------- 8 METRICS ----------
+  let mSel = "adopt";
+  const MT = T.mt;
+  function rMetrics() {
+    const box = (k) => `<button type="button" class="mbox${MT[k].lag ? " lag" : ""}" data-k="${k}" aria-pressed="${k === mSel}" style="--c:${MT[k].c ? SC[MT[k].c - 1] : "var(--muted)"}"><span class="tag2">${MT[k].tag}</span><b>${MT[k].n}</b><span>${MT[k].s}</span></button>`;
+    $("mtree").innerHTML = `<div class="lvl">${box("nrr")}</div><div class="lvl l2">${box("grr")}${box("exp")}</div><div class="lvl l3">${box("adopt")}${box("health")}${box("upg")}</div><div class="lvl l3">${box("ttv")}${box("exit")}${box("seg")}</div>`;
+    $("mtree").querySelectorAll(".mbox").forEach(b => b.addEventListener("click", () => { mSel = b.dataset.k; rMetrics(); }));
+    const m = MT[mSel];
+    $("mdetail").innerHTML = `<b>${m.n}</b><span><b>${T.md_f}</b> ${m.f}</span><span><b>${T.md_why}</b> ${m.why}</span><span><b>${T.md_when}</b> ${m.when}</span>`;
+    $("kTbl").innerHTML = `<thead><tr>${T.kt_th.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>` +
+      T.kt.map(r => `<tr><td><b>${r[0]}</b></td><td><span class="pill ${r[1] === T.lead ? "y" : "m"}">${r[1]}</span></td><td class="wrap">${r[2]}</td><td>${r[3]}</td><td class="wrap">${r[4]}</td></tr>`).join("") + "</tbody>";
+  }
+
+  // ---------- 9 SIMULATOR ----------
+  const PRE = [[0, 0, 0, 0], [5, 10, 5, 5], [8, 15, 8, 10]];
+  $("xPre").innerHTML = T.x_pre.map((n, i) => `<button type="button" data-i="${i}" aria-pressed="${i === 1}">${n}</button>`).join("");
+  $("xPre").querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+    ["xSt", "xMb", "xCo", "xUp"].forEach((id, k) => $(id).value = PRE[+b.dataset.i][k]);
+    $("xPre").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); rSim();
+  }));
+  ["xSt", "xMb", "xCo", "xUp"].forEach(id => $(id).addEventListener("input", () => { $("xPre").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", "false")); rSim(); }));
+  function rSim() {
+    const segs = bySeg(ACC), all = agg(ACC);
+    const pp = [+$("xSt").value, +$("xMb").value, +$("xCo").value].map(v => v / 100), up = +$("xUp").value / 100;
+    $("xStV").textContent = "−" + fmtD(pp[0] * 100, 0) + T.pp; $("xMbV").textContent = "−" + fmtD(pp[1] * 100, 0) + T.pp; $("xCoV").textContent = "−" + fmtD(pp[2] * 100, 0) + T.pp;
+    $("xUpV").textContent = fmtP(up, 0);
+    const lostNew = segs.map((g, s) => Math.max(0, g.churn - pp[s]) * g.base * SEG[s].price);
+    const saved = segs.reduce((s, g, i) => s + g.arrLost - lostNew[i], 0);
+    const retainedSt = segs[0].base * (1 - Math.max(0, segs[0].churn - pp[0]));
+    const upg = Math.round(retainedSt * up), exp = upg * (SEG[1].price - SEG[0].price);
+    const lostTot = lostNew.reduce((a, b) => a + b, 0);
+    const grr = (all.arr0 - lostTot) / all.arr0, nrr = (all.arr0 - lostTot + exp) / all.arr0;
+    $("xRes").innerHTML = [[usd(saved), T.xr[0]], [usd(exp), tpl(T.xr[1], { n: fmtN(upg) })], [fmtP(all.grr) + " → " + fmtP(grr), T.xr[2]], [fmtP(all.grr) + " → " + fmtP(nrr), T.xr[3]]]
+      .map(r => `<div><b>${r[0]}</b><span>${r[1]}</span></div>`).join("");
+    const mx = Math.max(...segs.map(g => g.arrLost));
+    hbars($("xBars"), segs.map((g, s) => ({ label: segDot(s), val: lostNew[s], ghost: g.arrLost, max: mx * 1.05, color: SC[s], txt: usd(lostNew[s]), sub: tpl(T.x_was, { v: usd(g.arrLost) }) })));
+    const share = saved ? (segs[1].arrLost - lostNew[1]) / saved : 0;
+    $("xNote2").textContent = tpl(T.x_note2, { s: fmtP(share, 0) });
+  }
+
+  // ---------- ACCOUNTS ----------
+  let aChip = "all", aPage = 0, aSort = { k: "arr", d: -1 }, aReason = -1, openId = null;
+  const PAGE = 25;
+  const status = a => a.churned ? 2 : a.cohort === 1 ? 1 : 0; // 0 renewed, 1 new active, 2 churned
+  const risk = a => !a.churned && a.health < 45;
+  const CHIPS = { all: a => true, renewed: a => status(a) === 0, newact: a => status(a) === 1, churned: a => a.churned, risk: risk };
+  $("q").addEventListener("input", () => { aPage = 0; if (view !== "accounts") go("accounts"); else rAccounts(); });
+  const COLS = [["id", T.ac[0], a => a.id], ["name", T.ac[1], a => a.name], ["seg", T.ac[2], a => a.seg], ["emp", T.ac[3], a => a.emp, 1], ["arr", T.ac[4], a => a.price, 1],
+    ["key", T.ac[5], a => a.keyUsed, 1], ["seats", T.ac[6], a => a.seatsUsed / a.seatsPaid, 1], ["login", T.ac[7], a => a.lastLogin, 1], ["health", T.ac[8], a => a.health, 1], ["st", T.ac[9], status]];
+  function rAccounts() {
+    const q = $("q").value.trim().toLowerCase();
+    let base = sel();
+    if (q) base = base.filter(a => a.id.toLowerCase().includes(q) || a.name.toLowerCase().includes(q));
+    $("aChips").innerHTML = Object.keys(CHIPS).map(k => `<button type="button" class="chip" data-k="${k}" aria-pressed="${k === aChip}">${T.chips[k]} <b>${fmtN(base.filter(CHIPS[k]).length)}</b></button>`).join("") +
+      (aReason >= 0 ? `<span class="af">${T.reasons[aReason]}<button type="button" id="rsX" aria-label="${T.f_reset}">×</button></span>` : "");
+    $("aChips").querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => { aChip = b.dataset.k; aPage = 0; rAccounts(); }));
+    if ($("rsX")) $("rsX").addEventListener("click", () => { aReason = -1; rAccounts(); });
+    let list = base.filter(CHIPS[aChip]);
+    if (aReason >= 0) list = list.filter(a => a.reason === aReason);
+    const col = COLS.find(c => c[0] === aSort.k);
+    list.sort((x, y) => { const a = col[2](x), b = col[2](y); return (a < b ? -1 : a > b ? 1 : 0) * aSort.d; });
+    const ag = agg(list);
+    $("aStats").innerHTML = tpl(T.a_stats, { n: fmtN(list.length), arr: usd(list.reduce((s, a) => s + a.price, 0)), ch: fmtN(ag.ch), h: list.length ? fmtD(list.reduce((s, a) => s + a.health, 0) / list.length, 0) : "—" });
+    const pages = Math.max(1, Math.ceil(list.length / PAGE)); aPage = Math.min(aPage, pages - 1);
+    const pill = a => a.churned ? `<span class="pill n">${T.st_names[2]}</span>` : risk(a) ? `<span class="pill" style="background:var(--warn-bg);color:var(--warn)">${T.st_risk}</span>` : `<span class="pill ${status(a) === 0 ? "y" : "t1"}">${T.st_names[status(a)]}</span>`;
+    const hcol = h => h < 45 ? "bad" : h >= 70 ? "good" : "";
+    $("aTbl").innerHTML = `<thead><tr>${COLS.map(c => `<th class="sort${c[3] ? " r" : ""}" data-k="${c[0]}"${aSort.k === c[0] ? ` aria-sort="${aSort.d > 0 ? "ascending" : "descending"}"` : ""}>${c[1]}${aSort.k === c[0] ? (aSort.d > 0 ? " ↑" : " ↓") : ""}</th>`).join("")}</tr></thead><tbody>` +
+      list.slice(aPage * PAGE, (aPage + 1) * PAGE).map(a => `<tr class="click${openId === a.id ? " on" : ""}" data-id="${a.id}"><td class="uid">${a.id}</td><td>${a.name}</td><td>${segDot(a.seg)}</td><td class="r">${fmtN(a.emp)}</td><td class="r">${usd(a.price)}</td>
+        <td class="r">${a.keyUsed}/7</td><td class="r">${a.seatsUsed}/${a.seatsPaid}</td><td class="r">${a.lastLogin} ${T.days}</td><td class="r ${hcol(a.health)}">${a.health}</td><td>${pill(a)}</td></tr>`).join("") +
+      (list.length ? "" : `<tr><td colspan="10" style="color:var(--muted)">${T.a_empty}</td></tr>`) + "</tbody>";
+    $("aTbl").querySelectorAll("th.sort").forEach(th => th.addEventListener("click", () => { const k = th.dataset.k; aSort = { k, d: aSort.k === k ? -aSort.d : (COLS.find(c => c[0] === k)[3] ? -1 : 1) }; rAccounts(); }));
+    $("aTbl").querySelectorAll("tr.click").forEach(tr => tr.addEventListener("click", () => openAcc(tr.dataset.id)));
+    $("aPager").innerHTML = `<span>${tpl(T.pg_shown, { a: fmtN(list.length ? aPage * PAGE + 1 : 0), b: fmtN(Math.min(list.length, (aPage + 1) * PAGE)), n: fmtN(list.length) })}</span><div><button type="button" class="btn" id="pgPrev" ${aPage === 0 ? "disabled" : ""}>${T.pg_prev}</button><button type="button" class="btn" id="pgNext" ${aPage >= pages - 1 ? "disabled" : ""}>${T.pg_next}</button></div>`;
+    $("pgPrev").addEventListener("click", () => { aPage--; rAccounts(); });
+    $("pgNext").addEventListener("click", () => { aPage++; rAccounts(); });
+  }
+  const drawer = $("drawer"), scrim = $("scrim");
+  function openAcc(id) {
+    const a = ACC.find(x => x.id === id); if (!a) return;
+    openId = id;
+    const st = status(a);
+    const ev = [];
+    ev.push([a.cohort === 0 ? tpl(T.ev_join_old, { m: -a.joinM }) : T.mshort[a.joinM], T.ev_join, "var(--muted)"]);
+    ev.push(["", tpl(T.ev_onb, { k: a.keyUsed }), a.full ? "var(--good)" : "var(--warn)"]);
+    if (a.seg === 2) ev.push(["", a.csm ? T.ev_csm_y : T.ev_csm_n, a.csm ? "var(--good)" : "var(--warn)"]);
+    if (a.tickets) ev.push(["", tpl(T.ev_tickets, { n: a.tickets }), "var(--s0)"]);
+    ev.push(["", tpl(T.ev_login, { d: a.lastLogin }), a.lastLogin > 21 ? "var(--bad)" : "var(--good)"]);
+    if (a.churned) ev.push([T.mshort[a.churnM], tpl(T.ev_churn, { r: T.reasons[a.reason] }), "var(--bad)"]);
+    else if (st === 0) ev.push([T.mshort[a.renewM], T.ev_renew, "var(--good)"]);
+    const play = a.churned ? T.play_win[a.seg] : risk(a) ? T.play_risk[a.seg] : T.play_ok[a.seg];
+    drawer.innerHTML = `<div class="dh"><span class="av" style="--c:${SC[a.seg]}">${a.name.split(" ").map(w => w[0]).join("")}</span><div><h3>${a.name}</h3><span>${a.id} · ${T.seg_names[a.seg]} · ${T.ind_names[a.ind]}</span></div><button type="button" class="x" id="dClose" aria-label="${T.dr_close}">×</button></div>
+      <div class="dstats"><div><b>${usd(a.price)}</b><span>ARR</span></div><div><b>${a.health}</b><span>${T.ac[8]}</span></div><div><b>${a.keyUsed}/7</b><span>${T.ac[5]}</span></div><div><b>${a.seatsUsed}/${a.seatsPaid}</b><span>${T.ac[6]}</span></div></div>
+      <div><span class="lab">${T.dr_status}</span><p style="margin-top:6px">${a.churned ? `<span class="pill n">${T.st_names[2]}</span>` : risk(a) ? `<span class="pill" style="background:var(--warn-bg);color:var(--warn)">${T.st_risk}</span>` : `<span class="pill y">${T.st_names[st]}</span>`} <span style="font-size:13px;color:var(--ink-2)">${T.coh_names[a.cohort]} · ${a.full ? T.use_names[0] : T.use_names[1]}</span></p></div>
+      <div><span class="lab">${T.dr_tl}</span><ul class="tl">${ev.map(e => `<li><span class="d">${e[0]}</span><i style="--c:${e[2]}"></i><span>${e[1]}</span></li>`).join("")}</ul></div>
+      <div><span class="lab">${T.dr_play}</span><div class="rec" style="margin-top:8px">${play}</div></div>
+      <p class="note" style="margin-top:0">${T.demo_pill}</p>`;
+    drawer.classList.add("on"); scrim.classList.add("on"); drawer.setAttribute("aria-hidden", "false");
+    $("dClose").addEventListener("click", closeAcc); $("dClose").focus();
+    document.querySelectorAll("#aTbl tr.click").forEach(tr => tr.classList.toggle("on", tr.dataset.id === id));
+  }
+  function closeAcc() { openId = null; drawer.classList.remove("on"); scrim.classList.remove("on"); drawer.setAttribute("aria-hidden", "true"); document.querySelectorAll("#aTbl tr.on").forEach(tr => tr.classList.remove("on")); }
+  scrim.addEventListener("click", closeAcc);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") { closeAcc(); hideTip(); } });
+
+  syncControls();
+  const h0 = location.hash.slice(1);
+  go(VIEWS.includes(h0) ? h0 : "task", false);
+})();
+</script>
+
+</body>
+</html>

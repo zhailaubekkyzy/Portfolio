@@ -3,6 +3,7 @@
   src/home.src.html  -> index.html               (bilingual RU/EN, projects list)
   src/case.src.html  -> rfm-smartflow.html       + en/rfm-smartflow.html  (via src/en_case.py)
   src/blcrm.src.html -> booklover-crm.html      + en/booklover-crm.html  (texts in blcrm_text.py, data from blsim.js)
+  src/pp.src.html  -> projectpro-retention.html + en/projectpro-retention.html  (texts in projectpro_text.py, accounts from ppsim.js)
   src/navspy.html    -> appended to both case pages (active section in the top nav)
   src/crm.src.html   -> rfm-dashboard.html       + en/rfm-dashboard.html  (via src/en_crm.py; sim.js + analytics.js inlined)
 
@@ -14,7 +15,7 @@ import os, re, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "src")
 sys.path.insert(0, SRC)
-import en_case, en_crm, booklover_text, blcrm_text  # noqa: E402
+import en_case, en_crm, booklover_text, blcrm_text, projectpro_text  # noqa: E402
 import json, html
 
 CYR = re.compile("[А-Яа-яЁё]")
@@ -156,6 +157,29 @@ def main():
         if lang == "en":
             leftovers(page, "en/booklover-crm.html")
         write(("booklover-crm.html", "en/booklover-crm.html")[i], wrap(page, lang))
+    # ProjectPro B2B retention case: {{key}} placeholders and the page script's T object come from projectpro_text.py
+    pp = read("pp.src.html").replace("/*__SIM__*/", read("ppsim.js"))
+    for i, lang in enumerate(("ru", "en")):
+        extra = {
+            "portfolio_href": ("./", "../#en")[i],
+            "lang_href": ("en/projectpro-retention.html", "../projectpro-retention.html")[i],
+            "lang_label": ("EN", "RU")[i],
+            "root": ("", "../")[i],
+        }
+        tx = {k: v[i] for k, v in projectpro_text.T.items()}
+        def sub3(m):
+            k = m.group(1)
+            if k in extra:
+                return extra[k]
+            if k not in tx or not isinstance(tx[k], str):
+                print(f"  ! projectpro: missing key {k}")
+                return k
+            return re.sub(r"(\d) (\d{3})(?!\d)", "\\1\u00a0\\2", tx[k])
+        page = re.sub(r"\{\{(\w+)\}\}", sub3, pp)
+        page = page.replace("/*__T__*/", json.dumps(tx, ensure_ascii=False))
+        if lang == "en":
+            leftovers(page, "en/projectpro-retention.html")
+        write(("projectpro-retention.html", "en/projectpro-retention.html")[i], wrap(page, lang))
     print("Done.")
 
 
