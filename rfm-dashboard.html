@@ -370,7 +370,7 @@ table.mig td.cell:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
     <button class="nav-btn" data-view="strategy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>Стратегия</button>
     <button class="nav-btn" data-view="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg>Как я считала</button>
     <div class="foot">
-      <a href="./">← Портфолио</a>
+      <a href="./#ru">← Портфолио</a>
       <a href="rfm-smartflow.html">Кейс: стратегия удержания</a>
       <p class="demo">Демо-данные: сгенерированы моделью, которая имитирует покупки на SmartFlow. Те же расчёты — в Excel.</p>
     </div>
@@ -1489,6 +1489,16 @@ if (typeof module !== "undefined") module.exports = { buildBase, analyze, TH, SE
 })();
 </script>
 
+<a class="pf-home" href="./#ru" title="На главную — все проекты" aria-label="На главную — все проекты"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10"/><path d="M10 20v-6h4v6"/></svg><span>Главная</span></a>
+<style>
+.pf-home { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 25;
+  display: inline-flex; align-items: center; gap: 7px; font: inherit; font-size: 14px; font-weight: 600; line-height: 1; text-decoration: none;
+  border: 1px solid var(--line, #d0d5dd); background: var(--surface, #fff); color: var(--ink, #0f172a);
+  padding: 10px 14px; border-radius: 999px; box-shadow: 0 6px 24px rgb(15 23 42 / .16); }
+.pf-home:hover { border-color: var(--ink-2, #475467); }
+.pf-home:focus-visible { outline: 2px solid var(--ink, #0f172a); outline-offset: 2px; }
+@media print { .pf-home { display: none; } }
+</style>
 <script>
 (function () {
   try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) {}

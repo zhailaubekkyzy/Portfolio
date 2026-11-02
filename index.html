@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: a short intro, then an index of cases — each case is a row with its key result up front. Bilingual: RU / EN toggle, #en in the URL opens English. */
+/* Layout: a short intro, then an index of cases — each case is a row with its key result up front. Bilingual: EN (default) / RU toggle, #ru in the URL opens Russian. */
 :root {
   --bg: #f4f6f9; --surface: #ffffff; --surface-2: #eceff4; --ink: #131a26; --ink-2: #485264; --muted: #7a8496; --line: #dde2ea;
   --focus: #2a78d6; --good: #11764f; --good-bg: #e3f4ec;
@@ -98,7 +98,7 @@ footer { padding-block: 32px 48px; font-size: 13px; color: var(--muted); display
 <body>
 
 
-<div class="wrap topbar"><div class="lang" role="group" aria-label="Language"><button type="button" data-lang="ru">RU</button><button type="button" data-lang="en">EN</button></div></div>
+<div class="wrap topbar"><div class="lang" role="group" aria-label="Language"><button type="button" data-lang="en">EN</button><button type="button" data-lang="ru">RU</button></div></div>
 
 <header class="wrap intro">
   <div>
@@ -209,8 +209,8 @@ const FACTS = [
   { c: "--c3", ru: "Опыт в маркетинге и образовании: вела маркетинг, преподавала английский, развила репетиторство в бизнес", en: "Background in marketing and education: ran marketing, taught English, grew tutoring into a business" }
 ];
 
-let L = "ru";
-try { if (location.hash === "#en") L = "en"; else if (location.hash !== "#ru" && localStorage.getItem("pf-lang") === "en") L = "en"; } catch (e) {}
+let L = "en"; // English is the main language; #ru in the URL or a saved choice opens Russian
+try { if (location.hash === "#ru") L = "ru"; else if (location.hash !== "#en" && localStorage.getItem("pf-lang") === "ru") L = "ru"; } catch (e) {}
 let active = null;
 const list = document.getElementById("list"), filters = document.getElementById("filters");
 

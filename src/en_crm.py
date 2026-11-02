@@ -10,7 +10,7 @@ CODE = [
     ('"ru-RU"', '"en-US"'),
     ('const B = buildBase(simulate());', 'const B = buildBase(simulate());\n  ["Online education", "Health & fitness", "Business & marketing", "Creative hobbies"].forEach((n, i) => B.NICHES[i].name = n);\n  ["Instagram", "Telegram", "TikTok", "Referrals"].forEach((n, i) => B.CHANNELS[i].name = n);'),
     ('const KEY = "sf-crm-msg-v1";', 'const KEY = "sf-crm-msg-en-v1";'),
-    ('<a href="./">← Портфолио</a>', '<a href="../#en">← Portfolio</a>'),
+    ('<a href="./#ru">← Портфолио</a>', '<a href="../#en">← Portfolio</a>'),
     ('<a class="btn" id="langLink" href="en/rfm-dashboard.html">EN</a>', '<a class="btn" id="langLink" href="../rfm-dashboard.html">RU</a>'),
     ('const fill = (t, p) => t.replace(/\\{номер\\}/g, p.id).replace(/\\{тема\\}/g, TEMA[p.ni]).replace(/\\{дней\\}/g, p.R).replace(/\\{сумма\\}/g, nf(p.M) + " ₸");',
      'const fill = (t, p) => t.replace(/\\{id\\}/g, p.id).replace(/\\{topic\\}/g, TEMA[p.ni]).replace(/\\{days\\}/g, p.R).replace(/\\{amount\\}/g, "₸" + nf(p.M));'),

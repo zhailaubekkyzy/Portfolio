@@ -4,7 +4,8 @@ Static product-portfolio site, bilingual (Russian + English). Deployed on Vercel
 The owner writes in Russian; reply in Russian unless she switches.
 
 ## Structure
-- `index.html` — home page with the project list (built from `src/home.src.html`). RU/EN toggle; `#en` opens English.
+- `index.html` — home page with the project list (built from `src/home.src.html`). English is the default; EN/RU toggle, `#ru` opens Russian (the choice is remembered).
+- Every case page gets a fixed "Home / Главная" button (bottom right) from `build.py` (`HOME`), so the home page is reachable from any step. RU pages link to `./#ru`, EN pages to `../#en`.
 - `rfm-smartflow.html`, `rfm-dashboard.html` — Russian pages of the RFM case. `en/…` — English versions.
 - `files/` — PDFs and Excel attached to cases (Russian only; English links say "(RU)").
 - `src/` — sources. **Edit only `src/`, then run `python3 src/build.py`** — it regenerates all pages above and prints any untranslated Russian text.

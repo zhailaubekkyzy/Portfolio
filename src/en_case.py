@@ -5,7 +5,7 @@ PAIRS = [
 ('<title>RFM-анализ SmartFlow</title>', '<title>RFM Analysis for SmartFlow</title>'),
 ('content="Продуктовый кейс: RFM-сегментация покупателей SmartFlow, стратегия удержания и перераспределение маркетингового бюджета."', 'content="Product case: RFM segmentation of SmartFlow buyers, a retention strategy and a reallocated marketing budget."'),
 ('aria-label="Разделы"', 'aria-label="Sections"'),
-('<a href="./" class="back">← Все проекты</a>', '<a href="../#en" class="back">← All projects</a>'),
+('<a href="./#ru" class="back">← Все проекты</a>', '<a href="../#en" class="back">← All projects</a>'),
 ('<a href="rfm-dashboard.html" class="back">Дашборд данных →</a>', '<a href="rfm-dashboard.html" class="back">Data dashboard →</a>'),
 ('<a href="#strategy">Стратегия</a>', '<a href="#strategy">Strategy</a>'),
 ('<a href="#segments">Сегменты</a>', '<a href="#segments">Segments</a>'),

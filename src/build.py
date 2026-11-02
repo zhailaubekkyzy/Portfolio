@@ -74,9 +74,29 @@ GLOBAL = """<script>
 </script>"""
 
 
-def wrap(fragment, lang):
+# Every case page: an always-visible "Home" button (bottom right) so the home page is one tap away at any step,
+# also on phones where the sidebar and top links scroll away. RU pages live at the root, EN pages in en/.
+HOME = """<a class="pf-home" href="{href}" title="{title}" aria-label="{title}"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10"/><path d="M10 20v-6h4v6"/></svg><span>{label}</span></a>
+<style>
+.pf-home { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 25;
+  display: inline-flex; align-items: center; gap: 7px; font: inherit; font-size: 14px; font-weight: 600; line-height: 1; text-decoration: none;
+  border: 1px solid var(--line, #d0d5dd); background: var(--surface, #fff); color: var(--ink, #0f172a);
+  padding: 10px 14px; border-radius: 999px; box-shadow: 0 6px 24px rgb(15 23 42 / .16); }
+.pf-home:hover { border-color: var(--ink-2, #475467); }
+.pf-home:focus-visible { outline: 2px solid var(--ink, #0f172a); outline-offset: 2px; }
+@media print { .pf-home { display: none; } }
+</style>"""
+HOME_TEXT = {"ru": ("./#ru", "\u0413\u043b\u0430\u0432\u043d\u0430\u044f", "\u041d\u0430 \u0433\u043b\u0430\u0432\u043d\u0443\u044e \u2014 \u0432\u0441\u0435 \u043f\u0440\u043e\u0435\u043a\u0442\u044b"),
+             "en": ("../#en", "Home", "Back to the home page \u2014 all projects")}
+
+
+def wrap(fragment, lang, home=True):
     i = fragment.index("</style>") + len("</style>")
-    return HEAD.format(lang=lang) + fragment[:i] + "\n</head>\n<body>\n" + fragment[i:] + "\n" + GLOBAL + "\n</body>\n</html>\n"
+    btn = ""
+    if home:
+        href, label, title = HOME_TEXT[lang]
+        btn = HOME.replace("{href}", href).replace("{label}", label).replace("{title}", title) + "\n"
+    return HEAD.format(lang=lang) + fragment[:i] + "\n</head>\n<body>\n" + fragment[i:] + "\n" + btn + GLOBAL + "\n</body>\n</html>\n"
 
 
 def pairs(text, pairs_list, label):
@@ -115,7 +135,7 @@ def leftovers(text, label, skip=()):
 def main():
     print("Building…")
     # home
-    write("index.html", wrap(read("home.src.html"), "ru"))
+    write("index.html", wrap(read("home.src.html"), "en", home=False))
     write("en/index.html", '<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=../#en">'
                            '<title>Portfolio</title><a href="../#en">Portfolio</a>\n')
 
@@ -147,7 +167,7 @@ def main():
     for i, lang in enumerate(("ru", "en")):
         page = bl
         extra = {
-            "back_href": ("./", "../#en")[i],
+            "back_href": ("./#ru", "../#en")[i],
             "lang_href": ("en/booklover-retention.html", "../booklover-retention.html")[i],
             "lang_label": ("EN", "RU")[i],
             "root": ("", "../")[i],
@@ -171,7 +191,7 @@ def main():
     crm2 = read("blcrm.src.html").replace("/*__SIM__*/", read("blsim.js"))
     for i, lang in enumerate(("ru", "en")):
         extra = {
-            "portfolio_href": ("./", "../#en")[i],
+            "portfolio_href": ("./#ru", "../#en")[i],
             "lang_href": ("en/booklover-crm.html", "../booklover-crm.html")[i],
             "lang_label": ("EN", "RU")[i],
             "root": ("", "../")[i],
@@ -197,7 +217,7 @@ def main():
     pp = read("pp.src.html").replace("/*__SIM__*/", read("ppsim.js"))
     for i, lang in enumerate(("ru", "en")):
         extra = {
-            "portfolio_href": ("./", "../#en")[i],
+            "portfolio_href": ("./#ru", "../#en")[i],
             "lang_href": ("en/projectpro-retention.html", "../projectpro-retention.html")[i],
             "lang_label": ("EN", "RU")[i],
             "root": ("", "../")[i],
