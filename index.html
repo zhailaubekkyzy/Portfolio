@@ -210,7 +210,7 @@ const FACTS = [
 ];
 
 let L = "en"; // English is the main language; #ru in the URL or a saved choice opens Russian
-try { if (location.hash === "#ru") L = "ru"; else if (location.hash !== "#en" && localStorage.getItem("pf-lang") === "ru") L = "ru"; } catch (e) {}
+try { if (location.hash === "#ru") L = "ru"; else if (location.hash !== "#en" && localStorage.getItem("pf-lang2") === "ru") L = "ru"; } catch (e) {}
 let active = null;
 const list = document.getElementById("list"), filters = document.getElementById("filters");
 
@@ -241,7 +241,7 @@ function render() {
 }
 document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => {
   L = b.dataset.lang;
-  try { localStorage.setItem("pf-lang", L); } catch (e) {}
+  try { localStorage.setItem("pf-lang2", L); } catch (e) {}
   try { history.replaceState(null, "", "#" + L); } catch (e) {}
   render();
 }));
