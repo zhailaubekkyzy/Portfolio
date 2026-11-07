@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Retention FinanceApp</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Продуктовый кейс: почему 6-месячное удержание финтех-приложения падает с 48% до 35%, LTV по странам, сегменты и стратегия из трёх фокусов.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* FinanceApp case: one page — summary, data, assumptions, tasks 1–5, validation. Same tokens as the BookLover case. */
+:root {
+  --bg: #f4f6f9; --surface: #ffffff; --surface-2: #eceff4; --ink: #131a26; --ink-2: #485264; --muted: #7a8496; --line: #dde2ea;
+  --focus: #2a78d6; --good: #11764f; --good-bg: #e3f4ec; --warn: #8a5a00; --warn-bg: #fff4de;
+  --c1: #2a78d6; --c1-t: #e8f1fc; --c2: #1baf7a; --c3: #eb6834; --c3-t: #fdece4; --base-bar: #c3c8d1;
+  --f-display: "Unbounded", "Onest", system-ui, sans-serif;
+  --f-body: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e121a; --surface: #161c27; --surface-2: #1e2633; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #2a3344;
+    --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --warn: #f0c46a; --warn-bg: #33270f;
+    --c1: #3987e5; --c1-t: #16263d; --c2: #199e70; --c3: #d95926; --c3-t: #362018; --base-bar: #4a5263; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e121a; --surface: #161c27; --surface-2: #1e2633; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #2a3344;
+  --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --warn: #f0c46a; --warn-bg: #33270f;
+  --c1: #3987e5; --c1-t: #16263d; --c2: #199e70; --c3: #d95926; --c3-t: #362018; --base-bar: #4a5263; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: inherit; }
+.num { font-variant-numeric: tabular-nums; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.nav .wrap { display: flex; gap: 6px; overflow-x: auto; padding-block: 10px; scrollbar-width: none; }
+.nav a { flex: none; text-decoration: none; color: var(--ink-2); font-size: 14px; padding: 6px 12px; border-radius: 999px; }
+.nav a.back { color: var(--ink); font-weight: 600; }
+.nav a.lang { margin-left: auto; font-weight: 700; font-family: var(--f-mono); font-size: 13px; border: 1px solid var(--line); }
+.nav a:hover { background: var(--surface-2); color: var(--ink); }
+
+.hero { padding-block: 56px 32px; display: grid; gap: 22px; }
+.hero h1 { font-family: var(--f-display); font-weight: 700; font-size: clamp(34px, 6vw, 64px); line-height: 1.04; letter-spacing: -.02em; }
+.hero h1 span { color: var(--muted); font-weight: 500; }
+.lead { font-size: clamp(16px, 1.6vw, 19px); color: var(--ink-2); max-width: 66ch; }
+.note { display: inline-flex; align-items: center; gap: 8px; width: fit-content; max-width: 100%; font-size: 13px; color: var(--warn); background: var(--warn-bg); padding: 6px 12px; border-radius: 999px; }
+.crmlink { width: fit-content; font-weight: 600; color: var(--c1); text-decoration: none; font-size: 15px; }
+.crmlink:hover { text-decoration: underline; }
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 8px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px 18px 16px; display: grid; gap: 6px; align-content: start; }
+.kpi .v { font-family: var(--f-display); font-size: clamp(22px, 2.6vw, 30px); font-weight: 700; letter-spacing: -.01em; }
+.kpi .v.bad { color: var(--c3); }
+.kpi .d { font-size: 13.5px; color: var(--ink-2); }
+
+.hero { padding-block: 40px 20px; }
+.blocks { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; padding-bottom: 28px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 22px; min-width: 0; }
+.card h2 { font-family: var(--f-display); font-size: 19px; font-weight: 700; margin-bottom: 14px; }
+.list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.list li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; font-size: 15px; color: var(--ink-2); }
+.list li b { display: block; color: var(--ink); font-weight: 600; }
+.list .n { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; font-family: var(--f-mono); font-size: 13px; font-weight: 600; background: var(--surface-2); color: var(--ink); }
+.list .n.fix { background: var(--good-bg); color: var(--good); }
+.open { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; background: var(--ink); color: var(--bg); border-radius: var(--r); padding: 20px 24px; text-decoration: none; margin-bottom: 48px; }
+.open b { font-family: var(--f-display); font-size: clamp(18px, 2.2vw, 24px); }
+.open span span { font-size: 14px; opacity: .75; }
+.open:hover { opacity: .94; }
+footer { padding-block: 0 40px; font-size: 13px; color: var(--muted); }
+@media (max-width: 900px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .blocks { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 520px) { .kpis { grid-template-columns: minmax(0, 1fr); } .card { padding: 18px; } }
+
+.sec { padding-block: 28px; border-top: 1px solid var(--line); scroll-margin-top: 64px; display: grid; gap: 16px; }
+.sec h2 { font-family: var(--f-display); font-size: clamp(22px, 3vw, 30px); font-weight: 700; letter-spacing: -.01em; }
+.formula { font-family: var(--f-mono); font-size: 13.5px; background: var(--surface-2); color: var(--ink); padding: 10px 14px; border-radius: 10px; width: fit-content; max-width: 100%; }
+.insight { font-size: 16px; color: var(--ink-2); max-width: 78ch; }
+.tbl { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow-x: auto; }
+.tbl table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 440px; }
+.tbl caption { text-align: left; padding: 14px 16px 4px; font-weight: 700; }
+.tbl th, .tbl td { padding: 10px 16px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.tbl th { font-size: 12px; font-family: var(--f-mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 500; }
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl td.num, .tbl th.num { text-align: right; }
+.tbl .bad { color: var(--c3); font-weight: 600; }
+.tbl .good { color: var(--good); font-weight: 600; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; align-items: start; }
+.focus { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; display: grid; gap: 10px; }
+.focus h3 { font-family: var(--f-display); font-size: 17px; font-weight: 700; }
+.focus .n { font-family: var(--f-mono); font-size: 12px; color: var(--c1); font-weight: 600; }
+.focus dl { margin: 0; display: grid; gap: 8px; font-size: 14.5px; color: var(--ink-2); }
+.focus dt { font-family: var(--f-mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.focus dd { margin: 0; }
+.plain { margin-bottom: 8px; }
+.gdata { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 12px; align-items: start; }
+.gdata .tbl table { min-width: 0; }
+.gdata .tbl th, .gdata .tbl td { white-space: normal; }
+.gdata .tbl:last-child { grid-column: 1 / -1; }
+.tbl td:first-child { white-space: nowrap; }
+@media (max-width: 520px) { .tbl th, .tbl td { padding: 9px 10px; } }
+@media (max-width: 400px) { .gdata { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 900px) { .grid3 { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+
+
+<nav class="nav" aria-label="Разделы">
+  <div class="wrap">
+    <a href="./#ru" class="back">← Все проекты</a>
+    <a href="#summary">Итог</a>
+    <a href="#data">Данные</a>
+    <a href="#assumptions">Допущения</a>
+    <a href="#cohorts">1 · Когорты</a>
+    <a href="#ltv">2 · LTV</a>
+    <a href="#segments">3 · Сегменты</a>
+    <a href="#features">4 · Функции</a>
+    <a href="#strategy">5 · Стратегия</a>
+    <a href="#validation">Проверка</a>
+    <a href="en/financeapp-retention.html" class="lang">EN</a>
+  </div>
+</nav>
+
+<header class="wrap hero">
+  <span class="eyebrow">Продуктовый кейс · Retention и монетизация</span>
+  <h1>Retention <span>FinanceApp</span></h1>
+  <p class="lead">FinanceApp — финтех-приложение: учёт финансов, инвестиции и кредиты, 1,2 млн активных пользователей в 5 странах. Привлечение растёт каждый квартал, а 6-месячное удержание падает с 48% до 35%. Я нашла главный рычаг — переход пользователя во вторую функцию — и собрала стратегию из трёх фокусов.</p>
+  <span class="note">Учебный кейс курса по продукт-менеджменту: данные из условия задачи, не реального продукта</span>
+  <div class="kpis">
+    <div class="kpi"><span class="eyebrow">Retention 6 мес.</span><span class="v bad num">48% → 35%</span><span class="d">когорты Q1 2022 и Q1 2023</span></div>
+    <div class="kpi"><span class="eyebrow">Удержано из прироста</span><span class="v bad num">15,5%</span><span class="d">из 120 тыс. дополнительных новых пользователей за год</span></div>
+    <div class="kpi"><span class="eyebrow">«Только учёт»</span><span class="v num">60% · 25%</span><span class="d">доля базы и её удержание: самый массовый и самый «дырявый» сегмент</span></div>
+    <div class="kpi"><span class="eyebrow">Страны C, D, E</span><span class="v num">≈ 50%</span><span class="d">выручки при 35% пользователей</span></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="blocks" id="summary" style="scroll-margin-top:64px">
+    <section class="card">
+      <h2>Что я нашла</h2>
+      <ol class="list">
+        <li><span class="n">1</span><span><b>Рост держится на объёме, а не на качестве. </b>За год новых пользователей стало на 67% больше, удержанных — только на 22%. Каждая новая когорта держится хуже предыдущей.</span></li>
+        <li><span class="n">2</span><span><b>Главный рычаг — вторая функция, а не страна. </b>Инвестиции поднимают удержание с 25% до 58%, все три функции — до 72%. Страны по LTV/CAC отличаются всего на ±6%.</span></li>
+        <li><span class="n">3</span><span><b>Кредиты зарабатывают, но не удерживают. </b>32% против 25% у базы: кредит выплачен — повода возвращаться нет.</span></li>
+      </ol>
+    </section>
+    <section class="card">
+      <h2>Что я делаю</h2>
+      <ol class="list">
+        <li><span class="n fix">0</span><span><b>Не наращиваю привлечение, пока retention падает. </b>Иначе мы платим CAC за пользователей, которые уходят.</span></li>
+        <li><span class="n">F1</span><span><b>«Только учёт» → инвестиции. </b>Перевод 10% базы даёт около +3,3 п.п. общего удержания.</span></li>
+        <li><span class="n">F2</span><span><b>Кредит как мост. </b>Кредит → бюджет на выплату → оффер «откладывай себе» в момент последнего платежа.</span></li>
+        <li><span class="n">F3</span><span><b>C, D, E → Ultra. </b>Половина выручки при самом дорогом CAC: удерживаем этих пользователей в пакете с retention 72%.</span></li>
+      </ol>
+    </section>
+  </div>
+
+  <section class="sec" id="data">
+    <span class="eyebrow">Исходные данные</span>
+    <h2>Что дано в условии</h2>
+    <div class="gdata">
+      <div class="tbl"><table><caption>Когорты</caption>
+        <thead><tr><th>Когорта</th><th class="num">Новые</th><th class="num">Активны через 6 мес.</th></tr></thead>
+        <tbody><tr><td>Q1 2022</td><td class='num'>180 000</td><td class='num'>86 400</td></tr><tr><td>Q2 2022</td><td class='num'>210 000</td><td class='num'>94 500</td></tr><tr><td>Q3 2022</td><td class='num'>240 000</td><td class='num'>100 800</td></tr><tr><td>Q4 2022</td><td class='num'>270 000</td><td class='num'>102 600</td></tr><tr><td>Q1 2023</td><td class='num'>300 000</td><td class='num'>105 000</td></tr></tbody></table></div>
+      <div class="tbl"><table><caption>Страны</caption>
+        <thead><tr><th>Страна</th><th class="num">CAC</th><th class="num">ARPU</th><th class="num">Доля пользователей</th></tr></thead>
+        <tbody><tr><td>A</td><td class='num'>$8</td><td class='num'>$4,5</td><td class='num'>40%</td></tr><tr><td>B</td><td class='num'>$12</td><td class='num'>$6,0</td><td class='num'>25%</td></tr><tr><td>C</td><td class='num'>$15</td><td class='num'>$7,5</td><td class='num'>15%</td></tr><tr><td>D</td><td class='num'>$18</td><td class='num'>$9,0</td><td class='num'>12%</td></tr><tr><td>E</td><td class='num'>$25</td><td class='num'>$13,5</td><td class='num'>8%</td></tr></tbody></table></div>
+      <div class="tbl"><table><caption>Функции</caption>
+        <thead><tr><th>Набор функций</th><th class="num">Доля активных</th><th class="num">Retention 6 мес.</th><th class="num">Подписка</th></tr></thead>
+        <tbody><tr><td>Только учёт</td><td class='num'>60%</td><td class='num'>25%</td><td class='num'>$1 500</td></tr><tr><td>Учёт + инвестиции</td><td class='num'>15%</td><td class='num'>58%</td><td class='num'>+$1 200 за инвестиции</td></tr><tr><td>Учёт + кредиты</td><td class='num'>10%</td><td class='num'>32%</td><td class='num'>+$1 000 за кредиты</td></tr><tr><td>Все три (Ultra)</td><td class='num'>15%</td><td class='num'>72%</td><td class='num'>$3 000</td></tr></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="sec" id="assumptions">
+    <span class="eyebrow">Прежде чем считать</span>
+    <h2>Допущения и проверка данных</h2>
+    <ol class="list">
+      <li><span class="n">1</span><span><b>ARPU — месячный, churn — за 6 месяцев. </b>Поэтому LTV показываю дважды: по формуле задания и с поправкой ×6. Ранжирование стран не меняется, меняется вывод об окупаемости.</span></li>
+      <li><span class="n">2</span><span><b>Цены подписки несопоставимы с ARPU. </b>$1 500–3 000 против ARPU $4,5–13,5 — вероятно, другие единицы или валюта. В расчётах их не использую.</span></li>
+      <li><span class="n">3</span><span><b>Retention по функциям — связь, а не причина. </b>Функции могут подключать уже лояльные пользователи. Причину проверяю A/B-тестом.</span></li>
+      <li><span class="n">4</span><span><b>Retention по странам не дан. </b>Выводы о странах опираются на экономику пользователя, а не на удержание. Это ограничение анализа.</span></li>
+      <li><span class="n fix">✓</span><span><b>Данные согласованы. </b>Средневзвешенный retention по функциям — 37,7%, по когортам — 41,6%: порядок совпадает.</span></li>
+    </ol>
+  </section>
+
+  <section class="sec" id="cohorts">
+    <span class="eyebrow">Задача 1</span>
+    <h2>6-месячный retention по когортам</h2>
+    <span class="formula">Retention = активные через 6 мес. ÷ новые пользователи</span>
+    <div class="tbl"><table>
+      <thead><tr><th>Когорта</th><th class="num">Новые</th><th class="num">Активны через 6 мес.</th><th class="num">Retention</th></tr></thead>
+      <tbody><tr><td>Q1 2022</td><td class='num'>180 000</td><td class='num'>86 400</td><td class='num'><b>48%</b></td></tr><tr><td>Q2 2022</td><td class='num'>210 000</td><td class='num'>94 500</td><td class='num'><b>45%</b></td></tr><tr><td>Q3 2022</td><td class='num'>240 000</td><td class='num'>100 800</td><td class='num'><b>42%</b></td></tr><tr><td>Q4 2022</td><td class='num'>270 000</td><td class='num'>102 600</td><td class='num'><b>38%</b></td></tr><tr><td>Q1 2023</td><td class='num'>300 000</td><td class='num'>105 000</td><td class='num'><b>35%</b></td></tr></tbody></table></div>
+    <p class="insight">Retention падает каждый квартал на 3–4 п.п. Число удержанных при этом растёт — это vanity metric: она растёт, даже когда продукт работает хуже. Если бы удержание держалось на 48%, за четыре квартала осталось бы примерно на 87 тыс. пользователей больше.</p>
+  </section>
+
+  <section class="sec" id="ltv">
+    <span class="eyebrow">Задача 2</span>
+    <h2>LTV по странам</h2>
+    <span class="formula">Средний churn = 100% − 41,6% = 58,4% за 6 мес. · LTV = ARPU × 1 ÷ 0,584</span>
+    <div class="tbl"><table>
+      <thead><tr><th>Страна</th><th class="num">CAC</th><th class="num">ARPU</th><th class="num">LTV по формуле</th><th class="num">LTV/CAC</th><th class="num">LTV/CAC, ARPU в месяц</th></tr></thead>
+      <tbody><tr><td>A</td><td class='num'>$8</td><td class='num'>$4,5</td><td class='num'>$7,7</td><td class='num bad'>0,96</td><td class='num good'>5,8</td></tr><tr><td>B</td><td class='num'>$12</td><td class='num'>$6,0</td><td class='num'>$10,3</td><td class='num bad'>0,86</td><td class='num good'>5,1</td></tr><tr><td>C</td><td class='num'>$15</td><td class='num'>$7,5</td><td class='num'>$12,8</td><td class='num bad'>0,86</td><td class='num good'>5,1</td></tr><tr><td>D</td><td class='num'>$18</td><td class='num'>$9,0</td><td class='num'>$15,4</td><td class='num bad'>0,86</td><td class='num good'>5,1</td></tr><tr><td>E</td><td class='num'>$25</td><td class='num'>$13,5</td><td class='num'>$23,1</td><td class='num bad'>0,92</td><td class='num good'>5,5</td></tr></tbody></table></div>
+    <p class="insight">По формуле задания LTV/CAC меньше 1 во всех странах: привлечение убыточно. Но churn 6-месячный, а ARPU, скорее всего, месячный. С поправкой ×6 LTV/CAC = 5,1–5,8, бизнес здоров. Один расчёт даёт противоположные выводы, поэтому допущение — часть ответа. Ранжирование одинаковое: A и E впереди, B, C и D равны.</p>
+  </section>
+
+  <section class="sec" id="segments">
+    <span class="eyebrow">Задача 3</span>
+    <h2>Самые выгодные сегменты</h2>
+    <span class="formula">Доля выручки = доля пользователей × ARPU ÷ сумма по всем странам</span>
+    <div class="tbl"><table>
+      <thead><tr><th>Страна</th><th class="num">Доля пользователей</th><th class="num">Доля выручки</th><th class="num">LTV/CAC</th></tr></thead>
+      <tbody><tr><td>A</td><td class='num'>40%</td><td class='num'><b>27%</b></td><td class='num'>0,96</td></tr><tr><td>B</td><td class='num'>25%</td><td class='num'><b>23%</b></td><td class='num'>0,86</td></tr><tr><td>C</td><td class='num'>15%</td><td class='num'><b>17%</b></td><td class='num'>0,86</td></tr><tr><td>D</td><td class='num'>12%</td><td class='num'><b>16%</b></td><td class='num'>0,86</td></tr><tr><td>E</td><td class='num'>8%</td><td class='num'><b>16%</b></td><td class='num'>0,92</td></tr></tbody></table></div>
+    <ol class="list">
+      <li><span class="n">1</span><span><b>По странам. </b>A — объём и лучшая окупаемость. E — самый ценный пользователь: 16% выручки при 8% людей. C, D и E вместе — около половины выручки при трети пользователей.</span></li>
+      <li><span class="n">2</span><span><b>По функциям. </b>Лучший сегмент — все три функции (72%), за ним учёт + инвестиции (58%). Худший — «только учёт», и в нём 60% базы.</span></li>
+      <li><span class="n fix">→</span><span><b>Вывод. </b>Между странами разница ±6%, между наборами функций — почти втрое. Основной фокус — функции, страны — второстепенный.</span></li>
+    </ol>
+  </section>
+
+  <section class="sec" id="features">
+    <span class="eyebrow">Задача 4</span>
+    <h2>Влияние нескольких функций на удержание</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Набор функций</th><th class="num">Доля активных</th><th class="num">Retention 6 мес.</th><th class="num">Прирост к базе</th><th class="num">Во сколько раз</th></tr></thead>
+      <tbody><tr><td>Только учёт</td><td class='num'>60%</td><td class='num'><b>25%</b></td><td class='num'>—</td><td class='num'>1,0×</td></tr><tr><td>Учёт + инвестиции</td><td class='num'>15%</td><td class='num'><b>58%</b></td><td class='num'>+33 п.п.</td><td class='num'>2,3×</td></tr><tr><td>Учёт + кредиты</td><td class='num'>10%</td><td class='num'><b>32%</b></td><td class='num'>+7 п.п.</td><td class='num'>1,3×</td></tr><tr><td>Все три (Ultra)</td><td class='num'>15%</td><td class='num'><b>72%</b></td><td class='num'>+47 п.п.</td><td class='num'>2,9×</td></tr></tbody></table></div>
+    <ol class="list">
+      <li><span class="n">1</span><span><b>Инвестиции — привычка, кредит — разовая потребность. </b>Портфель проверяют часто, а кредит берут, выплачивают и уходят. Поэтому инвестиции добавляют +33 п.п., кредиты — только +7.</span></li>
+      <li><span class="n">2</span><span><b>Корреляция ≠ причина. </b>Возможно, это лояльные пользователи сами подключают больше функций. Тогда насильно предложенные инвестиции удержание не поднимут — это нужно проверить до масштабирования.</span></li>
+    </ol>
+  </section>
+
+  <section class="sec" id="strategy">
+    <span class="eyebrow">Задача 5</span>
+    <h2>Стратегия: три фокуса</h2>
+    <p class="insight">Принцип: сначала остановить падение retention, потом наращивать привлечение. Все три фокуса — про перевод пользователей в сегменты, которые остаются.</p>
+    <div class="grid3">
+      <article class="focus"><span class="n">F1</span><h3>«Только учёт» → инвестиции</h3><dl>
+        <dt>Почему</dt><dd>60% базы с retention 25%. Инвестиции поднимают его до 58%. Перевод 10% базы ≈ +3,3 п.п. общего удержания.</dd><dt>Как</dt><dd>Кастдев о барьерах (страх, непонимание, мало денег), затем A/B-тест оффера: первая инвестиция с маленькой суммой прямо из бюджета.</dd><dt>Метрика</dt><dd>Доля пользователей с 2+ функциями; retention 6 мес. группы теста.</dd></dl></article>
+      <article class="focus"><span class="n">F2</span><h3>Кредит как мост, а не тупик</h3><dl>
+        <dt>Почему</dt><dd>Кредиты почти не удерживают (32%), зато приводят людей с сильным намерением. Сейчас момент последнего платежа — точка оттока.</dd><dt>Как</dt><dd>Кредит → бюджет, чтобы спокойно выплатить (снижает и риск просрочек) → в момент последнего платежа оффер: «эту сумму теперь откладывай себе».</dd><dt>Метрика</dt><dd>Retention через 3 мес. после закрытия кредита; доля перешедших в инвестиции.</dd></dl></article>
+      <article class="focus"><span class="n">F3</span><h3>C, D, E → Ultra</h3><dl>
+        <dt>Почему</dt><dd>Треть пользователей, половина выручки, самый дорогой CAC: каждый ушедший — большая потеря. Ultra удерживает 72%.</dd><dt>Как</dt><dd>Пробный период Ultra для активных пользователей двух функций, локальные сценарии использования, приоритетная поддержка.</dd><dt>Метрика</dt><dd>Доля Ultra и LTV/CAC по странам C, D, E.</dd></dl></article>
+    </div>
+    <p class="insight"><b>Чего не делаю: </b>не перераспределяю бюджет между странами (разница ±6%) и не запускаю новые функции, пока существующие не удерживают.</p>
+  </section>
+
+  <section class="sec plain" id="validation">
+    <span class="eyebrow">Как проверяю</span>
+    <h2>Прежде чем масштабировать</h2>
+    <ol class="list">
+      <li><span class="n">1</span><span><b>Кастдев. </b>Не «нравятся ли инвестиции», а «что мешает начать». От ответа зависит оффер.</span></li>
+      <li><span class="n">2</span><span><b>A/B-тест. </b>Случайно делим пользователей «только учёта» с похожим стажем: одной группе — оффер инвестиций, другой — нет. Случайность убирает эффект «лояльные сами подключают».</span></li>
+      <li><span class="n">3</span><span><b>Ранняя метрика. </b>Ждать 6 месяцев долго: смотрю активность на 30-й день, заранее проверив на старых данных её связь с 6-месячным retention.</span></li>
+      <li><span class="n">4</span><span><b>Guardrails. </b>Просрочки по кредитам, отписки от уведомлений, обращения в поддержку.</span></li>
+    </ol>
+  </section>
+</main>
+
+<footer class="wrap">Retention FinanceApp · учебный продуктовый кейс · 2026</footer>
+
+<!-- Shared by the case pages (inlined by build.py): highlights the section you are reading in the sticky top nav, shows reading progress,
+     and offers "← Back" to return to where you were before jumping to a section (button, Alt+← or the browser's back). -->
+<style>
+.nav { position: sticky; }
+.nav a.active { background: var(--ink); color: var(--bg); }
+.nav a.active:hover { background: var(--ink); color: var(--bg); }
+.nav .progress { position: absolute; left: 0; bottom: -1px; height: 2px; width: 100%; background: var(--focus); transform-origin: 0 50%; transform: scaleX(0); }
+.backjump { position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 12;
+  font: inherit; font-size: 14px; font-weight: 600; border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  padding: 9px 14px; border-radius: 999px; cursor: pointer; box-shadow: 0 6px 24px rgb(15 23 42 / .16); }
+.backjump:hover { border-color: var(--ink-2); }
+@media (prefers-reduced-motion: no-preference) { .nav a { transition: background .15s, color .15s; } }
+</style>
+<script>
+(function () {
+  const nav = document.querySelector(".nav");
+  if (!nav) return;
+  const row = nav.querySelector(".wrap");
+  const links = [...nav.querySelectorAll('a[href^="#"]')];
+  const pairs = links.map(a => [a, document.getElementById(a.getAttribute("href").slice(1))]).filter(p => p[1]);
+  const bar = document.createElement("div");
+  bar.className = "progress";
+  bar.setAttribute("aria-hidden", "true");
+  nav.appendChild(bar);
+  let current = null, ticking = false;
+
+  function update() {
+    ticking = false;
+    const line = nav.getBoundingClientRect().bottom + 24;
+    let active = null;
+    for (const [a, sec] of pairs) if (sec.getBoundingClientRect().top <= line) active = a;
+    const atEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+    if (atEnd && pairs.length) active = pairs[pairs.length - 1][0];
+    if (active !== current) {
+      if (current) { current.classList.remove("active"); current.removeAttribute("aria-current"); }
+      if (active) {
+        active.classList.add("active");
+        active.setAttribute("aria-current", "location");
+        // keep the active link visible in the horizontally scrolling nav (phones) without moving the page
+        const left = active.offsetLeft - (row.clientWidth - active.offsetWidth) / 2;
+        row.scrollTo({ left: Math.max(0, left), behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      }
+      current = active;
+    }
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.transform = "scaleX(" + (max > 0 ? Math.min(1, window.scrollY / max) : 0) + ")";
+  }
+  // one step back: remember the scroll position before every in-page jump
+  const ru = (document.documentElement.lang || "ru").slice(0, 2) === "ru";
+  const back = document.createElement("button");
+  back.type = "button"; back.className = "backjump"; back.hidden = true;
+  back.textContent = ru ? "\u2190 \u041d\u0430\u0437\u0430\u0434" : "\u2190 Back";
+  back.title = ru ? "\u0412\u0435\u0440\u043d\u0443\u0442\u044c\u0441\u044f \u0442\u0443\u0434\u0430, \u0433\u0434\u0435 \u0432\u044b \u0431\u044b\u043b\u0438 \u00b7 Alt + \u2190" : "Return to where you were \u00b7 Alt + \u2190"; // RU text escaped so English pages stay Cyrillic-free
+  document.body.appendChild(back);
+  const jumps = [];
+  const sync = () => { back.hidden = !jumps.length; };
+  document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener("click", () => {
+    if (a.getAttribute("href").length < 2) return;
+    jumps.push({ y: window.scrollY, h: location.hash }); if (jumps.length > 50) jumps.shift(); sync();
+  }));
+  function goBack() {
+    if (!jumps.length) return;
+    const y = jumps.pop().y;
+    try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+    window.scrollTo({ top: y, behavior: "auto" });
+    sync();
+  }
+  back.addEventListener("click", goBack);
+  // the browser's own back: drop the jump it just undid (clicking a link also fires popstate, so compare hashes)
+  window.addEventListener("popstate", () => { if (jumps.length && location.hash === jumps[jumps.length - 1].h) { jumps.pop(); sync(); } });
+  document.addEventListener("keydown", e => { if (e.altKey && e.key === "ArrowLeft" && jumps.length) { e.preventDefault(); goBack(); } });
+
+  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+  update();
+})();
+</script>
+
+<a class="pf-home" href="./#ru" title="На главную — все проекты" aria-label="На главную — все проекты"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10"/><path d="M10 20v-6h4v6"/></svg><span>Главная</span></a>
+<style>
+.pf-home { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 25;
+  display: inline-flex; align-items: center; gap: 7px; font: inherit; font-size: 14px; font-weight: 600; line-height: 1; text-decoration: none;
+  border: 1px solid var(--line, #d0d5dd); background: var(--surface, #fff); color: var(--ink, #0f172a);
+  padding: 10px 14px; border-radius: 999px; box-shadow: 0 6px 24px rgb(15 23 42 / .16); }
+.pf-home:hover { border-color: var(--ink-2, #475467); }
+.pf-home:focus-visible { outline: 2px solid var(--ink, #0f172a); outline-offset: 2px; }
+@media print { .pf-home { display: none; } }
+</style>
+<script>
+(function () {
+  try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) {}
+  function toTop() {
+    try { window.scrollTo(0, 0); } catch (e) {}
+    try { if (window.top !== window && document.body) document.body.scrollIntoView({ block: "start" }); } catch (e) {}
+  }
+  window.pfToTop = toTop;
+  function onLoad() {
+    var h = decodeURIComponent(location.hash.slice(1));
+    if (h && document.getElementById(h)) return; // a link to a section of a long page keeps its place
+    toTop();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", onLoad); else onLoad();
+  window.addEventListener("pageshow", function (e) { if (e.persisted) onLoad(); });
+  var TYPING = /^(INPUT|TEXTAREA|SELECT)$/;
+  function typing(el) { return el && (el.isContentEditable || (TYPING.test(el.tagName) && el.type !== "range" && el.type !== "checkbox" && el.type !== "radio" && el.type !== "button")); }
+  document.addEventListener("pointerdown", function (e) {
+    var a = document.activeElement;
+    if (!typing(a)) return;
+    var t = e.target;
+    if (t && t.closest && t.closest("input, textarea, select, label, [contenteditable]")) return;
+    a.blur();
+  }, true);
+  document.addEventListener("keydown", function (e) {
+    var a = document.activeElement;
+    if (!typing(a) || a.tagName === "TEXTAREA") return;
+    if (e.key === "Enter" || e.key === "Escape") a.blur();
+  });
+})();
+</script>
+</body>
+</html>
