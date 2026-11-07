@@ -125,49 +125,28 @@ footer { padding-block: 32px 48px; font-size: 13px; color: var(--muted); display
 /*
   HOW TO ADD A PROJECT / КАК ДОБАВИТЬ ПРОЕКТ
   Copy one object in PROJECTS and change the fields. Every text field has ru and en.
+  Order = what visitors see first: put the NEWEST project at the TOP of the array.
   url: { ru: "page.html", en: "en/page.html" } — the case page in each language.
   links: extra materials (PDF, Excel, dashboard). results: 2–4 key numbers. tags: filters at the top.
   Files (PDF, Excel) go into the files/ folder.
 */
 const PROJECTS = [
   {
-    title: { ru: "RFM-анализ SmartFlow", en: "RFM Analysis for SmartFlow" },
-    url: { ru: "rfm-smartflow.html", en: "en/rfm-smartflow.html" },
+    title: { ru: "Retention финтеха · FinanceApp", en: "Fintech Retention · FinanceApp" },
+    url: { ru: "financeapp-retention.html", en: "en/financeapp-retention.html" },
     year: "2026",
-    tags: [{ ru: "Retention", en: "Retention" }, { ru: "Аналитика", en: "Analytics" }, { ru: "Когорты", en: "Cohorts" }],
+    tags: [{ ru: "Retention", en: "Retention" }, { ru: "Когорты", en: "Cohorts" }, { ru: "Монетизация", en: "Monetization" }],
     text: {
-      ru: "Сегментировала покупателей по RFM и построила стратегию удержания: как поднять повтор за 30 дней с 15,7% до 30%, сократить маркетинг на 20% и вырастить выручку на 11,7%. Стратегия опирается на CRM-дашборд с данными за 12 месяцев: динамика, когорты, диагностика падения, пороги RFM из данных, миграция сегментов и сообщения клиентам.",
-      en: "I segmented buyers with RFM and built a retention strategy: lift 30-day repeat purchase from 15.7% to 30%, cut marketing spend by 20% and grow revenue by 11.7%. The strategy is backed by a CRM-style dashboard with 12 months of data: trends, cohorts, root-cause diagnostics, data-driven RFM thresholds, segment migration and customer messaging."
+      ru: "Учебный кейс: у финтех-приложения (учёт финансов, инвестиции, кредиты) 6-месячное удержание падает с 48% до 35%, хотя привлечение растёт. Посчитала retention по когортам и LTV по странам, показала, как допущение о единицах ARPU переворачивает вывод об окупаемости, и нашла главный рычаг: вторая функция поднимает удержание с 25% до 58–72%, а страны различаются лишь на ±6%. Стратегия из трёх фокусов: «только учёт» → инвестиции, кредит как мост, Ultra для самых ценных рынков.",
+      en: "Training case: a fintech app (budgeting, investing, loans) sees 6-month retention fall from 48% to 35% while acquisition grows. I calculated cohort retention and LTV by country, showed how an assumption about ARPU units flips the payback conclusion, and found the main lever: a second feature lifts retention from 25% to 58–72%, while countries differ by only ±6%. A three-focus strategy: accounting-only users → investing, loans as a bridge, Ultra for the most valuable markets."
     },
     results: [
-      { v: { ru: "15,7% → 30%", en: "15.7% → 30%" }, t: { ru: "повтор за 30 дней", en: "30-day repeat purchase" }, good: true },
-      { v: { ru: "−20%", en: "−20%" }, t: { ru: "маркетинговый бюджет", en: "marketing budget" } },
-      { v: { ru: "+11,7%", en: "+11.7%" }, t: { ru: "выручка", en: "revenue" }, good: true }
+      { v: { ru: "48% → 35%", en: "48% → 35%" }, t: { ru: "retention 6 мес.", en: "6-month retention" } },
+      { v: { ru: "25% → 72%", en: "25% → 72%" }, t: { ru: "удержание: одна функция против трёх", en: "retention: one feature vs all three" }, good: true },
+      { v: { ru: "≈ 50%", en: "≈ 50%" }, t: { ru: "выручки из стран C, D, E", en: "of revenue from countries C, D, E" } }
     ],
     links: [
-      { t: { ru: "CRM-дашборд · данные, сегменты, сообщения", en: "CRM dashboard · data, segments, messaging" }, url: { ru: "rfm-dashboard.html", en: "en/rfm-dashboard.html" } },
-      { t: { ru: "Данные и расчёты · Excel", en: "Data & calculations · Excel (RU)" }, url: { ru: "files/rfm-smartflow-dannye.xlsx", en: "files/rfm-smartflow-dannye.xlsx" } },
-      { t: { ru: "Учебный материал · PDF", en: "Study notes · PDF (RU)" }, url: { ru: "files/rfm-uchebnyi-material.pdf", en: "files/rfm-uchebnyi-material.pdf" } },
-      { t: { ru: "Рост повторных покупок · PDF", en: "Repeat purchase growth · PDF (RU)" }, url: { ru: "files/rfm-rost-povtornyh-pokupok.pdf", en: "files/rfm-rost-povtornyh-pokupok.pdf" } }
-    ]
-  },
-  {
-    title: { ru: "Retention BookLover", en: "BookLover Retention" },
-    url: { ru: "booklover-crm.html", en: "en/booklover-crm.html" },
-    year: "2026",
-    tags: [{ ru: "Retention", en: "Retention" }, { ru: "Когорты", en: "Cohorts" }, { ru: "Гипотезы", en: "Hypotheses" }],
-    text: {
-      ru: "Учебный кейс: 30-дневное удержание приложения для чтения упало с 45% до 28%. Нашла, что почти весь рост привлечения с апреля уходит в первые 30 дней, а 45% пользователей останавливаются после первой книги. Предложила три гипотезы с метриками, guardrails, размером выборки и планом на 9 недель. Кейс собран как CRM на уровне пользователей и идёт по 11 шагам: от задачи через данные и диагностику к гипотезам, плану и итогу.",
-      en: "Training case: 30-day retention of a reading app fell from 45% to 28%. I found that almost all acquisition growth since April churns within 30 days, and 45% of users stop after their first book. I proposed three hypotheses with metrics, guardrails, sample sizes and a 9-week plan. The case is built as a user-level CRM and runs in 11 steps: from the problem through data and diagnosis to hypotheses, a plan and a summary."
-    },
-    results: [
-      { v: { ru: "45% → 28%", en: "45% → 28%" }, t: { ru: "retention D30", en: "D30 retention" } },
-      { v: { ru: "6,5%", en: "6.5%" }, t: { ru: "удержано из прироста", en: "retained from growth" } },
-      { v: { ru: "19,5%", en: "19.5%" }, t: { ru: "дошли до второй книги", en: "reached a second book" } }
-    ],
-    links: [
-      { t: { ru: "Кратко за 1 минуту", en: "In one minute" }, url: { ru: "booklover-retention.html", en: "en/booklover-retention.html" } },
-      { t: { ru: "SQL-запросы · диагностика", en: "SQL queries · diagnostics" }, url: { ru: "files/booklover-retention.sql", en: "files/booklover-retention.sql" } }
+      { t: { ru: "Стратегия: три фокуса", en: "Strategy: three focuses" }, url: { ru: "financeapp-retention.html#strategy", en: "en/financeapp-retention.html#strategy" } }
     ]
   },
   {
@@ -190,21 +169,43 @@ const PROJECTS = [
     ]
   },
   {
-    title: { ru: "Retention финтеха · FinanceApp", en: "Fintech Retention · FinanceApp" },
-    url: { ru: "financeapp-retention.html", en: "en/financeapp-retention.html" },
+    title: { ru: "Retention BookLover", en: "BookLover Retention" },
+    url: { ru: "booklover-crm.html", en: "en/booklover-crm.html" },
     year: "2026",
-    tags: [{ ru: "Retention", en: "Retention" }, { ru: "Когорты", en: "Cohorts" }, { ru: "Монетизация", en: "Monetization" }],
+    tags: [{ ru: "Retention", en: "Retention" }, { ru: "Когорты", en: "Cohorts" }, { ru: "Гипотезы", en: "Hypotheses" }],
     text: {
-      ru: "Учебный кейс: у финтех-приложения (учёт финансов, инвестиции, кредиты) 6-месячное удержание падает с 48% до 35%, хотя привлечение растёт. Посчитала retention по когортам и LTV по странам, показала, как допущение о единицах ARPU переворачивает вывод об окупаемости, и нашла главный рычаг: вторая функция поднимает удержание с 25% до 58–72%, а страны различаются лишь на ±6%. Стратегия из трёх фокусов: «только учёт» → инвестиции, кредит как мост, Ultra для самых ценных рынков.",
-      en: "Training case: a fintech app (budgeting, investing, loans) sees 6-month retention fall from 48% to 35% while acquisition grows. I calculated cohort retention and LTV by country, showed how an assumption about ARPU units flips the payback conclusion, and found the main lever: a second feature lifts retention from 25% to 58–72%, while countries differ by only ±6%. A three-focus strategy: accounting-only users → investing, loans as a bridge, Ultra for the most valuable markets."
+      ru: "Учебный кейс: 30-дневное удержание приложения для чтения упало с 45% до 28%. Нашла, что почти весь рост привлечения с апреля уходит в первые 30 дней, а 45% пользователей останавливаются после первой книги. Предложила три гипотезы с метриками, guardrails, размером выборки и планом на 9 недель. Кейс собран как CRM на уровне пользователей и идёт по 11 шагам: от задачи через данные и диагностику к гипотезам, плану и итогу.",
+      en: "Training case: 30-day retention of a reading app fell from 45% to 28%. I found that almost all acquisition growth since April churns within 30 days, and 45% of users stop after their first book. I proposed three hypotheses with metrics, guardrails, sample sizes and a 9-week plan. The case is built as a user-level CRM and runs in 11 steps: from the problem through data and diagnosis to hypotheses, a plan and a summary."
     },
     results: [
-      { v: { ru: "48% → 35%", en: "48% → 35%" }, t: { ru: "retention 6 мес.", en: "6-month retention" } },
-      { v: { ru: "25% → 72%", en: "25% → 72%" }, t: { ru: "удержание: одна функция против трёх", en: "retention: one feature vs all three" }, good: true },
-      { v: { ru: "≈ 50%", en: "≈ 50%" }, t: { ru: "выручки из стран C, D, E", en: "of revenue from countries C, D, E" } }
+      { v: { ru: "45% → 28%", en: "45% → 28%" }, t: { ru: "retention D30", en: "D30 retention" } },
+      { v: { ru: "6,5%", en: "6.5%" }, t: { ru: "удержано из прироста", en: "retained from growth" } },
+      { v: { ru: "19,5%", en: "19.5%" }, t: { ru: "дошли до второй книги", en: "reached a second book" } }
     ],
     links: [
-      { t: { ru: "Стратегия: три фокуса", en: "Strategy: three focuses" }, url: { ru: "financeapp-retention.html#strategy", en: "en/financeapp-retention.html#strategy" } }
+      { t: { ru: "Кратко за 1 минуту", en: "In one minute" }, url: { ru: "booklover-retention.html", en: "en/booklover-retention.html" } },
+      { t: { ru: "SQL-запросы · диагностика", en: "SQL queries · diagnostics" }, url: { ru: "files/booklover-retention.sql", en: "files/booklover-retention.sql" } }
+    ]
+  },
+  {
+    title: { ru: "RFM-анализ SmartFlow", en: "RFM Analysis for SmartFlow" },
+    url: { ru: "rfm-smartflow.html", en: "en/rfm-smartflow.html" },
+    year: "2026",
+    tags: [{ ru: "Retention", en: "Retention" }, { ru: "Аналитика", en: "Analytics" }, { ru: "Когорты", en: "Cohorts" }],
+    text: {
+      ru: "Сегментировала покупателей по RFM и построила стратегию удержания: как поднять повтор за 30 дней с 15,7% до 30%, сократить маркетинг на 20% и вырастить выручку на 11,7%. Стратегия опирается на CRM-дашборд с данными за 12 месяцев: динамика, когорты, диагностика падения, пороги RFM из данных, миграция сегментов и сообщения клиентам.",
+      en: "I segmented buyers with RFM and built a retention strategy: lift 30-day repeat purchase from 15.7% to 30%, cut marketing spend by 20% and grow revenue by 11.7%. The strategy is backed by a CRM-style dashboard with 12 months of data: trends, cohorts, root-cause diagnostics, data-driven RFM thresholds, segment migration and customer messaging."
+    },
+    results: [
+      { v: { ru: "15,7% → 30%", en: "15.7% → 30%" }, t: { ru: "повтор за 30 дней", en: "30-day repeat purchase" }, good: true },
+      { v: { ru: "−20%", en: "−20%" }, t: { ru: "маркетинговый бюджет", en: "marketing budget" } },
+      { v: { ru: "+11,7%", en: "+11.7%" }, t: { ru: "выручка", en: "revenue" }, good: true }
+    ],
+    links: [
+      { t: { ru: "CRM-дашборд · данные, сегменты, сообщения", en: "CRM dashboard · data, segments, messaging" }, url: { ru: "rfm-dashboard.html", en: "en/rfm-dashboard.html" } },
+      { t: { ru: "Данные и расчёты · Excel", en: "Data & calculations · Excel (RU)" }, url: { ru: "files/rfm-smartflow-dannye.xlsx", en: "files/rfm-smartflow-dannye.xlsx" } },
+      { t: { ru: "Учебный материал · PDF", en: "Study notes · PDF (RU)" }, url: { ru: "files/rfm-uchebnyi-material.pdf", en: "files/rfm-uchebnyi-material.pdf" } },
+      { t: { ru: "Рост повторных покупок · PDF", en: "Repeat purchase growth · PDF (RU)" }, url: { ru: "files/rfm-rost-povtornyh-pokupok.pdf", en: "files/rfm-rost-povtornyh-pokupok.pdf" } }
     ]
   }
 ];
@@ -246,7 +247,7 @@ function render() {
   list.innerHTML = PROJECTS.filter(p => active === TXT.all.en || p.tags.some(t => t.en === active)).map(p => `
     <article class="proj">
       <div class="body">
-        <div class="meta">${p.tags.map(t => `<span class="tag">${t[L]}</span>`).join("")}<span class="tag">${p.year}</span></div>
+        <div class="meta">${p.tags.map(t => `<span class="tag">${t[L]}</span>`).join("")}</div>
         <h3><a href="${p.url[L]}">${p.title[L]}</a></h3>
         <p>${p.text[L]}</p>
         <div class="links"><a class="primary" href="${p.url[L]}">${TXT.open[L]}</a>${(p.links || []).map(l => `<a href="${l.url[L]}" target="_blank" rel="noopener">${l.t[L]}</a>`).join("")}</div>
