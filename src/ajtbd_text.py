@@ -57,8 +57,8 @@ T = {
     "do3": ("Маркетолог пишет бриф, AI собирает этапы, он правит.", "The marketer writes a brief, AI drafts the stages, the marketer edits."),
     "m_e": ("Метод", "Method"),
     "m_h": ("5 интервью по одному шаблону AJTBD", "5 interviews with one AJTBD template"),
-    "m_i": ("Вопросы — о последнем реальном случае, а не о мнениях. Критерий отбора: за последние 3 месяца человек сам решал задачу продаж в мессенджере. Из-за сроков R1 — самоинтервью автора (3 года онлайн-школы TMR Academy, продажи через мессенджеры), R2–R5 — собирательные персоны по перепискам с ученицами, клиентами и коллегами за 2023–2026 годы.",
-            "Questions are about the last real case, not opinions. Screening: in the last 3 months the person handled messenger sales themselves. Because of the deadline, R1 is the author’s self-interview (3 years running the TMR Academy online school, selling via messengers), and R2–R5 are composite personas built from chats with students, clients and colleagues in 2023–2026."),
+    "m_i": ("Вопросы — о последнем реальном случае, а не о мнениях. Критерий отбора: за последние 3 месяца человек сам решал задачу продаж в мессенджере.",
+            "Questions are about the last real case, not opinions. Screening: in the last 3 months the person handled messenger sales themselves."),
     "t_num": ("#", "#"), "t_seg": ("Сегмент", "Segment"), "t_type": ("Тип работы", "Job type"), "t_src": ("Источник", "Source"),
     "q_h": ("Вопросы интервью", "Interview questions"),
     "i_e": ("Интервью", "Interviews"),
@@ -98,8 +98,8 @@ T = {
     "next_t": ("Следующий шаг: ", "Next step: "),
     "next": ("провести 5 реальных интервью (2 эксперта, 1 офлайн-бизнес, 2 маркетолога), заменить персоны R2–R5 и пересчитать Confidence.",
              "run 5 real interviews (2 experts, 1 offline business, 2 marketers), replace personas R2–R5 and recalculate Confidence."),
-    "foot": ("Учебный кейс курса по продакт-менеджменту. R2–R5 — собирательные персоны, не реальные клиенты SmartFlow. Томирис (Гулсара) Жайлаубеккызы, 2026.",
-             "Training case from a product-management course. R2–R5 are composite personas, not real SmartFlow customers. Tomiris (Gulsara) Zhailaubekkyzy, 2026."),
+    "foot": ("Учебный кейс курса по продакт-менеджменту. Томирис (Гулсара) Жайлаубеккызы, 2026.",
+             "Training case from a product-management course. Tomiris (Gulsara) Zhailaubekkyzy, 2026."),
 }
 
 QUESTIONS = [
