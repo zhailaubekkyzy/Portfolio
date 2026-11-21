@@ -5,6 +5,7 @@
   src/blcrm.src.html -> booklover-crm.html      + en/booklover-crm.html  (texts in blcrm_text.py, data from blsim.js)
   src/pp.src.html  -> projectpro-retention.html + en/projectpro-retention.html  (texts in projectpro_text.py, accounts from ppsim.js)
   src/financeapp.src.html -> financeapp-retention.html + en/financeapp-retention.html  (texts in financeapp_text.py)
+  src/ajtbd.src.html -> ajtbd-smartflow.html + en/ajtbd-smartflow.html  (texts and tables in ajtbd_text.py)
   src/navspy.html    -> appended to both case pages (active section in the top nav)
   src/crm.src.html   -> rfm-dashboard.html       + en/rfm-dashboard.html  (via src/en_crm.py; sim.js + analytics.js inlined)
 
@@ -16,7 +17,7 @@ import os, re, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "src")
 sys.path.insert(0, SRC)
-import en_case, en_crm, booklover_text, blcrm_text, projectpro_text, financeapp_text  # noqa: E402
+import en_case, en_crm, booklover_text, blcrm_text, projectpro_text, financeapp_text, ajtbd_text  # noqa: E402
 import json, html
 
 CYR = re.compile("[А-Яа-яЁё]")
@@ -257,6 +258,26 @@ def main():
         if lang == "en":
             leftovers(page, "en/financeapp-retention.html")
         write(("financeapp-retention.html", "en/financeapp-retention.html")[i], wrap(page, lang))
+    # Smartflow AJTBD case: {{key}} placeholders filled from ajtbd_text.py (texts + generated tables)
+    aj = read("ajtbd.src.html") + spy
+    for i, lang in enumerate(("ru", "en")):
+        tx = {k: v[i] for k, v in ajtbd_text.T.items()}
+        tx.update(ajtbd_text.build(i))
+        tx.update({
+            "back_href": ("./#ru", "../#en")[i],
+            "lang_href": ("en/ajtbd-smartflow.html", "../ajtbd-smartflow.html")[i],
+            "lang_label": ("EN", "RU")[i],
+        })
+        def sub5(m):
+            k = m.group(1)
+            if k not in tx:
+                print(f"  ! ajtbd: missing key {k}")
+                return k
+            return re.sub(r"(\d) (\d{3})(?!\d)", "\\1\u00a0\\2", tx[k])
+        page = re.sub(r"\{\{(\w+)\}\}", sub5, aj)
+        if lang == "en":
+            leftovers(page, "en/ajtbd-smartflow.html")
+        write(("ajtbd-smartflow.html", "en/ajtbd-smartflow.html")[i], wrap(page, lang))
     print("Done.")
 
 

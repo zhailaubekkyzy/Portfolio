@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>SmartFlow AJTBD research · Tomiris (Gulsara) Zhailaubekkyzy</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Training case: 5 AJTBD interviews, a job graph, pains, product changes and ICE prioritisation for SmartFlow.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* SmartFlow AJTBD case: summary, method, interviews, job graph, pains, changes, ICE, segments. Same tokens as the other cases. */
+:root {
+  --bg: #f4f6f9; --surface: #ffffff; --surface-2: #eceff4; --ink: #131a26; --ink-2: #485264; --muted: #7a8496; --line: #dde2ea;
+  --focus: #2a78d6; --good: #11764f; --good-bg: #e3f4ec; --warn: #8a5a00; --warn-bg: #fff4de;
+  --c1: #2a78d6; --c1-t: #e8f1fc; --c2: #1baf7a; --c3: #eb6834; --c3-t: #fdece4; --base-bar: #c3c8d1;
+  --f-display: "Unbounded", "Onest", system-ui, sans-serif;
+  --f-body: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e121a; --surface: #161c27; --surface-2: #1e2633; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #2a3344;
+    --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --warn: #f0c46a; --warn-bg: #33270f;
+    --c1: #3987e5; --c1-t: #16263d; --c2: #199e70; --c3: #d95926; --c3-t: #362018; --base-bar: #4a5263; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e121a; --surface: #161c27; --surface-2: #1e2633; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #2a3344;
+  --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --warn: #f0c46a; --warn-bg: #33270f;
+  --c1: #3987e5; --c1-t: #16263d; --c2: #199e70; --c3: #d95926; --c3-t: #362018; --base-bar: #4a5263; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: inherit; }
+.num { font-variant-numeric: tabular-nums; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.nav .wrap { display: flex; gap: 6px; overflow-x: auto; padding-block: 10px; scrollbar-width: none; }
+.nav a { flex: none; text-decoration: none; color: var(--ink-2); font-size: 14px; padding: 6px 12px; border-radius: 999px; }
+.nav a.back { color: var(--ink); font-weight: 600; }
+.nav a.lang { margin-left: auto; font-weight: 700; font-family: var(--f-mono); font-size: 13px; border: 1px solid var(--line); }
+.nav a:hover { background: var(--surface-2); color: var(--ink); }
+
+footer { padding-block: 0 40px; font-size: 13px; color: var(--muted); }
+@media (max-width: 900px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .blocks { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 520px) { .kpis { grid-template-columns: minmax(0, 1fr); } .card { padding: 18px; } }
+
+.sec { padding-block: 28px; border-top: 1px solid var(--line); scroll-margin-top: 64px; display: grid; gap: 16px; }
+.sec h2 { font-family: var(--f-display); font-size: clamp(22px, 3vw, 30px); font-weight: 700; letter-spacing: -.01em; }
+.formula { font-family: var(--f-mono); font-size: 13.5px; background: var(--surface-2); color: var(--ink); padding: 10px 14px; border-radius: 10px; width: fit-content; max-width: 100%; }
+.insight { font-size: 16px; color: var(--ink-2); max-width: 78ch; }
+.tbl { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow-x: auto; }
+.tbl table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 440px; }
+.tbl caption { text-align: left; padding: 14px 16px 4px; font-weight: 700; }
+.tbl th, .tbl td { padding: 10px 16px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.tbl th { font-size: 12px; font-family: var(--f-mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 500; }
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl td.num, .tbl th.num { text-align: right; }
+.tbl .bad { color: var(--c3); font-weight: 600; }
+.tbl .good { color: var(--good); font-weight: 600; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; align-items: start; }
+.focus { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; display: grid; gap: 10px; }
+.focus h3 { font-family: var(--f-display); font-size: 17px; font-weight: 700; }
+.focus .n { font-family: var(--f-mono); font-size: 12px; color: var(--c1); font-weight: 600; }
+.focus dl { margin: 0; display: grid; gap: 8px; font-size: 14.5px; color: var(--ink-2); }
+.focus dt { font-family: var(--f-mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.focus dd { margin: 0; }
+.plain { margin-bottom: 8px; }
+.gdata { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 12px; align-items: start; }
+.gdata .tbl table { min-width: 0; }
+.gdata .tbl th, .gdata .tbl td { white-space: normal; }
+.gdata .tbl:last-child { grid-column: 1 / -1; }
+.tbl td:first-child { white-space: nowrap; }
+@media (max-width: 520px) { .tbl th, .tbl td { padding: 9px 10px; } }
+
+.hero { padding-block: 40px 20px; display: grid; gap: 22px; }
+.hero h1 { font-family: var(--f-display); font-weight: 700; font-size: clamp(30px, 5.4vw, 58px); line-height: 1.06; letter-spacing: -.02em; }
+.hero h1 span { color: var(--muted); font-weight: 500; }
+.lead { font-size: clamp(16px, 1.6vw, 19px); color: var(--ink-2); max-width: 70ch; }
+.note { display: inline-flex; width: fit-content; max-width: 100%; font-size: 13px; color: var(--warn); background: var(--warn-bg); padding: 6px 12px; border-radius: 12px; }
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 8px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px 18px 16px; display: grid; gap: 6px; align-content: start; }
+.kpi .v { font-family: var(--f-display); font-size: clamp(22px, 2.6vw, 30px); font-weight: 700; letter-spacing: -.01em; }
+.kpi .d { font-size: 13.5px; color: var(--ink-2); }
+.blocks { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; padding-bottom: 28px; scroll-margin-top: 64px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 22px; min-width: 0; }
+.card h2 { font-family: var(--f-display); font-size: 19px; font-weight: 700; margin-bottom: 14px; }
+.list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.list li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; font-size: 15px; color: var(--ink-2); }
+.list li b { color: var(--ink); font-weight: 600; }
+.list .n { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; font-family: var(--f-mono); font-size: 13px; font-weight: 600; background: var(--surface-2); color: var(--ink); }
+.list .n.fix { background: var(--good-bg); color: var(--good); }
+.tbl td { white-space: normal; }
+.tbl td:first-child { white-space: nowrap; }
+.qs { margin: 0; padding-left: 22px; display: grid; gap: 6px; color: var(--ink-2); font-size: 15px; columns: 2; }
+.qs li { break-inside: avoid; }
+.ints { display: grid; gap: 10px; }
+.int { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 0; }
+.int summary { cursor: pointer; list-style: none; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 16px 18px; }
+.int summary::-webkit-details-marker { display: none; }
+.int .rid { font-family: var(--f-mono); font-weight: 600; font-size: 13px; background: var(--c1-t); color: var(--c1); padding: 4px 8px; border-radius: 8px; }
+.int .nm { font-weight: 600; }
+.int .sc { font-family: var(--f-mono); font-size: 13px; color: var(--muted); }
+.int dl { margin: 0; padding: 0 18px 8px; display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 8px 16px; font-size: 14.5px; }
+.int dt { color: var(--muted); font-family: var(--f-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; padding-top: 2px; }
+.int dd { margin: 0; color: var(--ink-2); }
+.int .job { margin: 8px 18px 18px; padding: 12px 14px; background: var(--c1-t); border-radius: 10px; font-size: 14.5px; }
+.graphs { display: grid; gap: 16px; }
+.jg { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; display: grid; gap: 8px; }
+.jg h3 { font-family: var(--f-display); font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+.lvl { border-radius: 10px; padding: 10px 14px; display: grid; gap: 2px; font-weight: 600; }
+.lvl.hi { background: var(--surface-2); font-weight: 500; }
+.lvl.core { background: var(--c1-t); border: 2px solid var(--c1); }
+.arr { color: var(--muted); text-align: center; line-height: 1; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.st { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; align-items: start; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 14.5px; }
+.st b { display: block; font-weight: 600; }
+.st .sn { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; font-family: var(--f-mono); font-size: 12px; background: var(--surface-2); }
+.st.pain { border-color: var(--c3); background: var(--c3-t); }
+.st.pain .sn { background: var(--c3); color: #fff; }
+.st .pn { display: block; font-size: 13px; color: var(--ink-2); }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--muted); }
+.legend i { display: inline-block; width: 14px; height: 14px; border-radius: 4px; vertical-align: -2px; margin-right: 6px; border: 1px solid var(--line); }
+.legend i.p { background: var(--c3-t); border-color: var(--c3); }
+.legend i.c { background: var(--c1-t); border: 2px solid var(--c1); }
+.sec .list { max-width: 80ch; }
+@media (max-width: 900px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .blocks { grid-template-columns: minmax(0, 1fr); } .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } .qs { columns: 1; } }
+@media (max-width: 560px) { .kpis, .steps { grid-template-columns: minmax(0, 1fr); } .int dl { grid-template-columns: minmax(0, 1fr); gap: 2px; } .int dd { margin-bottom: 8px; } .card, .jg { padding: 16px; } }
+</style>
+</head>
+<body>
+
+
+<nav class="nav" aria-label="Case sections">
+  <div class="wrap">
+    <a href="../#en" class="back">← Portfolio</a>
+    <a href="#summary">Summary</a>
+    <a href="#method">Method</a>
+    <a href="#interviews">Interviews</a>
+    <a href="#graph">Job graph</a>
+    <a href="#alternatives">Alternatives</a>
+    <a href="#pains">Pains</a>
+    <a href="#changes">Changes</a>
+    <a href="#ice">Priorities</a>
+    <a href="#segments">Segments</a>
+    <a href="../ajtbd-smartflow.html" class="lang">RU</a>
+  </div>
+</nav>
+
+<header class="wrap hero">
+  <span class="eyebrow">Training case · Advanced JTBD · level 3</span>
+  <h1>SmartFlow: <span>money is lost between the steps</span></h1>
+  <p class="lead">I ran 5 AJTBD interviews with experts, small businesses and marketers, built a job graph for three job types and turned the pains into 7 product changes prioritised with ICE. The key finding: customers hire SmartFlow not for a “bot” but for steady income without living in chats, and money is lost not on the first reply but on statuses and follow-ups.</p>
+  <span class="note">R1 is the author’s self-interview as an expert; R2–R5 are composite personas, findings are hypotheses to validate</span>
+  <div class="kpis">
+    <div class="kpi"><span class="eyebrow">Interviews</span><span class="v num">5</span><span class="d">3 segments: experts, small business, marketers</span></div>
+    <div class="kpi"><span class="eyebrow">Job graph</span><span class="v num">21 steps</span><span class="d">3 job types, 9 steps with pain</span></div>
+    <div class="kpi"><span class="eyebrow">Current solutions score</span><span class="v num">4.6 / 10</span><span class="d">average across 5 respondents</span></div>
+    <div class="kpi"><span class="eyebrow">Priority #1</span><span class="v num">ICE 512</span><span class="d">customer statuses in Office</span></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="blocks" id="summary">
+    <section class="card">
+      <h2>What I found</h2>
+      <ol class="list">
+        <li><span class="n">1</span><span><b>They hire “time + money”. </b>All five share one higher job: steady income and free time. Positioning: “sells while you live”, not “an AI chatbot”.</span></li>
+        <li><span class="n">2</span><span><b>Losses happen between steps. </b>Replying is half the job: the main losses are at “see the customer’s status” and “follow up non-buyers”.</span></li>
+        <li><span class="n">3</span><span><b>New segment: offline services. </b>Salons and studios on WhatsApp need booking, not nurturing: a short script with value visible on day one.</span></li>
+      </ol>
+    </section>
+    <section class="card">
+      <h2>What I propose</h2>
+      <ol class="list">
+        <li><span class="n fix">1</span><span><b>Statuses in Office (ICE 512). </b>5 customer statuses and a “who to follow up today” push.</span></li>
+        <li><span class="n fix">2</span><span><b>Launch from a template in 10 minutes (504). </b>A Smart consultant from a niche template replies 24/7.</span></li>
+        <li><span class="n">3</span><span><b>AI-generated funnel stages (294). </b>The marketer writes a brief, AI drafts the stages, the marketer edits.</span></li>
+      </ol>
+    </section>
+  </div>
+
+  <section class="sec" id="method">
+    <span class="eyebrow">Method</span>
+    <h2>5 interviews with one AJTBD template</h2>
+    <p class="insight">Questions are about the last real case, not opinions. Screening: in the last 3 months the person handled messenger sales themselves. Because of the deadline, R1 is the author’s self-interview (3 years running the TMR Academy online school, selling via messengers), and R2–R5 are composite personas built from chats with students, clients and colleagues in 2023–2026.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>#</th><th>Segment</th><th>Job type</th><th>Source</th></tr></thead>
+      <tbody><tr><td>R1</td><td>Online expert, marketing school</td><td>A</td><td>Author, self-interview</td></tr><tr><td>R2</td><td>Nutrition expert with an assistant</td><td>A</td><td>Composite persona</td></tr><tr><td>R3</td><td>Beauty salon, Taraz</td><td>A</td><td>Composite persona</td></tr><tr><td>R4</td><td>Marketer and producer</td><td>B</td><td>Composite persona</td></tr><tr><td>R5</td><td>GetCourse / chatbot tech specialist</td><td>B</td><td>Composite persona</td></tr></tbody></table></div>
+    <div class="card"><h2>Interview questions</h2><ol class="qs"><li>Context: what do you do, how do customers reach you now?</li><li>Last case: recall your latest lead or sale in a messenger. What happened?</li><li>Trigger: what made you look for a solution?</li><li>Expected outcome: what should have changed?</li><li>Steps: what did you do, from lead to payment?</li><li>Struggles and emotions: where did you get stuck, what annoyed you?</li><li>Current solution: what do you use now, why haven’t you switched?</li><li>Higher job: why do you want more sales? (ask “why” 2–3 times)</li><li>Criteria: what would be ideal? What would you pay for?</li><li>Score: how satisfied are you with the current result, 1 to 10?</li></ol></div>
+  </section>
+
+  <section class="sec" id="interviews">
+    <span class="eyebrow">Interviews</span>
+    <h2>What respondents told me</h2>
+    <p class="insight">Each interview ends with a job statement “When…, I want…, so that…”. Tap a card to open all fields.</p>
+    <div class="ints"><details class="int" open><summary><span class="rid">R1</span><span class="nm">Online expert, marketing school (author)</span><span class="sc num">4/10</span></summary><dl><dt>Context</dt><dd>“I ran an online marketing school for 3 years. Customers came from Instagram and Telegram, and the whole sale then happened in DMs.”</dd><dt>Last case</dt><dd>“I ran ads and got about 80 leads over a weekend. I replied myself until late at night. Half only got an answer the next day, and they had gone cold.”</dd><dt>Trigger</dt><dd>“I realised it wasn’t me selling, it was my tiredness. The more traffic, the worse the conversion.”</dd><dt>Expected outcome</dt><dd>Every lead gets an instant reply, and she steps in only for those ready to pay.</dd><dt>Steps</dt><dd>Lead → DM reply → questions about the programme → price → objections → payment link → manual reminders.</dd><dt>Struggles and emotions</dt><dd>Burnout, guilt towards her children, anger at herself for lost leads.</dd><dt>Current solution</dt><dd>A builder bot: “people typed questions and the bot broke. A manager is expensive and has to learn my approach.”</dd><dt>Higher job</dt><dd>“I don’t need more chats, I need steady income and evenings with my kids.”</dd><dt>Criteria</dt><dd>“A seller who knows my product like I do, replies instantly and calls me only when the person is ready to pay.”</dd><dt>Score</dt><dd>4/10</dd></dl><p class="job"><b>Job statement:</b> When 80 leads arrive over a weekend and I’m alone, I want each to get an instant reply and to be called only for those ready to pay, so that I have steady income and evenings with my kids.</p></details><details class="int"><summary><span class="rid">R2</span><span class="nm">Nutrition expert with an assistant (persona)</span><span class="sc num">5/10</span></summary><dl><dt>Context</dt><dd>“I run nutrition challenges. My assistant answers on WhatsApp.”</dd><dt>Last case</dt><dd>“My assistant went on holiday and sales nearly halved in 2 weeks. Everything was in her head.”</dd><dt>Trigger</dt><dd>Sales dropped because one person went on holiday.</dd><dt>Expected outcome</dt><dd>See every customer and their stage without asking the assistant.</dd><dt>Steps</dt><dd>Lead → assistant replies → call with the expert → payment → Excel sheet.</dd><dt>Struggles and emotions</dt><dd>Anxiety and loss of control: “I don’t know who bought, who is thinking, and who vanished.”</dd><dt>Current solution</dt><dd>Assistant + Excel: “the sheet is always out of date.”</dd><dt>Higher job</dt><dd>“I want to scale and not depend on one person.”</dd><dt>Criteria</dt><dd>“I don’t need a CRM with 100 buttons, I need to see who to follow up today.”</dd><dt>Score</dt><dd>5/10</dd></dl><p class="job"><b>Job statement:</b> When my assistant is unavailable, I want to see every customer’s status and who to follow up today, so that I can grow without depending on one person.</p></details><details class="int"><summary><span class="rid">R3</span><span class="nm">Beauty salon, Taraz (persona)</span><span class="sc num">3/10</span></summary><dl><dt>Context</dt><dd>“Bookings come through WhatsApp and Instagram; I or the administrator reply.”</dd><dt>Last case</dt><dd>“A client asked the price of colouring in the evening and got a reply in the morning. She had already booked another salon.”</dd><dt>Trigger</dt><dd>A booking lost because of an evening message.</dd><dt>Expected outcome</dt><dd>The client gets the price at once and books a free slot without the administrator.</dd><dt>Steps</dt><dd>Price question → reply → pick a time → write it in a notebook → reminder the day before.</dd><dt>Struggles and emotions</dt><dd>Irritation at repeated questions, tiredness: “they write at 11 pm.”</dd><dt>Current solution</dt><dd>WhatsApp Business auto-reply: “it just says ‘we’ll reply later’, that doesn’t help.”</dd><dt>Higher job</dt><dd>“So my stylists are fully booked and I’m not glued to my phone.”</dd><dt>Criteria</dt><dd>“If a bot tells the price and books the time itself, I’ll pay.”</dd><dt>Score</dt><dd>3/10</dd></dl><p class="job"><b>Job statement:</b> When a client asks the price in the evening, I want them answered and booked at once, so that my stylists are fully booked.</p></details><details class="int"><summary><span class="rid">R4</span><span class="nm">Marketer and producer (persona)</span><span class="sc num">5/10</span></summary><dl><dt>Context</dt><dd>“I run launches for experts: funnels, nurturing, chatbots.”</dd><dt>Last case</dt><dd>“I built a funnel for a psychologist in 3 weeks. For the next client, a coach, I had to redo almost everything from scratch.”</dd><dt>Trigger</dt><dd>An expert didn’t pay the rest because “the funnel didn’t work”, although there were plenty of leads.</dd><dt>Expected outcome</dt><dd>Build a funnel in days, not weeks, and prove the result with numbers.</dd><dt>Steps</dt><dd>Find a client → brief → script → copy and video → setup via a tech specialist → launch → report.</dd><dt>Struggles and emotions</dt><dd>Resentment and helplessness: “the expert sells badly on calls, and the funnel gets the blame.”</dd><dt>Current solution</dt><dd>A fixed fee per project, her own drafts in Google Docs, a bot via a tech specialist.</dd><dt>Higher job</dt><dd>“I want to earn from my assets, not sell hours.”</dd><dt>Criteria</dt><dd>“If my funnels sold as templates and I got a share of sales, I’d make them non-stop.”</dd><dt>Score</dt><dd>5/10</dd></dl><p class="job"><b>Job statement:</b> When I take a client from a new niche, I want to build the funnel from a ready base and earn a share of sales, so that I earn from my assets, not my hours.</p></details><details class="int"><summary><span class="rid">R5</span><span class="nm">GetCourse / chatbot tech specialist (persona)</span><span class="sc num">6/10</span></summary><dl><dt>Context</dt><dd>“I set up GetCourse, Salebot, payments.”</dd><dt>Last case</dt><dd>“A client asked for a bot that answers any question. On Salebot that’s hundreds of branches.”</dd><dt>Trigger</dt><dd>Clients increasingly ask for a “smart” bot like ChatGPT.</dd><dt>Expected outcome</dt><dd>The bot understands free text and edits take minutes.</dd><dt>Steps</dt><dd>Brief from the marketer → branch map → build in the builder → connect payments → tests → endless edits.</dd><dt>Struggles and emotions</dt><dd>Routine and burnout: “every edit costs money and time.”</dd><dt>Current solution</dt><dd>Salebot and GetCourse, because “clients are already there.”</dd><dt>Higher job</dt><dd>“I want to take more clients without burning out on routine setup.”</dd><dt>Criteria</dt><dd>“I need a tool where I set the logic and goals, and AI writes the texts.”</dd><dt>Score</dt><dd>6/10</dd></dl><p class="job"><b>Job statement:</b> When a client asks for a “smart” bot, I want to set logic and goals instead of writing hundreds of branches, so that I can take more clients without burning out.</p></details></div>
+  </section>
+
+  <section class="sec" id="graph">
+    <span class="eyebrow">Job graph</span>
+    <h2>Three levels: higher job → core job → steps</h2>
+    <p class="insight">Steps where respondents named a pain are marked red. Types A and B are linked: the marketer’s funnel becomes the expert’s tool at steps A2–A8.</p>
+    <div class="legend"><span><i class="c"></i>Core job</span><span><i class="p"></i>Pain</span></div>
+    <div class="graphs"><article class="jg"><h3>Type A. Expert and small business (R1, R2, R3)</h3><div class="lvl hi"><span class="eyebrow">Higher job</span>Steady income and free time</div><span class="arr" aria-hidden="true">↓</span><div class="lvl core"><span class="eyebrow">Core job</span>Turn messages into payments without manual chatting</div><span class="arr" aria-hidden="true">↓</span><ol class="steps"><li class="st"><span class="sn num">1</span><span><b>Get a lead</b></span></li><li class="st pain"><span class="sn num">2</span><span><b>Reply at once</b><span class="pn">lead goes cold overnight · R1, R3</span></span></li><li class="st"><span class="sn num">3</span><span><b>Understand the request</b></span></li><li class="st"><span class="sn num">4</span><span><b>Nurture: cases, video</b></span></li><li class="st"><span class="sn num">5</span><span><b>Handle objections, price</b></span></li><li class="st pain"><span class="sn num">6</span><span><b>Booking or payment</b><span class="pn">no booking without an admin · R3</span></span></li><li class="st pain"><span class="sn num">7</span><span><b>See the customer’s status</b><span class="pn">it’s all in the assistant’s head · R2</span></span></li><li class="st pain"><span class="sn num">8</span><span><b>Follow up non-buyers</b><span class="pn">nobody follows up · R1, R2</span></span></li><li class="st"><span class="sn num">9</span><span><b>Repeat sale</b></span></li></ol></article><article class="jg"><h3>Type B. Marketer and tech specialist (R4, R5)</h3><div class="lvl hi"><span class="eyebrow">Higher job</span>Earn from assets, not hours</div><span class="arr" aria-hidden="true">↓</span><div class="lvl core"><span class="eyebrow">Core job</span>Quickly launch working funnels for different niches</div><span class="arr" aria-hidden="true">↓</span><ol class="steps"><li class="st"><span class="sn num">1</span><span><b>Find a client</b></span></li><li class="st"><span class="sn num">2</span><span><b>Brief: audience, product, goal</b></span></li><li class="st pain"><span class="sn num">3</span><span><b>Write the script</b><span class="pn">every niche from scratch · R4</span></span></li><li class="st pain"><span class="sn num">4</span><span><b>Set up the tech</b><span class="pn">hundreds of branches, edits · R5</span></span></li><li class="st"><span class="sn num">5</span><span><b>Show the result</b></span></li><li class="st pain"><span class="sn num">6</span><span><b>Get paid or a share</b><span class="pn">fixed fee unrelated to results · R4</span></span></li><li class="st"><span class="sn num">7</span><span><b>Sell the template again</b></span></li></ol></article><article class="jg"><h3>Type C. End customer (new segment, hypothesis)</h3><div class="lvl hi"><span class="eyebrow">Higher job</span>Get a result (skill, income, health) without wasted spend</div><span class="arr" aria-hidden="true">↓</span><div class="lvl core"><span class="eyebrow">Core job</span>Choose the right expert and not buy a useless course</div><span class="arr" aria-hidden="true">↓</span><ol class="steps"><li class="st"><span class="sn num">1</span><span><b>Find an expert</b></span></li><li class="st"><span class="sn num">2</span><span><b>Ask questions</b></span></li><li class="st"><span class="sn num">3</span><span><b>Compare options</b></span></li><li class="st pain"><span class="sn num">4</span><span><b>Decide to buy</b><span class="pn">fear of buying the wrong thing · R1, R4</span></span></li><li class="st pain"><span class="sn num">5</span><span><b>Reach the result</b><span class="pn">drops out of learning · R1, R4</span></span></li></ol></article></div>
+  </section>
+
+  <section class="sec" id="alternatives">
+    <span class="eyebrow">Alternatives</span>
+    <h2>What SmartFlow competes with</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Alternative</th><th>Who</th><th>Why it fails</th></tr></thead>
+      <tbody><tr><td>Replying herself</td><td>R1, R3</td><td>Can’t keep up, leads go cold</td></tr><tr><td>Assistant / administrator</td><td>R2, R3</td><td>Dependency, knowledge in one person’s head</td></tr><tr><td>WhatsApp Business auto-reply</td><td>R3</td><td>“We’ll reply later” doesn’t sell</td></tr><tr><td>Salebot / button bots</td><td>R1, R5</td><td>Break on free text, costly edits</td></tr><tr><td>Excel sheet</td><td>R2</td><td>Always out of date</td></tr><tr><td>Fixed fee + Google Docs</td><td>R4</td><td>No link to results, every niche from scratch</td></tr></tbody></table></div>
+  </section>
+
+  <section class="sec" id="pains">
+    <span class="eyebrow">Pains and opportunities</span>
+    <h2>Where money and time are lost</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Step</th><th>Pain</th><th>Who</th><th>Severity</th><th>Opportunity</th></tr></thead>
+      <tbody><tr><td>A2</td><td>Lead goes cold overnight</td><td>R1, R3</td><td class="bad">High</td><td>24/7 Smart consultant</td></tr><tr><td>A7</td><td>It’s all in the assistant’s head</td><td>R2</td><td class="bad">High</td><td>Status funnel in Office</td></tr><tr><td>A8</td><td>Nobody follows up non-buyers</td><td>R1, R2</td><td class="bad">High</td><td>Automatic touches by status</td></tr><tr><td>B3</td><td>Every niche from scratch, 3 weeks</td><td>R4</td><td class="bad">High</td><td>AI-generated stages from a brief</td></tr><tr><td>B4</td><td>Hundreds of branches, costly edits</td><td>R5</td><td class="">Medium</td><td>Logic and goals instead of branches</td></tr><tr><td>A6</td><td>No booking without a person</td><td>R3</td><td class="">Medium</td><td>Calendar booking from the chat</td></tr><tr><td>B6</td><td>Fixed fee unrelated to results</td><td>R4</td><td class="">Medium</td><td>Share of sales + template marketplace</td></tr><tr><td>C</td><td>Fear of buying the wrong thing</td><td>R1, R4</td><td class="">Medium</td><td>AI expert matching</td></tr></tbody></table></div>
+  </section>
+
+  <section class="sec" id="changes">
+    <span class="eyebrow">Product changes</span>
+    <h2>From quote to solution</h2>
+    <p class="insight">Each change comes from a specific quote and closes a step of the graph. Rank comes from the prioritisation below.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Rank</th><th>Interview insight</th><th>Step</th><th>Change</th></tr></thead>
+      <tbody><tr><td class="num">1</td><td>R2: “see who to follow up today”</td><td>A7</td><td><b>Statuses in Office:</b> 5 statuses (unfinished / didn’t buy / waiting for a human / bought / declined) + a “who to follow up today” push</td></tr><tr><td class="num">2</td><td>R1, R3: lead goes cold overnight</td><td>A2, A5</td><td><b>Launch a Smart consultant in 10 minutes</b> from a niche template</td></tr><tr><td class="num">3</td><td>R4, R5: from scratch every time, hundreds of branches</td><td>B3, B4</td><td><b>AI-generated funnel stages</b> from a brief, edited by the marketer</td></tr><tr><td class="num">4</td><td>R1, R2: nobody follows up non-buyers</td><td>A8</td><td><b>Automatic follow-ups by status:</b> reminders, cases, video</td></tr><tr><td class="num">5</td><td>R3: “books the time — I’ll pay”</td><td>A6</td><td><b>Calendar booking from the chat</b> for service businesses</td></tr><tr><td class="num">6</td><td>R4: “a share — I’d make them non-stop”</td><td>B6, B7</td><td><b>Template marketplace with an author share</b> and weekly payouts</td></tr><tr><td class="num">7</td><td>R1, R4: unsuitable students don’t study</td><td>C</td><td><b>AI expert matching</b> for the end customer</td></tr></tbody></table></div>
+  </section>
+
+  <section class="sec" id="ice">
+    <span class="eyebrow">Prioritisation</span>
+    <h2>ICE = Impact × Confidence × Ease</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>#</th><th>Solution</th><th class="num">I</th><th class="num">C</th><th class="num">E</th><th class="num">ICE</th><th>Success metric</th></tr></thead>
+      <tbody><tr><td class="num">1</td><td>Statuses in Office</td><td class="num">8</td><td class="num">8</td><td class="num">8</td><td class="num good">512</td><td>Share of leads with a status, expert visits to Office per week</td></tr><tr><td class="num">2</td><td>Launch from a template</td><td class="num">9</td><td class="num">8</td><td class="num">7</td><td class="num good">504</td><td>Time to first reply, share of replies under a minute</td></tr><tr><td class="num">3</td><td>AI-generated stages</td><td class="num">7</td><td class="num">6</td><td class="num">7</td><td class="num">294</td><td>Time to build a funnel (now 3 weeks for R4)</td></tr><tr><td class="num">4</td><td>Automatic follow-ups</td><td class="num">8</td><td class="num">6</td><td class="num">6</td><td class="num">288</td><td>Conversion “didn’t buy” → “bought”</td></tr><tr><td class="num">5</td><td>Booking from the chat</td><td class="num">7</td><td class="num">5</td><td class="num">6</td><td class="num">210</td><td>Share of bookings with no human involved</td></tr><tr><td class="num">6</td><td>Template author share</td><td class="num">8</td><td class="num">5</td><td class="num">4</td><td class="num">160</td><td>Published templates, sales via templates</td></tr><tr><td class="num">7</td><td>AI expert matching</td><td class="num">6</td><td class="num">4</td><td class="num">4</td><td class="num">96</td><td>Share of customers who chose via matching and finished</td></tr></tbody></table></div>
+    <ol class="list">
+      <li><span class="n">I</span><span><b>Impact </b>is higher for solutions that directly win back lost sales.</span></li>
+      <li><span class="n">C</span><span><b>Confidence </b>is higher when several respondents repeated the pain; it is low for expert matching — no end customers were interviewed.</span></li>
+      <li><span class="n">E</span><span><b>Ease </b>is higher for what the architecture already supports (statuses, templates); author payouts need a 3+ role split.</span></li>
+    </ol>
+  </section>
+
+  <section class="sec" id="segments">
+    <span class="eyebrow">New segments</span>
+    <h2>Where else to grow</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Segment</th><th>Job</th><th>Why it is promising</th></tr></thead>
+      <tbody><tr><td>Offline services on WhatsApp (salons, clinics, studios)</td><td>“Price → booking” without an administrator</td><td>Short script, value visible on day one, in every city</td></tr><tr><td>Marketers as template authors</td><td>Earn from their assets</td><td>The marketplace’s supply side, motivated by a share</td></tr><tr><td>End customers choosing an expert</td><td>Not buy a useless course</td><td>The basis of platform retention, still a hypothesis</td></tr></tbody></table></div>
+    <p class="insight"><b>Next step: </b>run 5 real interviews (2 experts, 1 offline business, 2 marketers), replace personas R2–R5 and recalculate Confidence.</p>
+  </section>
+</main>
+
+<footer class="wrap">Training case from a product-management course. R2–R5 are composite personas, not real SmartFlow customers. Tomiris (Gulsara) Zhailaubekkyzy, 2026.</footer>
+
+<!-- Shared by the case pages (inlined by build.py): highlights the section you are reading in the sticky top nav, shows reading progress,
+     and offers "← Back" to return to where you were before jumping to a section (button, Alt+← or the browser's back). -->
+<style>
+.nav { position: sticky; }
+.nav a.active { background: var(--ink); color: var(--bg); }
+.nav a.active:hover { background: var(--ink); color: var(--bg); }
+.nav .progress { position: absolute; left: 0; bottom: -1px; height: 2px; width: 100%; background: var(--focus); transform-origin: 0 50%; transform: scaleX(0); }
+.backjump { position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 12;
+  font: inherit; font-size: 14px; font-weight: 600; border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  padding: 9px 14px; border-radius: 999px; cursor: pointer; box-shadow: 0 6px 24px rgb(15 23 42 / .16); }
+.backjump:hover { border-color: var(--ink-2); }
+@media (prefers-reduced-motion: no-preference) { .nav a { transition: background .15s, color .15s; } }
+</style>
+<script>
+(function () {
+  const nav = document.querySelector(".nav");
+  if (!nav) return;
+  const row = nav.querySelector(".wrap");
+  const links = [...nav.querySelectorAll('a[href^="#"]')];
+  const pairs = links.map(a => [a, document.getElementById(a.getAttribute("href").slice(1))]).filter(p => p[1]);
+  const bar = document.createElement("div");
+  bar.className = "progress";
+  bar.setAttribute("aria-hidden", "true");
+  nav.appendChild(bar);
+  let current = null, ticking = false;
+
+  function update() {
+    ticking = false;
+    const line = nav.getBoundingClientRect().bottom + 24;
+    let active = null;
+    for (const [a, sec] of pairs) if (sec.getBoundingClientRect().top <= line) active = a;
+    const atEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+    if (atEnd && pairs.length) active = pairs[pairs.length - 1][0];
+    if (active !== current) {
+      if (current) { current.classList.remove("active"); current.removeAttribute("aria-current"); }
+      if (active) {
+        active.classList.add("active");
+        active.setAttribute("aria-current", "location");
+        // keep the active link visible in the horizontally scrolling nav (phones) without moving the page
+        const left = active.offsetLeft - (row.clientWidth - active.offsetWidth) / 2;
+        row.scrollTo({ left: Math.max(0, left), behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      }
+      current = active;
+    }
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.transform = "scaleX(" + (max > 0 ? Math.min(1, window.scrollY / max) : 0) + ")";
+  }
+  // one step back: remember the scroll position before every in-page jump
+  const ru = (document.documentElement.lang || "ru").slice(0, 2) === "ru";
+  const back = document.createElement("button");
+  back.type = "button"; back.className = "backjump"; back.hidden = true;
+  back.textContent = ru ? "\u2190 \u041d\u0430\u0437\u0430\u0434" : "\u2190 Back";
+  back.title = ru ? "\u0412\u0435\u0440\u043d\u0443\u0442\u044c\u0441\u044f \u0442\u0443\u0434\u0430, \u0433\u0434\u0435 \u0432\u044b \u0431\u044b\u043b\u0438 \u00b7 Alt + \u2190" : "Return to where you were \u00b7 Alt + \u2190"; // RU text escaped so English pages stay Cyrillic-free
+  document.body.appendChild(back);
+  const jumps = [];
+  const sync = () => { back.hidden = !jumps.length; };
+  document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener("click", () => {
+    if (a.getAttribute("href").length < 2) return;
+    jumps.push({ y: window.scrollY, h: location.hash }); if (jumps.length > 50) jumps.shift(); sync();
+  }));
+  function goBack() {
+    if (!jumps.length) return;
+    const y = jumps.pop().y;
+    try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+    window.scrollTo({ top: y, behavior: "auto" });
+    sync();
+  }
+  back.addEventListener("click", goBack);
+  // the browser's own back: drop the jump it just undid (clicking a link also fires popstate, so compare hashes)
+  window.addEventListener("popstate", () => { if (jumps.length && location.hash === jumps[jumps.length - 1].h) { jumps.pop(); sync(); } });
+  document.addEventListener("keydown", e => { if (e.altKey && e.key === "ArrowLeft" && jumps.length) { e.preventDefault(); goBack(); } });
+
+  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+  update();
+})();
+</script>
+
+<a class="pf-home" href="../#en" title="Back to the home page — all projects" aria-label="Back to the home page — all projects"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10"/><path d="M10 20v-6h4v6"/></svg><span>Home</span></a>
+<style>
+.pf-home { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 25;
+  display: inline-flex; align-items: center; gap: 7px; font: inherit; font-size: 14px; font-weight: 600; line-height: 1; text-decoration: none;
+  border: 1px solid var(--line, #d0d5dd); background: var(--surface, #fff); color: var(--ink, #0f172a);
+  padding: 10px 14px; border-radius: 999px; box-shadow: 0 6px 24px rgb(15 23 42 / .16); }
+.pf-home:hover { border-color: var(--ink-2, #475467); }
+.pf-home:focus-visible { outline: 2px solid var(--ink, #0f172a); outline-offset: 2px; }
+@media print { .pf-home { display: none; } }
+</style>
+<script>
+(function () {
+  try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) {}
+  function toTop() {
+    try { window.scrollTo(0, 0); } catch (e) {}
+    try { if (window.top !== window && document.body) document.body.scrollIntoView({ block: "start" }); } catch (e) {}
+  }
+  window.pfToTop = toTop;
+  function onLoad() {
+    var h = decodeURIComponent(location.hash.slice(1));
+    if (h && document.getElementById(h)) return; // a link to a section of a long page keeps its place
+    toTop();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", onLoad); else onLoad();
+  window.addEventListener("pageshow", function (e) { if (e.persisted) onLoad(); });
+  var TYPING = /^(INPUT|TEXTAREA|SELECT)$/;
+  function typing(el) { return el && (el.isContentEditable || (TYPING.test(el.tagName) && el.type !== "range" && el.type !== "checkbox" && el.type !== "radio" && el.type !== "button")); }
+  document.addEventListener("pointerdown", function (e) {
+    var a = document.activeElement;
+    if (!typing(a)) return;
+    var t = e.target;
+    if (t && t.closest && t.closest("input, textarea, select, label, [contenteditable]")) return;
+    a.blur();
+  }, true);
+  document.addEventListener("keydown", function (e) {
+    var a = document.activeElement;
+    if (!typing(a) || a.tagName === "TEXTAREA") return;
+    if (e.key === "Enter" || e.key === "Escape") a.blur();
+  });
+})();
+</script>
+</body>
+</html>
