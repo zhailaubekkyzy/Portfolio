@@ -6,6 +6,7 @@
   src/pp.src.html  -> projectpro-retention.html + en/projectpro-retention.html  (texts in projectpro_text.py, accounts from ppsim.js)
   src/financeapp.src.html -> financeapp-retention.html + en/financeapp-retention.html  (texts in financeapp_text.py)
   src/ajtbd.src.html -> ajtbd-smartflow.html + en/ajtbd-smartflow.html  (texts and tables in ajtbd_text.py)
+  src/jabu.src.html  -> jabu-discovery.html + en/jabu-discovery.html  (texts, diagram and board in jabu_text.py)
   src/navspy.html    -> appended to both case pages (active section in the top nav)
   src/crm.src.html   -> rfm-dashboard.html       + en/rfm-dashboard.html  (via src/en_crm.py; sim.js + analytics.js inlined)
 
@@ -17,7 +18,7 @@ import os, re, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "src")
 sys.path.insert(0, SRC)
-import en_case, en_crm, booklover_text, blcrm_text, projectpro_text, financeapp_text, ajtbd_text  # noqa: E402
+import en_case, en_crm, booklover_text, blcrm_text, projectpro_text, financeapp_text, ajtbd_text, jabu_text  # noqa: E402
 import json, html
 
 CYR = re.compile("[А-Яа-яЁё]")
@@ -278,6 +279,26 @@ def main():
         if lang == "en":
             leftovers(page, "en/ajtbd-smartflow.html")
         write(("ajtbd-smartflow.html", "en/ajtbd-smartflow.html")[i], wrap(page, lang))
+    # Jabu Customer Discovery case: {{key}} placeholders filled from jabu_text.py (texts + generated diagram, tables, board)
+    jb = read("jabu.src.html") + spy
+    for i, lang in enumerate(("ru", "en")):
+        tx = {k: v[i] for k, v in jabu_text.T.items()}
+        tx.update(jabu_text.build(i))
+        tx.update({
+            "back_href": ("./#ru", "../#en")[i],
+            "lang_href": ("en/jabu-discovery.html", "../jabu-discovery.html")[i],
+            "lang_label": ("EN", "RU")[i],
+        })
+        def sub6(m):
+            k = m.group(1)
+            if k not in tx:
+                print(f"  ! jabu: missing key {k}")
+                return k
+            return tx[k]
+        page = re.sub(r"\{\{(\w+)\}\}", sub6, jb)
+        if lang == "en":
+            leftovers(page, "en/jabu-discovery.html")
+        write(("jabu-discovery.html", "en/jabu-discovery.html")[i], wrap(page, lang))
     print("Done.")
 
 

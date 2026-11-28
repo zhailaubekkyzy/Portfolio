@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Customer Discovery workflow · Jabu (YC S21) — Томирис Жайлаубеккызы</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Учебный кейс: процесс Customer Discovery в Jira, гипотезы решений и бэклог Discovery-задач для B2B-доставки продуктов в Намибии, Замбии и ЮАР.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Jabu Customer Discovery case: workflow diagram, statuses, transitions, hypotheses, board, checklist. Same tokens as the other cases. */
+:root {
+  --bg: #f4f6f9; --surface: #ffffff; --surface-2: #eceff4; --ink: #131a26; --ink-2: #485264; --muted: #7a8496; --line: #dde2ea;
+  --focus: #2a78d6; --good: #11764f; --good-bg: #e3f4ec; --warn: #8a5a00; --warn-bg: #fff4de;
+  --c1: #2a78d6; --c1-t: #e8f1fc; --c2: #1baf7a; --c3: #eb6834; --c3-t: #fdece4; --base-bar: #c3c8d1;
+  --f-display: "Unbounded", "Onest", system-ui, sans-serif;
+  --f-body: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e121a; --surface: #161c27; --surface-2: #1e2633; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #2a3344;
+    --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --warn: #f0c46a; --warn-bg: #33270f;
+    --c1: #3987e5; --c1-t: #16263d; --c2: #199e70; --c3: #d95926; --c3-t: #362018; --base-bar: #4a5263; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e121a; --surface: #161c27; --surface-2: #1e2633; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #2a3344;
+  --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --warn: #f0c46a; --warn-bg: #33270f;
+  --c1: #3987e5; --c1-t: #16263d; --c2: #199e70; --c3: #d95926; --c3-t: #362018; --base-bar: #4a5263; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: inherit; }
+.num { font-variant-numeric: tabular-nums; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.nav .wrap { display: flex; gap: 6px; overflow-x: auto; padding-block: 10px; scrollbar-width: none; }
+.nav a { flex: none; text-decoration: none; color: var(--ink-2); font-size: 14px; padding: 6px 12px; border-radius: 999px; }
+.nav a.back { color: var(--ink); font-weight: 600; }
+.nav a.lang { margin-left: auto; font-weight: 700; font-family: var(--f-mono); font-size: 13px; border: 1px solid var(--line); }
+.nav a:hover { background: var(--surface-2); color: var(--ink); }
+
+.hero { padding-block: 56px 32px; display: grid; gap: 22px; }
+.hero h1 { font-family: var(--f-display); font-weight: 700; font-size: clamp(34px, 6vw, 64px); line-height: 1.04; letter-spacing: -.02em; }
+.hero h1 span { color: var(--muted); font-weight: 500; }
+.lead { font-size: clamp(16px, 1.6vw, 19px); color: var(--ink-2); max-width: 66ch; }
+.note { display: inline-flex; align-items: center; gap: 8px; width: fit-content; max-width: 100%; font-size: 13px; color: var(--warn); background: var(--warn-bg); padding: 6px 12px; border-radius: 999px; }
+.crmlink { width: fit-content; font-weight: 600; color: var(--c1); text-decoration: none; font-size: 15px; }
+.crmlink:hover { text-decoration: underline; }
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 8px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px 18px 16px; display: grid; gap: 6px; align-content: start; }
+.kpi .v { font-family: var(--f-display); font-size: clamp(22px, 2.6vw, 30px); font-weight: 700; letter-spacing: -.01em; }
+.kpi .v.bad { color: var(--c3); }
+.kpi .d { font-size: 13.5px; color: var(--ink-2); }
+
+
+:root { --todo-bg: #e9ecf1; --todo-ink: #44546f; --todo-bd: #c7ced9; --prog-bg: #e3eeff; --prog-ink: #0b57c9; --prog-bd: #9cc0f5;
+  --done-bg: #dcf5e7; --done-ink: #12704a; --done-bd: #94d8b4; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --todo-bg: #262e3b; --todo-ink: #c3cbd8; --todo-bd: #3c4658;
+  --prog-bg: #13284a; --prog-ink: #8ab8ff; --prog-bd: #2b5ba3; --done-bg: #10332a; --done-ink: #6fdcaa; --done-bd: #23714f; } }
+.hero { padding-block: 40px 20px; }
+.sec { padding-block: 28px; border-top: 1px solid var(--line); scroll-margin-top: 64px; display: grid; gap: 16px; }
+.sec h2 { font-family: var(--f-display); font-size: clamp(22px, 3vw, 30px); font-weight: 700; letter-spacing: -.01em; }
+.insight { font-size: 16px; color: var(--ink-2); max-width: 78ch; }
+.canvas { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow-x: auto; padding: 16px; }
+.wf { display: block; min-width: 860px; width: 100%; height: auto; font-family: var(--f-body); }
+.wf .node rect { stroke-width: 1.5; }
+.wf .node text { font-size: 12.5px; font-weight: 700; letter-spacing: .03em; }
+.wf .todo rect { fill: var(--todo-bg); stroke: var(--todo-bd); } .wf .todo text { fill: var(--todo-ink); }
+.wf .prog rect { fill: var(--prog-bg); stroke: var(--prog-bd); } .wf .prog text { fill: var(--prog-ink); }
+.wf .done rect { fill: var(--done-bg); stroke: var(--done-bd); } .wf .done text { fill: var(--done-ink); }
+.wf .edge { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+.wf .ahp { fill: var(--muted); }
+.wf .el { font-size: 11.5px; fill: var(--ink-2); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+.hint { font-size: 13px; color: var(--muted); display: none; }
+@media (max-width: 900px) { .hint { display: block; } }
+.legend { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; border: 1px solid; white-space: nowrap; }
+.pill.todo { background: var(--todo-bg); color: var(--todo-ink); border-color: var(--todo-bd); }
+.pill.prog { background: var(--prog-bg); color: var(--prog-ink); border-color: var(--prog-bd); }
+.pill.done { background: var(--done-bg); color: var(--done-ink); border-color: var(--done-bd); }
+.legend .pill { text-transform: none; letter-spacing: 0; font-weight: 600; }
+.howto { font-size: 14px; color: var(--ink-2); background: var(--surface-2); border-radius: 10px; padding: 12px 14px; max-width: 90ch; }
+.tbl { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow-x: auto; }
+.tbl table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 560px; }
+.tbl th, .tbl td { padding: 10px 16px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+.tbl th { font-size: 12px; font-family: var(--f-mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 500; white-space: nowrap; }
+.tbl td:first-child, .tbl td:nth-child(2) { white-space: nowrap; }
+.tbl tr:last-child td { border-bottom: 0; }
+.hyps { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; align-items: start; }
+.hyp { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: grid; gap: 12px; }
+.hyp .hh { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.hyp .hid { font-family: var(--f-mono); font-weight: 600; font-size: 13px; background: var(--c1-t); color: var(--c1); padding: 2px 8px; border-radius: 6px; }
+.hyp .seg { font-weight: 600; flex: 1; min-width: 0; }
+.hyp .ice { font-family: var(--f-mono); font-size: 12.5px; color: var(--ink-2); border: 1px solid var(--line); padding: 2px 8px; border-radius: 999px; }
+.hyp dl { margin: 0; display: grid; gap: 6px; font-size: 14.5px; color: var(--ink-2); }
+.hyp dt { font-family: var(--f-mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-top: 4px; }
+.hyp dd { margin: 0; }
+.board { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(220px, 1fr); gap: 10px; overflow-x: auto; padding-bottom: 6px; }
+.col { background: var(--surface-2); border-radius: var(--r); padding: 10px; display: grid; gap: 8px; align-content: start; }
+.col h3 { font-size: 12px; font-family: var(--f-mono); text-transform: uppercase; letter-spacing: .05em; display: flex; justify-content: space-between; padding: 4px 6px; border-radius: 6px; }
+.col.todo h3 { color: var(--todo-ink); background: var(--todo-bg); } .col.prog h3 { color: var(--prog-ink); background: var(--prog-bg); } .col.done h3 { color: var(--done-ink); background: var(--done-bg); }
+.col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.col li { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px; display: grid; gap: 6px; font-size: 14px; }
+.col li .tk { font-family: var(--f-mono); font-size: 11.5px; color: var(--muted); }
+.col li .th { justify-self: start; font-family: var(--f-mono); font-size: 11px; background: var(--c1-t); color: var(--c1); padding: 1px 6px; border-radius: 5px; }
+.col li.empty { background: transparent; border-style: dashed; color: var(--muted); font-size: 13px; text-align: center; }
+.list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; max-width: 80ch; }
+.list li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; font-size: 15px; color: var(--ink-2); }
+.list li b { display: block; color: var(--ink); font-weight: 600; }
+.list .n { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; font-family: var(--f-mono); font-size: 13px; font-weight: 600; }
+.list .n.fix { background: var(--good-bg); color: var(--good); }
+footer { padding-block: 24px 40px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); }
+@media (max-width: 900px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .hyps { grid-template-columns: minmax(0, 1fr); } .tbl th, .tbl td { padding: 9px 10px; } }
+</style>
+</head>
+<body>
+
+
+<nav class="nav" aria-label="Разделы кейса">
+  <div class="wrap">
+    <a href="./#ru" class="back">← Все проекты</a>
+    <a href="#workflow">Workflow</a>
+    <a href="#statuses">Статусы</a>
+    <a href="#transitions">Переходы</a>
+    <a href="#hypotheses">Гипотезы</a>
+    <a href="#backlog">Бэклог</a>
+    <a href="#checklist">Чеклист ТЗ</a>
+    <a href="en/jabu-discovery.html" class="lang">EN</a>
+  </div>
+</nav>
+
+<header class="wrap hero">
+  <span class="eyebrow">Учебный кейс · Product Discovery · 2026</span>
+  <h1>Customer Discovery для Jabu <span>· YC S21</span></h1>
+  <p class="lead">Jabu — B2B-платформа, которая доставляет продукты от производителей и крупных дистрибьюторов в магазины у дома в Намибии, Замбии и ЮАР. Задача — выстроить процесс Customer Discovery для команды: workflow задач в Jira, гипотезы решений и бэклог исследований, чтобы каждая гипотеза проходила путь от идеи до решения «подтверждена / опровергнута».</p>
+  <span class="note">Учебный кейс курса. Гипотезы и задачи — мои, это план исследования, а не его результаты.</span>
+  <div class="kpis">
+    <div class="kpi"><span class="eyebrow">Статусов</span><span class="v num">9</span><span class="d">3 To Do · 4 In Progress · 2 Done</span></div>
+    <div class="kpi"><span class="eyebrow">Переходов</span><span class="v num">11</span><span class="d">у каждого — название и смысл</span></div>
+    <div class="kpi"><span class="eyebrow">Гипотез</span><span class="v num">6</span><span class="d">для магазинов и поставщиков</span></div>
+    <div class="kpi"><span class="eyebrow">Задач в бэклоге</span><span class="v num">12</span><span class="d">с привязкой к гипотезам</span></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="sec" id="workflow">
+    <h2>Workflow Customer Discovery</h2>
+    <p class="insight">Каждая задача — это одна гипотеза или одно исследование. Цвет статуса задаёт его категория в Jira: серый — To Do, синий — In Progress, зелёный — Done. Подписи на стрелках — названия переходов.</p>
+    <div class="legend"><span class="pill todo">To Do — ждёт работы</span><span class="pill prog">In Progress — в работе</span><span class="pill done">Done — решение принято</span></div>
+    <span class="hint">Схему можно прокрутить вбок →</span>
+    <div class="canvas"><svg class="wf" viewBox="0 0 1050 500" role="img" aria-labelledby="wf-t"><title id="wf-t">Customer Discovery workflow</title><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahp"/></marker></defs><path d="M190 63 L298 63" class="edge" marker-end="url(#ah)"/><text x="245" y="54" class="el" text-anchor="middle">Prioritize</text><path d="M470 63 L578 63" class="edge" marker-end="url(#ah)"/><text x="525" y="54" class="el" text-anchor="middle">Start planning</text><path d="M750 63 L858 63" class="edge" marker-end="url(#ah)"/><text x="805" y="54" class="el" text-anchor="middle">Start recruiting</text><path d="M945 86 L945 208" class="edge" marker-end="url(#ah)"/><text x="937" y="152" class="el" text-anchor="end">Launch interviews</text><path d="M860 225 L752 225" class="edge" marker-end="url(#ah)"/><text x="806" y="216" class="el" text-anchor="middle">Analyze insights</text><path d="M750 243 L858 243" class="edge" marker-end="url(#ah)"/><text x="806" y="264" class="el" text-anchor="middle">Need more data</text><path d="M630 256 L530 388" class="edge" marker-end="url(#ah)"/><text x="572" y="330" class="el" text-anchor="end">Hypothesis confirmed</text><path d="M700 256 L800 388" class="edge" marker-end="url(#ah)"/><text x="758" y="330" class="el" text-anchor="start">Hypothesis rejected</text><path d="M600 86 L440 208" class="edge" marker-end="url(#ah)"/><text x="505" y="132" class="el" text-anchor="end">Pause</text><path d="M470 222 L632 86" class="edge" marker-end="url(#ah)"/><text x="580" y="168" class="el" text-anchor="start">Resume</text><path d="M515 436 L515 470 M805 436 L805 470" class="edge"/><path d="M805 470 L105 470 L105 88" class="edge" marker-end="url(#ah)"/><text x="113" y="300" class="el" text-anchor="start">New iteration</text><g class="node todo"><rect x="20" y="40" width="170" height="46" rx="8"/><text x="105.0" y="68.0" text-anchor="middle">BACKLOG</text></g><g class="node todo"><rect x="300" y="40" width="170" height="46" rx="8"/><text x="385.0" y="68.0" text-anchor="middle">READY FOR RESEARCH</text></g><g class="node todo"><rect x="300" y="210" width="170" height="46" rx="8"/><text x="385.0" y="238.0" text-anchor="middle">ON HOLD</text></g><g class="node prog"><rect x="580" y="40" width="170" height="46" rx="8"/><text x="665.0" y="68.0" text-anchor="middle">RESEARCH PLANNING</text></g><g class="node prog"><rect x="860" y="40" width="170" height="46" rx="8"/><text x="945.0" y="68.0" text-anchor="middle">RECRUITING</text></g><g class="node prog"><rect x="860" y="210" width="170" height="46" rx="8"/><text x="945.0" y="238.0" text-anchor="middle">INTERVIEWS</text></g><g class="node prog"><rect x="580" y="210" width="170" height="46" rx="8"/><text x="665.0" y="238.0" text-anchor="middle">SYNTHESIS</text></g><g class="node done"><rect x="430" y="390" width="170" height="46" rx="8"/><text x="515.0" y="418.0" text-anchor="middle">VALIDATED</text></g><g class="node done"><rect x="720" y="390" width="170" height="46" rx="8"/><text x="805.0" y="418.0" text-anchor="middle">INVALIDATED</text></g></svg></div>
+    <p class="howto">Как собрать в Jira: company-managed проект → Project settings → Workflows → для каждого статуса выбрана категория, у каждого перехода есть название и описание, глобальные переходы «из любого статуса» отключены, чтобы схема читалась стрелками.</p>
+  </section>
+
+  <section class="sec" id="statuses">
+    <h2>Статусы</h2>
+    <p class="insight">Девять статусов покрывают весь цикл: от сырой идеи до решения. Отдельный статус On Hold нужен, потому что в Discovery работа часто стоит не по вине команды — респондент не отвечает или нет доступа к дистрибьютору.</p>
+    <div class="tbl"><table><thead><tr><th>Статус</th><th>Категория</th><th>Что значит</th></tr></thead><tbody><tr><td><span class="pill todo">Backlog</span></td><td>To Do</td><td>Идея или гипотеза записана, но ещё не оценена.</td></tr><tr><td><span class="pill todo">Ready for Research</span></td><td>To Do</td><td>Гипотеза оценена по ICE и сформулирована по шаблону — можно брать в работу.</td></tr><tr><td><span class="pill todo">On Hold</span></td><td>To Do</td><td>Работа на паузе по внешней причине — указана в комментарии.</td></tr><tr><td><span class="pill prog">Research Planning</span></td><td>In Progress</td><td>Выбираем метод, пишем скрипт интервью, задаём критерий успеха.</td></tr><tr><td><span class="pill prog">Recruiting</span></td><td>In Progress</td><td>Ищем респондентов: владельцев магазинов, дистрибьюторов, водителей.</td></tr><tr><td><span class="pill prog">Interviews</span></td><td>In Progress</td><td>Проводим интервью, полевые визиты, тесты прототипа.</td></tr><tr><td><span class="pill prog">Synthesis</span></td><td>In Progress</td><td>Кластеризуем ответы, сверяем с критерием, готовим вывод.</td></tr><tr><td><span class="pill done">Validated</span></td><td>Done</td><td>Критерий выполнен — гипотеза уходит в продуктовый бэклог.</td></tr><tr><td><span class="pill done">Invalidated</span></td><td>Done</td><td>Критерий не выполнен — фиксируем, чему научились.</td></tr></tbody></table></div>
+  </section>
+
+  <section class="sec" id="transitions">
+    <h2>Переходы</h2>
+    <p class="insight">Переход — это не просто стрелка, а договорённость команды: что должно быть готово, чтобы задача двинулась дальше. Эти условия записаны в описание перехода в Jira.</p>
+    <div class="tbl"><table><thead><tr><th>Откуда</th><th>Куда</th><th>Переход</th><th>Когда можно перейти</th></tr></thead><tbody><tr><td><span class="pill todo">Backlog</span></td><td><span class="pill todo">Ready for Research</span></td><td><b>Prioritize</b></td><td>ICE посчитан, гипотеза записана по шаблону «мы верим, что…».</td></tr><tr><td><span class="pill todo">Ready for Research</span></td><td><span class="pill prog">Research Planning</span></td><td><b>Start planning</b></td><td>Есть ответственный и место в текущем цикле.</td></tr><tr><td><span class="pill prog">Research Planning</span></td><td><span class="pill prog">Recruiting</span></td><td><b>Start recruiting</b></td><td>Готовы скрипт, метод и критерий подтверждения.</td></tr><tr><td><span class="pill prog">Recruiting</span></td><td><span class="pill prog">Interviews</span></td><td><b>Launch interviews</b></td><td>Назначено не меньше 5 встреч с нужным сегментом.</td></tr><tr><td><span class="pill prog">Interviews</span></td><td><span class="pill prog">Synthesis</span></td><td><b>Analyze insights</b></td><td>Все встречи проведены, заметки загружены в задачу.</td></tr><tr><td><span class="pill prog">Synthesis</span></td><td><span class="pill prog">Interviews</span></td><td><b>Need more data</b></td><td>Ответы противоречат друг другу или выборка мала.</td></tr><tr><td><span class="pill prog">Synthesis</span></td><td><span class="pill done">Validated</span></td><td><b>Hypothesis confirmed</b></td><td>Критерий выполнен, вывод записан в задаче.</td></tr><tr><td><span class="pill prog">Synthesis</span></td><td><span class="pill done">Invalidated</span></td><td><b>Hypothesis rejected</b></td><td>Критерий не выполнен, вывод и инсайты записаны.</td></tr><tr><td><span class="pill prog">Research Planning</span></td><td><span class="pill todo">On Hold</span></td><td><b>Pause</b></td><td>Внешний блокер: нет доступа к сегменту, нет бюджета на поездку.</td></tr><tr><td><span class="pill todo">On Hold</span></td><td><span class="pill prog">Research Planning</span></td><td><b>Resume</b></td><td>Блокер снят.</td></tr><tr><td><span class="pill done">Validated</span> / <span class="pill done">Invalidated</span></td><td><span class="pill todo">Backlog</span></td><td><b>New iteration</b></td><td>Из вывода родилась новая гипотеза.</td></tr></tbody></table></div>
+  </section>
+
+  <section class="sec" id="hypotheses">
+    <h2>Гипотезы решений</h2>
+    <p class="insight">Формат: «Мы верим, что [сегмент] [боль]. Если дать [решение], то [метрика] изменится». Критерий заранее говорит, что считать подтверждением — так решение «Validated / Invalidated» принимается по правилу, а не по ощущениям.</p>
+    <div class="hyps"><article class="hyp"><div class="hh"><span class="hid">H1</span><span class="seg">Владельцы магазинов у дома</span><span class="ice num" title="ICE = 8 × 7 × 8">ICE 448</span></div><dl><dt>Мы верим, что</dt><dd>они теряют полдня и деньги на такси, чтобы съездить за товаром в cash &amp; carry</dd><dt>Решение</dt><dd>заказ до 18:00 — доставка завтра, без минимальной суммы</dd><dt>Метрика</dt><dd>частота заказов в неделю</dd><dt>Подтверждена, если</dt><dd>≥ 6 из 10 респондентов ездят за товаром чаще раза в неделю и называют поездку главной болью</dd><dt>Как проверяем</dt><dd>10 интервью + полевые визиты в Виндхуке и Лусаке</dd></dl></article><article class="hyp"><div class="hh"><span class="hid">H3</span><span class="seg">Владельцы магазинов у дома</span><span class="ice num" title="ICE = 7 × 7 × 9">ICE 441</span></div><dl><dt>Мы верим, что</dt><dd>им проще заказывать в WhatsApp, чем ставить отдельное приложение</dd><dt>Решение</dt><dd>заказ через WhatsApp-бота с каталогом</dd><dt>Метрика</dt><dd>доля завершённых заказов</dd><dt>Подтверждена, если</dt><dd>в тесте прототипа ≥ 70% магазинов оформляют заказ в боте без помощи</dd><dt>Как проверяем</dt><dd>Wizard-of-Oz тест: заказы в WhatsApp принимает человек</dd></dl></article><article class="hyp"><div class="hh"><span class="hid">H4</span><span class="seg">Владельцы магазинов у дома</span><span class="ice num" title="ICE = 6 × 6 × 8">ICE 288</span></div><dl><dt>Мы верим, что</dt><dd>они узнают, что товар закончился, только когда его спрашивает покупатель</dd><dt>Решение</dt><dd>напоминание о дозаказе по истории покупок</dd><dt>Метрика</dt><dd>доля повторных заказов</dd><dt>Подтверждена, если</dt><dd>≥ 6 из 10 описывают недавний случай упущенной продажи</dd><dt>Как проверяем</dt><dd>интервью по последнему случаю (JTBD)</dd></dl></article><article class="hyp"><div class="hh"><span class="hid">H5</span><span class="seg">Магазины в Замбии</span><span class="ice num" title="ICE = 6 × 6 × 7">ICE 252</span></div><dl><dt>Мы верим, что</dt><dd>наличные при доставке создают риск для водителя и задерживают деньги</dd><dt>Решение</dt><dd>оплата через мобильные деньги при получении</dd><dt>Метрика</dt><dd>доля безналичных оплат</dd><dt>Подтверждена, если</dt><dd>≥ 60% магазинов уже принимают мобильные деньги от своих покупателей</dd><dt>Как проверяем</dt><dd>интервью с магазинами и водителями</dd></dl></article><article class="hyp"><div class="hh"><span class="hid">H2</span><span class="seg">Владельцы магазинов у дома</span><span class="ice num" title="ICE = 9 × 5 × 5">ICE 225</span></div><dl><dt>Мы верим, что</dt><dd>им не хватает оборотных денег, поэтому они покупают мало и часто остаются без ходового товара</dd><dt>Решение</dt><dd>отсрочка платежа на 7 дней для проверенных магазинов</dd><dt>Метрика</dt><dd>средний чек заказа</dd><dt>Подтверждена, если</dt><dd>≥ 5 из 10 готовы увеличить заказ при отсрочке и называют сумму</dd><dt>Как проверяем</dt><dd>интервью + анализ истории заказов</dd></dl></article><article class="hyp"><div class="hh"><span class="hid">H6</span><span class="seg">Производители и дистрибьюторы</span><span class="ice num" title="ICE = 8 × 4 × 5">ICE 160</span></div><dl><dt>Мы верим, что</dt><dd>они не видят, что и где продаётся в мелкой рознице</dd><dt>Решение</dt><dd>платный дашборд спроса по районам</dd><dt>Метрика</dt><dd>готовность платить, пилоты</dd><dt>Подтверждена, если</dt><dd>≥ 2 из 6 поставщиков соглашаются на платный пилот</dd><dt>Как проверяем</dt><dd>B2B-интервью + макет дашборда</dd></dl></article></div>
+  </section>
+
+  <section class="sec" id="backlog">
+    <h2>Бэклог Discovery-задач</h2>
+    <p class="insight">Так бэклог выглядит на доске в начале первого цикла: сначала берём гипотезы с самым высоким ICE и самым дешёвым способом проверки. Распределение по колонкам — пример планирования, а не прогресс реальной команды.</p>
+    <div class="board"><section class="col todo"><h3>Backlog <span class="num">6</span></h3><ul><li><span class="tk">DISC-7</span><span class="tt">Интервью с водителями о наличных при доставке</span><span class="th">H5</span></li><li><span class="tk">DISC-8</span><span class="tt">Опрос магазинов: какие способы оплаты принимают</span><span class="th">H5</span></li><li><span class="tk">DISC-9</span><span class="tt">Интервью о кредитах у поставщиков сегодня</span><span class="th">H2</span></li><li><span class="tk">DISC-10</span><span class="tt">Список 6 поставщиков и выход на ЛПР</span><span class="th">H6</span></li><li><span class="tk">DISC-11</span><span class="tt">Макет дашборда спроса для B2B-интервью</span><span class="th">H6</span></li><li><span class="tk">DISC-12</span><span class="tt">Полевой визит: день с владельцем магазина</span><span class="th">H1</span></li></ul></section><section class="col todo"><h3>Ready for Research <span class="num">4</span></h3><ul><li><span class="tk">DISC-3</span><span class="tt">Рекрутинг 10 владельцев магазинов в Виндхуке и Лусаке</span><span class="th">H1</span></li><li><span class="tk">DISC-4</span><span class="tt">Интервью «последний раз, когда закончился товар»</span><span class="th">H4</span></li><li><span class="tk">DISC-5</span><span class="tt">Анализ истории заказов: размер и частота</span><span class="th">H2</span></li><li><span class="tk">DISC-6</span><span class="tt">Прототип каталога в WhatsApp на 30 товаров</span><span class="th">H3</span></li></ul></section><section class="col prog"><h3>Research Planning <span class="num">2</span></h3><ul><li><span class="tk">DISC-1</span><span class="tt">Сценарий Wizard-of-Oz теста заказа в WhatsApp</span><span class="th">H3</span></li><li><span class="tk">DISC-2</span><span class="tt">Гайд интервью: как магазин сейчас пополняет запасы</span><span class="th">H1</span></li></ul></section><section class="col prog"><h3>Recruiting <span class="num">0</span></h3><ul><li class="empty">пока пусто</li></ul></section><section class="col prog"><h3>Interviews <span class="num">0</span></h3><ul><li class="empty">пока пусто</li></ul></section><section class="col prog"><h3>Synthesis <span class="num">0</span></h3><ul><li class="empty">пока пусто</li></ul></section><section class="col done"><h3>Validated <span class="num">0</span></h3><ul><li class="empty">пока пусто</li></ul></section><section class="col done"><h3>Invalidated <span class="num">0</span></h3><ul><li class="empty">пока пусто</li></ul></section></div>
+  </section>
+
+  <section class="sec" id="checklist">
+    <h2>Чеклист по ТЗ</h2>
+    <p class="insight">Уровень 1 (Easy): создать workflow задач в Jira и сдать PDF со скриншотом.</p>
+    <ul class="list"><li><span class="n fix">✓</span><span><b>Статусы, в которых находятся задачи</b>9 статусов, у каждого описан смысл</span></li><li><span class="n fix">✓</span><span><b>Стрелки с переходами «от» и «к»</b>11 переходов, включая возврат «Need more data» и петлю «New iteration»</span></li><li><span class="n fix">✓</span><span><b>Названия переходов — что означает переход</b>у каждого перехода есть название и условие</span></li><li><span class="n fix">✓</span><span><b>Серые To Do, синие In Progress, зелёные Done</b>цвет задаётся категорией статуса</span></li><li><span class="n fix">✓</span><span><b>Собрать в Jira и сдать PDF со скриншотом</b>workflow собирается в Jira по этой схеме, на сдачу идёт PDF со скриншотом; здесь — интерактивная версия</span></li></ul>
+  </section>
+</main>
+<footer class="wrap">Учебный кейс курса Product Management. Jabu — реальная компания из Y Combinator (S21), но все гипотезы, задачи и критерии здесь — мой учебный план, а не данные компании.</footer>
+
+<!-- Shared by the case pages (inlined by build.py): highlights the section you are reading in the sticky top nav, shows reading progress,
+     and offers "← Back" to return to where you were before jumping to a section (button, Alt+← or the browser's back). -->
+<style>
+.nav { position: sticky; }
+.nav a.active { background: var(--ink); color: var(--bg); }
+.nav a.active:hover { background: var(--ink); color: var(--bg); }
+.nav .progress { position: absolute; left: 0; bottom: -1px; height: 2px; width: 100%; background: var(--focus); transform-origin: 0 50%; transform: scaleX(0); }
+.backjump { position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 12;
+  font: inherit; font-size: 14px; font-weight: 600; border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  padding: 9px 14px; border-radius: 999px; cursor: pointer; box-shadow: 0 6px 24px rgb(15 23 42 / .16); }
+.backjump:hover { border-color: var(--ink-2); }
+@media (prefers-reduced-motion: no-preference) { .nav a { transition: background .15s, color .15s; } }
+</style>
+<script>
+(function () {
+  const nav = document.querySelector(".nav");
+  if (!nav) return;
+  const row = nav.querySelector(".wrap");
+  const links = [...nav.querySelectorAll('a[href^="#"]')];
+  const pairs = links.map(a => [a, document.getElementById(a.getAttribute("href").slice(1))]).filter(p => p[1]);
+  const bar = document.createElement("div");
+  bar.className = "progress";
+  bar.setAttribute("aria-hidden", "true");
+  nav.appendChild(bar);
+  let current = null, ticking = false;
+
+  function update() {
+    ticking = false;
+    const line = nav.getBoundingClientRect().bottom + 24;
+    let active = null;
+    for (const [a, sec] of pairs) if (sec.getBoundingClientRect().top <= line) active = a;
+    const atEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+    if (atEnd && pairs.length) active = pairs[pairs.length - 1][0];
+    if (active !== current) {
+      if (current) { current.classList.remove("active"); current.removeAttribute("aria-current"); }
+      if (active) {
+        active.classList.add("active");
+        active.setAttribute("aria-current", "location");
+        // keep the active link visible in the horizontally scrolling nav (phones) without moving the page
+        const left = active.offsetLeft - (row.clientWidth - active.offsetWidth) / 2;
+        row.scrollTo({ left: Math.max(0, left), behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      }
+      current = active;
+    }
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.transform = "scaleX(" + (max > 0 ? Math.min(1, window.scrollY / max) : 0) + ")";
+  }
+  // one step back: remember the scroll position before every in-page jump
+  const ru = (document.documentElement.lang || "ru").slice(0, 2) === "ru";
+  const back = document.createElement("button");
+  back.type = "button"; back.className = "backjump"; back.hidden = true;
+  back.textContent = ru ? "\u2190 \u041d\u0430\u0437\u0430\u0434" : "\u2190 Back";
+  back.title = ru ? "\u0412\u0435\u0440\u043d\u0443\u0442\u044c\u0441\u044f \u0442\u0443\u0434\u0430, \u0433\u0434\u0435 \u0432\u044b \u0431\u044b\u043b\u0438 \u00b7 Alt + \u2190" : "Return to where you were \u00b7 Alt + \u2190"; // RU text escaped so English pages stay Cyrillic-free
+  document.body.appendChild(back);
+  const jumps = [];
+  const sync = () => { back.hidden = !jumps.length; };
+  document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener("click", () => {
+    if (a.getAttribute("href").length < 2) return;
+    jumps.push({ y: window.scrollY, h: location.hash }); if (jumps.length > 50) jumps.shift(); sync();
+  }));
+  function goBack() {
+    if (!jumps.length) return;
+    const y = jumps.pop().y;
+    try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+    window.scrollTo({ top: y, behavior: "auto" });
+    sync();
+  }
+  back.addEventListener("click", goBack);
+  // the browser's own back: drop the jump it just undid (clicking a link also fires popstate, so compare hashes)
+  window.addEventListener("popstate", () => { if (jumps.length && location.hash === jumps[jumps.length - 1].h) { jumps.pop(); sync(); } });
+  document.addEventListener("keydown", e => { if (e.altKey && e.key === "ArrowLeft" && jumps.length) { e.preventDefault(); goBack(); } });
+
+  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+  update();
+})();
+</script>
+
+<a class="pf-home" href="./#ru" title="На главную — все проекты" aria-label="На главную — все проекты"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10"/><path d="M10 20v-6h4v6"/></svg><span>Главная</span></a>
+<style>
+.pf-home { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 25;
+  display: inline-flex; align-items: center; gap: 7px; font: inherit; font-size: 14px; font-weight: 600; line-height: 1; text-decoration: none;
+  border: 1px solid var(--line, #d0d5dd); background: var(--surface, #fff); color: var(--ink, #0f172a);
+  padding: 10px 14px; border-radius: 999px; box-shadow: 0 6px 24px rgb(15 23 42 / .16); }
+.pf-home:hover { border-color: var(--ink-2, #475467); }
+.pf-home:focus-visible { outline: 2px solid var(--ink, #0f172a); outline-offset: 2px; }
+@media print { .pf-home { display: none; } }
+</style>
+<script>
+(function () {
+  try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) {}
+  function toTop() {
+    try { window.scrollTo(0, 0); } catch (e) {}
+    try { if (window.top !== window && document.body) document.body.scrollIntoView({ block: "start" }); } catch (e) {}
+  }
+  window.pfToTop = toTop;
+  function onLoad() {
+    var h = decodeURIComponent(location.hash.slice(1));
+    if (h && document.getElementById(h)) return; // a link to a section of a long page keeps its place
+    toTop();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", onLoad); else onLoad();
+  window.addEventListener("pageshow", function (e) { if (e.persisted) onLoad(); });
+  var TYPING = /^(INPUT|TEXTAREA|SELECT)$/;
+  function typing(el) { return el && (el.isContentEditable || (TYPING.test(el.tagName) && el.type !== "range" && el.type !== "checkbox" && el.type !== "radio" && el.type !== "button")); }
+  document.addEventListener("pointerdown", function (e) {
+    var a = document.activeElement;
+    if (!typing(a)) return;
+    var t = e.target;
+    if (t && t.closest && t.closest("input, textarea, select, label, [contenteditable]")) return;
+    a.blur();
+  }, true);
+  document.addEventListener("keydown", function (e) {
+    var a = document.activeElement;
+    if (!typing(a) || a.tagName === "TEXTAREA") return;
+    if (e.key === "Enter" || e.key === "Escape") a.blur();
+  });
+})();
+</script>
+</body>
+</html>

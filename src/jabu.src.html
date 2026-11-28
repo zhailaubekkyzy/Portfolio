@@ -1,0 +1,189 @@
+<title>{{title}}</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="{{desc}}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Jabu Customer Discovery case: workflow diagram, statuses, transitions, hypotheses, board, checklist. Same tokens as the other cases. */
+:root {
+  --bg: #f4f6f9; --surface: #ffffff; --surface-2: #eceff4; --ink: #131a26; --ink-2: #485264; --muted: #7a8496; --line: #dde2ea;
+  --focus: #2a78d6; --good: #11764f; --good-bg: #e3f4ec; --warn: #8a5a00; --warn-bg: #fff4de;
+  --c1: #2a78d6; --c1-t: #e8f1fc; --c2: #1baf7a; --c3: #eb6834; --c3-t: #fdece4; --base-bar: #c3c8d1;
+  --f-display: "Unbounded", "Onest", system-ui, sans-serif;
+  --f-body: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e121a; --surface: #161c27; --surface-2: #1e2633; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #2a3344;
+    --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --warn: #f0c46a; --warn-bg: #33270f;
+    --c1: #3987e5; --c1-t: #16263d; --c2: #199e70; --c3: #d95926; --c3-t: #362018; --base-bar: #4a5263; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e121a; --surface: #161c27; --surface-2: #1e2633; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #2a3344;
+  --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --warn: #f0c46a; --warn-bg: #33270f;
+  --c1: #3987e5; --c1-t: #16263d; --c2: #199e70; --c3: #d95926; --c3-t: #362018; --base-bar: #4a5263; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: inherit; }
+.num { font-variant-numeric: tabular-nums; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.nav .wrap { display: flex; gap: 6px; overflow-x: auto; padding-block: 10px; scrollbar-width: none; }
+.nav a { flex: none; text-decoration: none; color: var(--ink-2); font-size: 14px; padding: 6px 12px; border-radius: 999px; }
+.nav a.back { color: var(--ink); font-weight: 600; }
+.nav a.lang { margin-left: auto; font-weight: 700; font-family: var(--f-mono); font-size: 13px; border: 1px solid var(--line); }
+.nav a:hover { background: var(--surface-2); color: var(--ink); }
+
+.hero { padding-block: 56px 32px; display: grid; gap: 22px; }
+.hero h1 { font-family: var(--f-display); font-weight: 700; font-size: clamp(34px, 6vw, 64px); line-height: 1.04; letter-spacing: -.02em; }
+.hero h1 span { color: var(--muted); font-weight: 500; }
+.lead { font-size: clamp(16px, 1.6vw, 19px); color: var(--ink-2); max-width: 66ch; }
+.note { display: inline-flex; align-items: center; gap: 8px; width: fit-content; max-width: 100%; font-size: 13px; color: var(--warn); background: var(--warn-bg); padding: 6px 12px; border-radius: 999px; }
+.crmlink { width: fit-content; font-weight: 600; color: var(--c1); text-decoration: none; font-size: 15px; }
+.crmlink:hover { text-decoration: underline; }
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 8px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px 18px 16px; display: grid; gap: 6px; align-content: start; }
+.kpi .v { font-family: var(--f-display); font-size: clamp(22px, 2.6vw, 30px); font-weight: 700; letter-spacing: -.01em; }
+.kpi .v.bad { color: var(--c3); }
+.kpi .d { font-size: 13.5px; color: var(--ink-2); }
+
+
+:root { --todo-bg: #e9ecf1; --todo-ink: #44546f; --todo-bd: #c7ced9; --prog-bg: #e3eeff; --prog-ink: #0b57c9; --prog-bd: #9cc0f5;
+  --done-bg: #dcf5e7; --done-ink: #12704a; --done-bd: #94d8b4; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --todo-bg: #262e3b; --todo-ink: #c3cbd8; --todo-bd: #3c4658;
+  --prog-bg: #13284a; --prog-ink: #8ab8ff; --prog-bd: #2b5ba3; --done-bg: #10332a; --done-ink: #6fdcaa; --done-bd: #23714f; } }
+.hero { padding-block: 40px 20px; }
+.sec { padding-block: 28px; border-top: 1px solid var(--line); scroll-margin-top: 64px; display: grid; gap: 16px; }
+.sec h2 { font-family: var(--f-display); font-size: clamp(22px, 3vw, 30px); font-weight: 700; letter-spacing: -.01em; }
+.insight { font-size: 16px; color: var(--ink-2); max-width: 78ch; }
+.canvas { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow-x: auto; padding: 16px; }
+.wf { display: block; min-width: 860px; width: 100%; height: auto; font-family: var(--f-body); }
+.wf .node rect { stroke-width: 1.5; }
+.wf .node text { font-size: 12.5px; font-weight: 700; letter-spacing: .03em; }
+.wf .todo rect { fill: var(--todo-bg); stroke: var(--todo-bd); } .wf .todo text { fill: var(--todo-ink); }
+.wf .prog rect { fill: var(--prog-bg); stroke: var(--prog-bd); } .wf .prog text { fill: var(--prog-ink); }
+.wf .done rect { fill: var(--done-bg); stroke: var(--done-bd); } .wf .done text { fill: var(--done-ink); }
+.wf .edge { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+.wf .ahp { fill: var(--muted); }
+.wf .el { font-size: 11.5px; fill: var(--ink-2); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+.hint { font-size: 13px; color: var(--muted); display: none; }
+@media (max-width: 900px) { .hint { display: block; } }
+.legend { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; border: 1px solid; white-space: nowrap; }
+.pill.todo { background: var(--todo-bg); color: var(--todo-ink); border-color: var(--todo-bd); }
+.pill.prog { background: var(--prog-bg); color: var(--prog-ink); border-color: var(--prog-bd); }
+.pill.done { background: var(--done-bg); color: var(--done-ink); border-color: var(--done-bd); }
+.legend .pill { text-transform: none; letter-spacing: 0; font-weight: 600; }
+.howto { font-size: 14px; color: var(--ink-2); background: var(--surface-2); border-radius: 10px; padding: 12px 14px; max-width: 90ch; }
+.tbl { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow-x: auto; }
+.tbl table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 560px; }
+.tbl th, .tbl td { padding: 10px 16px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+.tbl th { font-size: 12px; font-family: var(--f-mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 500; white-space: nowrap; }
+.tbl td:first-child, .tbl td:nth-child(2) { white-space: nowrap; }
+.tbl tr:last-child td { border-bottom: 0; }
+.hyps { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; align-items: start; }
+.hyp { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: grid; gap: 12px; }
+.hyp .hh { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.hyp .hid { font-family: var(--f-mono); font-weight: 600; font-size: 13px; background: var(--c1-t); color: var(--c1); padding: 2px 8px; border-radius: 6px; }
+.hyp .seg { font-weight: 600; flex: 1; min-width: 0; }
+.hyp .ice { font-family: var(--f-mono); font-size: 12.5px; color: var(--ink-2); border: 1px solid var(--line); padding: 2px 8px; border-radius: 999px; }
+.hyp dl { margin: 0; display: grid; gap: 6px; font-size: 14.5px; color: var(--ink-2); }
+.hyp dt { font-family: var(--f-mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-top: 4px; }
+.hyp dd { margin: 0; }
+.board { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(220px, 1fr); gap: 10px; overflow-x: auto; padding-bottom: 6px; }
+.col { background: var(--surface-2); border-radius: var(--r); padding: 10px; display: grid; gap: 8px; align-content: start; }
+.col h3 { font-size: 12px; font-family: var(--f-mono); text-transform: uppercase; letter-spacing: .05em; display: flex; justify-content: space-between; padding: 4px 6px; border-radius: 6px; }
+.col.todo h3 { color: var(--todo-ink); background: var(--todo-bg); } .col.prog h3 { color: var(--prog-ink); background: var(--prog-bg); } .col.done h3 { color: var(--done-ink); background: var(--done-bg); }
+.col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.col li { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px; display: grid; gap: 6px; font-size: 14px; }
+.col li .tk { font-family: var(--f-mono); font-size: 11.5px; color: var(--muted); }
+.col li .th { justify-self: start; font-family: var(--f-mono); font-size: 11px; background: var(--c1-t); color: var(--c1); padding: 1px 6px; border-radius: 5px; }
+.col li.empty { background: transparent; border-style: dashed; color: var(--muted); font-size: 13px; text-align: center; }
+.list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; max-width: 80ch; }
+.list li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; font-size: 15px; color: var(--ink-2); }
+.list li b { display: block; color: var(--ink); font-weight: 600; }
+.list .n { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; font-family: var(--f-mono); font-size: 13px; font-weight: 600; }
+.list .n.fix { background: var(--good-bg); color: var(--good); }
+footer { padding-block: 24px 40px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); }
+@media (max-width: 900px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .hyps { grid-template-columns: minmax(0, 1fr); } .tbl th, .tbl td { padding: 9px 10px; } }
+</style>
+
+<nav class="nav" aria-label="{{nav_label}}">
+  <div class="wrap">
+    <a href="{{back_href}}" class="back">{{nav_back}}</a>
+    <a href="#workflow">{{nav_workflow}}</a>
+    <a href="#statuses">{{nav_status}}</a>
+    <a href="#transitions">{{nav_trans}}</a>
+    <a href="#hypotheses">{{nav_hyp}}</a>
+    <a href="#backlog">{{nav_backlog}}</a>
+    <a href="#checklist">{{nav_check}}</a>
+    <a href="{{lang_href}}" class="lang">{{lang_label}}</a>
+  </div>
+</nav>
+
+<header class="wrap hero">
+  <span class="eyebrow">{{eyebrow}}</span>
+  <h1>{{h1}}</h1>
+  <p class="lead">{{lead}}</p>
+  <span class="note">{{note}}</span>
+  <div class="kpis">
+    <div class="kpi"><span class="eyebrow">{{k1_e}}</span><span class="v num">{{k1_v}}</span><span class="d">{{k1_d}}</span></div>
+    <div class="kpi"><span class="eyebrow">{{k2_e}}</span><span class="v num">{{k2_v}}</span><span class="d">{{k2_d}}</span></div>
+    <div class="kpi"><span class="eyebrow">{{k3_e}}</span><span class="v num">{{k3_v}}</span><span class="d">{{k3_d}}</span></div>
+    <div class="kpi"><span class="eyebrow">{{k4_e}}</span><span class="v num">{{k4_v}}</span><span class="d">{{k4_d}}</span></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="sec" id="workflow">
+    <h2>{{wf_h}}</h2>
+    <p class="insight">{{wf_p}}</p>
+    <div class="legend"><span class="pill todo">{{lg_todo}}</span><span class="pill prog">{{lg_prog}}</span><span class="pill done">{{lg_done}}</span></div>
+    <span class="hint">{{wf_scroll}}</span>
+    <div class="canvas">{{workflow}}</div>
+    <p class="howto">{{wf_jira}}</p>
+  </section>
+
+  <section class="sec" id="statuses">
+    <h2>{{st_h}}</h2>
+    <p class="insight">{{st_p}}</p>
+    <div class="tbl"><table><thead><tr><th>{{th_status}}</th><th>{{th_cat}}</th><th>{{th_mean}}</th></tr></thead><tbody>{{rows_status}}</tbody></table></div>
+  </section>
+
+  <section class="sec" id="transitions">
+    <h2>{{tr_h}}</h2>
+    <p class="insight">{{tr_p}}</p>
+    <div class="tbl"><table><thead><tr><th>{{th_from}}</th><th>{{th_to}}</th><th>{{th_name}}</th><th>{{th_rule}}</th></tr></thead><tbody>{{rows_trans}}</tbody></table></div>
+  </section>
+
+  <section class="sec" id="hypotheses">
+    <h2>{{hy_h}}</h2>
+    <p class="insight">{{hy_p}}</p>
+    <div class="hyps">{{hyps}}</div>
+  </section>
+
+  <section class="sec" id="backlog">
+    <h2>{{bl_h}}</h2>
+    <p class="insight">{{bl_p}}</p>
+    <div class="board">{{board}}</div>
+  </section>
+
+  <section class="sec" id="checklist">
+    <h2>{{ch_h}}</h2>
+    <p class="insight">{{ch_p}}</p>
+    <ul class="list">{{checks}}</ul>
+  </section>
+</main>
+<footer class="wrap">{{foot}}</footer>
