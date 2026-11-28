@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Sprint Discovery backlog · Jabu (YC S21) — Tomiris (Gulsara) Zhailaubekkyzy</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Training case: solution hypotheses and a one-week Discovery sprint backlog for a PM, a designer and a UX researcher at Jabu — B2B grocery delivery in Namibia, Zambia and South Africa.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Jabu sprint Discovery backlog case: context, metric, hypotheses, effort, backlog, job stories, week, risks. Same tokens as the other cases. */
+:root {
+  --bg: #f4f6f9; --surface: #ffffff; --surface-2: #eceff4; --ink: #131a26; --ink-2: #485264; --muted: #7a8496; --line: #dde2ea;
+  --focus: #2a78d6; --good: #11764f; --good-bg: #e3f4ec; --warn: #8a5a00; --warn-bg: #fff4de;
+  --c1: #2a78d6; --c1-t: #e8f1fc; --c2: #1baf7a; --c3: #eb6834; --c3-t: #fdece4; --base-bar: #c3c8d1;
+  --f-display: "Unbounded", "Onest", system-ui, sans-serif;
+  --f-body: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e121a; --surface: #161c27; --surface-2: #1e2633; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #2a3344;
+    --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --warn: #f0c46a; --warn-bg: #33270f;
+    --c1: #3987e5; --c1-t: #16263d; --c2: #199e70; --c3: #d95926; --c3-t: #362018; --base-bar: #4a5263; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e121a; --surface: #161c27; --surface-2: #1e2633; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #2a3344;
+  --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --warn: #f0c46a; --warn-bg: #33270f;
+  --c1: #3987e5; --c1-t: #16263d; --c2: #199e70; --c3: #d95926; --c3-t: #362018; --base-bar: #4a5263; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: inherit; }
+.num { font-variant-numeric: tabular-nums; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.nav .wrap { display: flex; gap: 6px; overflow-x: auto; padding-block: 10px; scrollbar-width: none; }
+.nav a { flex: none; text-decoration: none; color: var(--ink-2); font-size: 14px; padding: 6px 12px; border-radius: 999px; }
+.nav a.back { color: var(--ink); font-weight: 600; }
+.nav a.lang { margin-left: auto; font-weight: 700; font-family: var(--f-mono); font-size: 13px; border: 1px solid var(--line); }
+.nav a:hover { background: var(--surface-2); color: var(--ink); }
+
+.hero { padding-block: 56px 32px; display: grid; gap: 22px; }
+.hero h1 { font-family: var(--f-display); font-weight: 700; font-size: clamp(34px, 6vw, 64px); line-height: 1.04; letter-spacing: -.02em; }
+.hero h1 span { color: var(--muted); font-weight: 500; }
+.lead { font-size: clamp(16px, 1.6vw, 19px); color: var(--ink-2); max-width: 66ch; }
+.note { display: inline-flex; align-items: center; gap: 8px; width: fit-content; max-width: 100%; font-size: 13px; color: var(--warn); background: var(--warn-bg); padding: 6px 12px; border-radius: 999px; }
+.crmlink { width: fit-content; font-weight: 600; color: var(--c1); text-decoration: none; font-size: 15px; }
+.crmlink:hover { text-decoration: underline; }
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 8px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px 18px 16px; display: grid; gap: 6px; align-content: start; }
+.kpi .v { font-family: var(--f-display); font-size: clamp(22px, 2.6vw, 30px); font-weight: 700; letter-spacing: -.01em; }
+.kpi .v.bad { color: var(--c3); }
+.kpi .d { font-size: 13.5px; color: var(--ink-2); }
+
+
+:root { --todo-bg: #e9ecf1; --todo-ink: #44546f; --todo-bd: #c7ced9; --prog-bg: #e3eeff; --prog-ink: #0b57c9; --prog-bd: #9cc0f5;
+  --done-bg: #dcf5e7; --done-ink: #12704a; --done-bd: #94d8b4; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --todo-bg: #262e3b; --todo-ink: #c3cbd8; --todo-bd: #3c4658;
+  --prog-bg: #13284a; --prog-ink: #8ab8ff; --prog-bd: #2b5ba3; --done-bg: #10332a; --done-ink: #6fdcaa; --done-bd: #23714f; } }
+.hero { padding-block: 40px 20px; }
+.sec { padding-block: 28px; border-top: 1px solid var(--line); scroll-margin-top: 64px; display: grid; gap: 16px; }
+.sec h2 { font-family: var(--f-display); font-size: clamp(22px, 3vw, 30px); font-weight: 700; letter-spacing: -.01em; }
+.insight { font-size: 16px; color: var(--ink-2); max-width: 78ch; }
+.canvas { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow-x: auto; padding: 16px; }
+.wf { display: block; min-width: 860px; width: 100%; height: auto; font-family: var(--f-body); }
+.wf .node rect { stroke-width: 1.5; }
+.wf .node text { font-size: 12.5px; font-weight: 700; letter-spacing: .03em; }
+.wf .todo rect { fill: var(--todo-bg); stroke: var(--todo-bd); } .wf .todo text { fill: var(--todo-ink); }
+.wf .prog rect { fill: var(--prog-bg); stroke: var(--prog-bd); } .wf .prog text { fill: var(--prog-ink); }
+.wf .done rect { fill: var(--done-bg); stroke: var(--done-bd); } .wf .done text { fill: var(--done-ink); }
+.wf .edge { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+.wf .ahp { fill: var(--muted); }
+.wf .el { font-size: 11.5px; fill: var(--ink-2); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+.hint { font-size: 13px; color: var(--muted); display: none; }
+@media (max-width: 900px) { .hint { display: block; } }
+.legend { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; border: 1px solid; white-space: nowrap; }
+.pill.todo { background: var(--todo-bg); color: var(--todo-ink); border-color: var(--todo-bd); }
+.pill.prog { background: var(--prog-bg); color: var(--prog-ink); border-color: var(--prog-bd); }
+.pill.done { background: var(--done-bg); color: var(--done-ink); border-color: var(--done-bd); }
+.legend .pill { text-transform: none; letter-spacing: 0; font-weight: 600; }
+.howto { font-size: 14px; color: var(--ink-2); background: var(--surface-2); border-radius: 10px; padding: 12px 14px; max-width: 90ch; }
+.tbl { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow-x: auto; }
+.tbl table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 560px; }
+.tbl th, .tbl td { padding: 10px 16px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+.tbl th { font-size: 12px; font-family: var(--f-mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 500; white-space: nowrap; }
+.tbl td:first-child, .tbl td:nth-child(2) { white-space: nowrap; }
+.tbl tr:last-child td { border-bottom: 0; }
+.hyps { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; align-items: start; }
+.hyp { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: grid; gap: 12px; }
+.hyp .hh { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.hyp .hid { font-family: var(--f-mono); font-weight: 600; font-size: 13px; background: var(--c1-t); color: var(--c1); padding: 2px 8px; border-radius: 6px; }
+.hyp .seg { font-weight: 600; flex: 1; min-width: 0; }
+.hyp .ice { font-family: var(--f-mono); font-size: 12.5px; color: var(--ink-2); border: 1px solid var(--line); padding: 2px 8px; border-radius: 999px; }
+.hyp dl { margin: 0; display: grid; gap: 6px; font-size: 14.5px; color: var(--ink-2); }
+.hyp dt { font-family: var(--f-mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-top: 4px; }
+.hyp dd { margin: 0; }
+.board { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(220px, 1fr); gap: 10px; overflow-x: auto; padding-bottom: 6px; }
+.col { background: var(--surface-2); border-radius: var(--r); padding: 10px; display: grid; gap: 8px; align-content: start; }
+.col h3 { font-size: 12px; font-family: var(--f-mono); text-transform: uppercase; letter-spacing: .05em; display: flex; justify-content: space-between; padding: 4px 6px; border-radius: 6px; }
+.col.todo h3 { color: var(--todo-ink); background: var(--todo-bg); } .col.prog h3 { color: var(--prog-ink); background: var(--prog-bg); } .col.done h3 { color: var(--done-ink); background: var(--done-bg); }
+.col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.col li { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px; display: grid; gap: 6px; font-size: 14px; }
+.col li .tk { font-family: var(--f-mono); font-size: 11.5px; color: var(--muted); }
+.col li .th { justify-self: start; font-family: var(--f-mono); font-size: 11px; background: var(--c1-t); color: var(--c1); padding: 1px 6px; border-radius: 5px; }
+.col li.empty { background: transparent; border-style: dashed; color: var(--muted); font-size: 13px; text-align: center; }
+.list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; max-width: 80ch; }
+.list li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; font-size: 15px; color: var(--ink-2); }
+.list li b { display: block; color: var(--ink); font-weight: 600; }
+.list .n { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; font-family: var(--f-mono); font-size: 13px; font-weight: 600; }
+.list .n.fix { background: var(--good-bg); color: var(--good); }
+footer { padding-block: 24px 40px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); }
+@media (max-width: 900px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .hyps { grid-template-columns: minmax(0, 1fr); } .tbl th, .tbl td { padding: 9px 10px; } }
+/* sprint-backlog specifics */
+:root { --r1: var(--c1); --r1-t: var(--c1-t); --r2: #11815a; --r2-t: #e0f4ea; --r3: #c4511f; --r3-t: var(--c3-t); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --r2: #4fd09b; --r2-t: #123327; --r3: #f08a5d; } }
+.pdf { width: fit-content; font-weight: 600; color: var(--c1); text-decoration: none; font-size: 15px; }
+.pdf:hover { text-decoration: underline; }
+.bul { margin: 0; padding-left: 20px; display: grid; gap: 6px; color: var(--ink-2); max-width: 80ch; }
+.formula { font-family: var(--f-mono); font-size: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; white-space: nowrap; }
+.mgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.mcard { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; display: grid; gap: 6px; align-content: start; }
+.mcard.main { border-color: var(--c1); background: var(--c1-t); }
+.mcard b { font-size: 16px; }
+.mcard span:last-child { color: var(--ink-2); font-size: 14.5px; }
+.oid { font-family: var(--f-mono); font-size: 12px; font-weight: 600; color: var(--muted); margin-right: 4px; }
+.tbl.wrapcells td:first-child, .tbl.wrapcells td:nth-child(2) { white-space: normal; }
+.tbl td.num { white-space: nowrap; }
+.tbl td.dep { font-family: var(--f-mono); font-size: 12.5px; white-space: nowrap; color: var(--ink-2); }
+.tbl tr.tot td { font-weight: 700; }
+.small { font-size: 13px; color: var(--muted); }
+.hyp .ht { font-size: 15px; color: var(--ink); }
+.hyp dd.ok { color: var(--good); }
+.hyp dd.kill { color: var(--c3); }
+.sp { display: inline-grid; place-items: center; min-width: 26px; height: 24px; padding: 0 6px; border-radius: 7px; background: var(--surface-2); font-family: var(--f-mono); font-size: 12.5px; font-weight: 600; }
+.tid { display: inline-block; font-family: var(--f-mono); font-size: 12px; font-weight: 600; padding: 2px 7px; border-radius: 6px; white-space: nowrap; margin: 1px 0; }
+.tid.r1 { background: var(--r1-t); color: var(--r1); } .tid.r2 { background: var(--r2-t); color: var(--r2); } .tid.r3 { background: var(--r3-t); color: var(--r3); }
+.rdot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 0; }
+.rdot.r1 { background: var(--r1); } .rdot.r2 { background: var(--r2); } .rdot.r3 { background: var(--r3); }
+.roles { display: grid; gap: 20px; }
+.role { display: grid; gap: 8px; }
+.role h3 { font-size: 17px; font-weight: 700; }
+.js { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.js summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 12px 14px; }
+.js summary::-webkit-details-marker { display: none; }
+.js summary::after { content: "+"; margin-left: auto; font-family: var(--f-mono); color: var(--muted); }
+.js[open] summary::after { content: "−"; }
+.js .jt { font-weight: 600; flex: 1 1 220px; min-width: 0; }
+.js .jm { font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.js dl { margin: 0; padding: 0 14px 14px; display: grid; gap: 4px; font-size: 14.5px; color: var(--ink-2); }
+.js dt { font-family: var(--f-mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-top: 8px; }
+.js dd { margin: 0; }
+.crit { font-size: 14.5px; background: var(--warn-bg); color: var(--warn); border-radius: 10px; padding: 12px 14px; max-width: 90ch; }
+.list .n { background: var(--c1-t); color: var(--c1); }
+.list li { align-items: start; }
+.src { margin: 0; padding-left: 20px; display: grid; gap: 4px; font-size: 14px; color: var(--ink-2); }
+.src a { color: var(--c1); }
+h3.sub { font-size: 18px; font-weight: 700; margin-top: 8px; }
+@media (max-width: 700px) { .mgrid { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+
+
+<nav class="nav" aria-label="Case sections">
+  <div class="wrap">
+    <a href="../#en" class="back">← All projects</a>
+    <a href="#context">Context</a>
+    <a href="#metric">Metric</a>
+    <a href="#hypotheses">Hypotheses</a>
+    <a href="#effort">Effort</a>
+    <a href="#backlog">Backlog</a>
+    <a href="#stories">Job Stories</a>
+    <a href="#week">Week</a>
+    <a href="#risks">Risks</a>
+    <a href="#decisions">Decisions</a>
+    <a href="../jabu-sprint-backlog.html" class="lang">RU</a>
+  </div>
+</nav>
+
+<header class="wrap hero">
+  <span class="eyebrow">Training case · Product Discovery · Medium level</span>
+  <h1>Sprint Discovery backlog <span>· Jabu, YC S21</span></h1>
+  <p class="lead">Jabu delivers groceries from manufacturers and distributors to neighbourhood stores in Namibia, Zambia and South Africa. I wrote solution hypotheses and built a one-week Discovery sprint backlog for a team of three — a PM, a UX researcher and a product designer — with Story Point estimates, dependencies and a day-by-day plan.</p>
+  <span class="note">A study plan, not work inside Jabu. Product facts come from public sources 2022–2025; all thresholds and percentages are assumptions to test.</span>
+  <a class="pdf" href="../files/jabu-discovery-backlog.pdf" target="_blank" rel="noopener">Download the case PDF (RU) ↓</a>
+  <div class="kpis">
+    <div class="kpi"><span class="eyebrow">Hypotheses</span><span class="v num">6</span><span class="d">across 4 opportunities in the OST</span></div>
+    <div class="kpi"><span class="eyebrow">In the sprint</span><span class="v num">3</span><span class="d">H1–H3 with the highest ICE</span></div>
+    <div class="kpi"><span class="eyebrow">Tasks</span><span class="v num">19</span><span class="d">written as Job Stories</span></div>
+    <div class="kpi"><span class="eyebrow">Estimate</span><span class="v num">62 SP</span><span class="d">PM 22 · UXR 21 · Design 19</span></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="sec" id="context">
+    <h2>What Jabu already has</h2>
+    <ul class="bul"><li>Ordering and payment in the app, same-day delivery (Jwallet)</li><li>Credit products for stores</li><li>Field agents who onboard and support stores</li><li>Customer support in WhatsApp groups</li><li>JabuPay and the MTN partnership in Zambia: instant payments and less cash</li></ul>
+    <p class="insight">The Discovery job is not to reinvent these features but to understand why they do not turn the first order into a habit. So every hypothesis is about improving what already exists.</p>
+  </section>
+
+  <section class="sec" id="metric">
+    <h2>Sprint metric and opportunity tree</h2>
+    <div class="formula">GMV = active stores × orders per store per month × average order value</div>
+    <div class="mgrid">
+      <div class="mcard main"><span class="eyebrow">Sprint metric</span><b>Share of stores placing a 2nd order within 30 days of the 1st — M1 repeat rate</b></div>
+      <div class="mcard"><span class="eyebrow">Guardrails</span><span>Overdue loan rate and delivery cost per order — so growth is not bought with bad debt or expensive delivery</span></div>
+    </div>
+    <div class="tbl wrapcells"><table><thead><tr><th>Opportunity (owner’s pain)</th><th>Hypotheses</th></tr></thead><tbody><tr><td><span class="oid">O1</span> “I’m not sure it will arrive on time and complete”</td><td class="num"><b>H1 ★</b></td></tr><tr><td><span class="oid">O2</span> “I don’t have the cash to buy a full batch”</td><td class="num"><b>H2 ★, H6</b></td></tr><tr><td><span class="oid">O3</span> “Ordering in the app is harder than texting or calling”</td><td class="num"><b>H3 ★, H5</b></td></tr><tr><td><span class="oid">O4</span> “I don’t see how it beats cash &amp; carry”</td><td class="num"><b>H4</b></td></tr></tbody></table></div>
+    <p class="small">★ — hypotheses tested in this sprint.</p>
+  </section>
+
+  <section class="sec" id="hypotheses">
+    <h2>Solution hypotheses</h2>
+    <p class="insight">Format: “If we do X, metric Y will change by Z, because W.” ICE = Impact × Confidence × Ease (1–10); Confidence is explained by the level of evidence. Success and kill criteria are written before the research.</p>
+    <div class="hyps"><article class="hyp"><div class="hh"><span class="hid">H1</span><span class="seg">O1 · ★</span><span class="ice num" title="ICE = 8 × 7 × 6">ICE 8·7·6 = 336</span></div><p class="ht">If we show an exact delivery window at checkout and warn about shortages before dispatch with a substitute option, the share of stores placing a 2nd order within 30 days will grow by 8 pp, because incomplete and late deliveries send owners back to cash &amp; carry.</p><dl><dt>Riskiest assumption</dt><dd>Short and late deliveries happen often, and owners blame Jabu for them.</dd><dt>Metric</dt><dd>M1 repeat rate</dd><dt>Success if</dt><dd class="ok">The data shows a repeat-order gap of ≥ 10 pp between a perfect and a problematic 1st delivery, and ≥ 5 of 10 respondents name delivery reliability as the reason.</dd><dt>Kill if</dt><dd class="kill">The gap is &lt; 3 pp and reliability does not come up in interviews.</dd><dt>Confidence</dt><dd>C = 7: tested on real delivery data.</dd></dl></article><article class="hyp"><div class="hh"><span class="hid">H2</span><span class="seg">O2 · ★</span><span class="ice num" title="ICE = 9 × 5 × 6">ICE 9·5·6 = 270</span></div><p class="ht">If we offer the existing credit right in the cart and show its cost in money rather than percent, the share of orders on credit will double and these stores’ average order will grow by 15%, because stores don’t know about the credit or don’t understand its terms.</p><dl><dt>Riskiest assumption</dt><dd>Credit is underused because of unawareness, not fear of debt or its price.</dd><dt>Metric</dt><dd>Share of orders on credit, average order; guardrail — overdue rate</dd><dt>Success if</dt><dd class="ok">Most eligible stores don’t use credit, and ≥ 5 of 10 interviewees explain it by unawareness or not understanding the terms.</dd><dt>Kill if</dt><dd class="kill">The reason is fear of debt or the price of credit. Then it is a different hypothesis, not about the interface.</dd><dt>Confidence</dt><dd>C = 5: the reason for low usage is still unknown.</dd></dl></article><article class="hyp"><div class="hh"><span class="hid">H3</span><span class="seg">O3 · ★</span><span class="ice num" title="ICE = 7 × 6 × 5">ICE 7·6·5 = 210</span></div><p class="ht">If a store can repeat its last order with one WhatsApp message, order frequency among active stores will grow by 15%, because owners already talk to Jabu on WhatsApp, while the app is heavy for cheap phones and expensive data.</p><dl><dt>Riskiest assumption</dt><dd>Store orders repeat enough for a “repeat” to be useful.</dd><dt>Metric</dt><dd>Orders per store per month</dd><dt>Success if</dt><dd class="ok">≥ 6 of 10 regularly order a similar basket, complete the repeat order in the prototype unaided, and the tech lead confirms feasibility.</dd><dt>Kill if</dt><dd class="kill">The basket differs every time, or ordering through an agent already covers this need.</dd><dt>Confidence</dt><dd>C = 6: support already runs on WhatsApp, but demand for ordering there is untested.</dd></dl></article></div>
+    <h3 class="sub">Hypothesis backlog for later sprints</h3>
+    <div class="tbl wrapcells"><table><thead><tr><th>ID</th><th>Hypothesis</th><th>ICE</th></tr></thead><tbody><tr><td><span class="hid">H6</span></td><td>If we introduce mini-bundles of fast-moving goods with a lower minimum, conversion to a 2nd order will grow, because small stores fall short of the minimum.</td><td class="num">5·5·7&nbsp;=&nbsp;175</td></tr><tr><td><span class="hid">H4</span></td><td>If we show the savings versus a trip to cash &amp; carry (taxi, a closed shop), conversion to a 2nd order will grow, because owners underestimate the hidden costs.</td><td class="num">5·4·8&nbsp;=&nbsp;160</td></tr><tr><td><span class="hid">H5</span></td><td>If the agent places the repeat order for the store during a visit, order frequency will grow, because dictating an order is easier for the owner than placing it.</td><td class="num">6·5·4&nbsp;=&nbsp;120</td></tr></tbody></table></div>
+  </section>
+
+  <section class="sec" id="effort">
+    <h2>Effort scale</h2>
+    <p class="insight">Story Points reflect volume, uncertainty and dependencies, not just hours. Capacity is 16–24 SP per person per week.</p>
+    <div class="tbl"><table><thead><tr><th>SP</th><th>Meaning</th><th>Guide</th></tr></thead><tbody><tr><td class="num"><span class="sp">1</span></td><td><b>Very easy</b></td><td>Up to 2 hours, no uncertainty</td></tr><tr><td class="num"><span class="sp">2</span></td><td><b>Easy</b></td><td>Half a day, method and inputs are clear</td></tr><tr><td class="num"><span class="sp">3</span></td><td><b>Medium</b></td><td>About a day, some sign-offs or minor uncertainty</td></tr><tr><td class="num"><span class="sp">5</span></td><td><b>Hard</b></td><td>About two days, external people, raw data or a new format</td></tr><tr><td class="num"><span class="sp">8</span></td><td><b>Very hard</b></td><td>3+ days, many dependencies — a signal to split the task</td></tr></tbody></table></div>
+  </section>
+
+  <section class="sec" id="backlog">
+    <h2>Sprint backlog</h2>
+    <p class="insight">Every task is tied to a hypothesis, a day and its dependencies, so the critical path is visible. The “→” arrow shows who receives the result.</p>
+    <div class="tbl wrapcells"><table style="min-width:760px"><thead><tr><th>ID</th><th>Task</th><th>Hyp.</th><th>SP</th><th>When</th><th>Dependencies</th></tr></thead><tbody><tr><td><span class="tid r1">PM-1</span></td><td>Metric tree, OST and decision rules</td><td>H1–H3</td><td class="num"><span class="sp">3</span></td><td>Mon</td><td class="dep">—</td></tr><tr><td><span class="tid r1">PM-2</span></td><td>Retention cohorts and delivery reliability</td><td>H1</td><td class="num"><span class="sp">5</span></td><td>Mon–Wed</td><td class="dep">PM-1 → UXR-2</td></tr><tr><td><span class="tid r1">PM-3</span></td><td>Existing credit funnel</td><td>H2</td><td class="num"><span class="sp">3</span></td><td>Wed</td><td class="dep">PM-1 → D-3</td></tr><tr><td><span class="tid r1">PM-4</span></td><td>Interviews with field staff</td><td>H1–H3</td><td class="num"><span class="sp">3</span></td><td>Mon</td><td class="dep">→ UXR-1, D-5</td></tr><tr><td><span class="tid r1">PM-5</span></td><td>WhatsApp ordering feasibility</td><td>H3</td><td class="num"><span class="sp">2</span></td><td>Tue</td><td class="dep">→ D-4</td></tr><tr><td><span class="tid r1">PM-6</span></td><td>Experiment cards for sprint 2</td><td>H1–H3</td><td class="num"><span class="sp">3</span></td><td>Thu</td><td class="dep">PM-2, PM-3, PM-5</td></tr><tr><td><span class="tid r1">PM-7</span></td><td>Synthesis, decision log and demo</td><td>H1–H3</td><td class="num"><span class="sp">3</span></td><td>Fri</td><td class="dep">UXR-5, D-6, PM-6</td></tr><tr><td><span class="tid r2">UXR-1</span></td><td>Research plan and interview guide</td><td>H1–H3</td><td class="num"><span class="sp">3</span></td><td>Mon</td><td class="dep">PM-1, PM-4</td></tr><tr><td><span class="tid r2">UXR-2</span></td><td>Respondent recruiting</td><td>H1–H3</td><td class="num"><span class="sp">5</span></td><td>Mon–Tue</td><td class="dep">PM-2</td></tr><tr><td><span class="tid r2">UXR-3</span></td><td>In-depth interviews</td><td>H1–H3</td><td class="num"><span class="sp">5</span></td><td>Tue–Thu</td><td class="dep">UXR-1, UXR-2</td></tr><tr><td><span class="tid r2">UXR-4</span></td><td>Prototype concept test</td><td>H1–H3</td><td class="num"><span class="sp">3</span></td><td>Thu–Fri</td><td class="dep">D-3, D-4, D-5, D-7</td></tr><tr><td><span class="tid r2">UXR-5</span></td><td>Synthesis: affinity map, jobs, CJM, OST</td><td>H1–H3</td><td class="num"><span class="sp">5</span></td><td>Fri</td><td class="dep">UXR-3, UXR-4 → PM-7, D-6</td></tr><tr><td><span class="tid r3">D-1</span></td><td>Ordering and credit flow audit</td><td>H1, H2</td><td class="num"><span class="sp">3</span></td><td>Mon</td><td class="dep">—</td></tr><tr><td><span class="tid r3">D-2</span></td><td>Observing interviews</td><td>H1–H3</td><td class="num"><span class="sp">2</span></td><td>Tue–Wed</td><td class="dep">UXR-3</td></tr><tr><td><span class="tid r3">D-3</span></td><td>“Credit in the cart” prototype</td><td>H2</td><td class="num"><span class="sp">3</span></td><td>Wed</td><td class="dep">PM-3 → UXR-4</td></tr><tr><td><span class="tid r3">D-4</span></td><td>WhatsApp repeat-order prototype</td><td>H3</td><td class="num"><span class="sp">5</span></td><td>Wed–Thu</td><td class="dep">PM-5 → UXR-4</td></tr><tr><td><span class="tid r3">D-5</span></td><td>Delivery window and shortage warning prototype</td><td>H1</td><td class="num"><span class="sp">3</span></td><td>Thu</td><td class="dep">PM-4 → UXR-4</td></tr><tr><td><span class="tid r3">D-6</span></td><td>Demo visualisation</td><td>H1–H3</td><td class="num"><span class="sp">2</span></td><td>Fri</td><td class="dep">UXR-5 → PM-7</td></tr><tr><td><span class="tid r3">D-7</span></td><td>Offline prototype cards</td><td>H1–H3</td><td class="num"><span class="sp">1</span></td><td>Thu</td><td class="dep">D-3, D-4, D-5 → UXR-4</td></tr></tbody></table></div>
+    <div class="tbl"><table><thead><tr><th>Role</th><th>SP</th><th>Capacity</th><th>Buffer</th></tr></thead><tbody><tr><td><span class="rdot r1"></span>Product manager</td><td class="num">22</td><td class="num">16–24</td><td class="num">2</td></tr><tr><td><span class="rdot r2"></span>UX researcher</td><td class="num">21</td><td class="num">16–24</td><td class="num">3</td></tr><tr><td><span class="rdot r3"></span>Product designer</td><td class="num">19</td><td class="num">16–24</td><td class="num">5</td></tr><tr class="tot"><td>Total</td><td class="num">62</td><td class="num">48–72</td><td></td></tr></tbody></table></div>
+  </section>
+
+  <section class="sec" id="stories">
+    <h2>Tasks as Job Stories</h2>
+    <p class="insight">Format: “When [situation], I want to [action], so that [outcome].” Each estimate is explained — why this number and why not the neighbouring one. Tap a task to expand it.</p>
+    <div class="roles"><div class="role"><h3><span class="rdot r1"></span>Product manager — 22 SP</h3><details class="js"><summary><span class="tid r1">PM-1</span><span class="jt">Metric tree, OST and decision rules</span><span class="jm num">H1–H3 · Mon · 3 SP</span></summary><dl><dt>Job Story</dt><dd>When I, as a PM, start a one-week sprint with six hypotheses, I want to link them to the metric tree and write success and kill criteria for the top three upfront, so that on Friday the decision follows rules, not impressions.</dd><dt>Why</dt><dd>3 SP — The method is known but thresholds are uncertain: there are no baselines yet and they must be agreed with the CEO and ops. Not 2 — because of sign-offs; not 5 — no data work, these are decisions.</dd><dt>Done when</dt><dd>Metric tree and OST on one page; success and kill criteria agreed with the CEO.</dd><dt>Dependencies</dt><dd>—</dd></dl></details><details class="js"><summary><span class="tid r1">PM-2</span><span class="jt">Retention cohorts and delivery reliability</span><span class="jm num">H1 · Mon–Wed · 5 SP</span></summary><dl><dt>Job Story</dt><dd>When I, as a PM, suspect stores leave because of incomplete and late deliveries, I want to compare repeat orders of stores with a perfect versus a problematic first delivery across three countries, so that I can confirm or kill H1 on data and give the researcher segments for recruiting.</dd><dt>Why</dt><dd>5 SP — High data uncertainty: orders, logistics and the agents’ CRM live in different systems, three currencies, and “incomplete delivery” may not be logged — we will need to agree on a proxy. Not 8: the data schema is known, no new tracking is needed.</dd><dt>Done when</dt><dd>M1 cohort table by segment; store lists for recruiting by Tuesday evening.</dd><dt>Dependencies</dt><dd>PM-1 → UXR-2</dd></dl></details><details class="js"><summary><span class="tid r1">PM-3</span><span class="jt">Existing credit funnel</span><span class="jm num">H2 · Wed · 3 SP</span></summary><dl><dt>Job Story</dt><dd>When I, as a PM, know credit already exists but not why it is underused, I want to build the funnel “eligible → saw the offer → took it → repaid on time”, so that I see where stores drop off and don’t test credit in the cart blindly.</dd><dt>Why</dt><dd>3 SP — The data sits with the credit team, but a “saw the offer” event may not exist — a proxy is needed; the data is sensitive, access goes through finance. Not 5: one funnel, not a model.</dd><dt>Done when</dt><dd>Funnel by country and the overdue rate as a guardrail.</dd><dt>Dependencies</dt><dd>PM-1 → D-3</dd></dl></details><details class="js"><summary><span class="tid r1">PM-4</span><span class="jt">Interviews with field staff</span><span class="jm num">H1–H3 · Mon · 3 SP</span></summary><dl><dt>Job Story</dt><dd>When I, as a PM, prepare for customer interviews, I want to talk to 5–6 field people — agents, dispatchers, the credit team and WhatsApp support — so that I collect the churn reasons and operational limits already known and don’t spend customer interviews on what the company already knows.</dd><dt>Why</dt><dd>3 SP — Calls are easy to book, but opinions contradict each other: they must be reconciled and facts separated from opinions. Not 2 — because of the synthesis; not 5 — the people are inside the company.</dd><dt>Done when</dt><dd>A list of churn reasons marked “fact / opinion”; handed to UXR-1.</dd><dt>Dependencies</dt><dd>→ UXR-1, D-5</dd></dl></details><details class="js"><summary><span class="tid r1">PM-5</span><span class="jt">WhatsApp ordering feasibility</span><span class="jm num">H3 · Tue · 2 SP</span></summary><dl><dt>Job Story</dt><dd>When I, as a PM, consider repeat ordering in WhatsApp, I want to assess WhatsApp Business API limits, message costs and the link to the cart in one call with the tech lead, so that I don’t show customers a solution that can’t be built or costs too much.</dd><dt>Why</dt><dd>2 SP — A narrow question, the tech lead has the answer, the output is one page. Not 1: message costs must be calculated for three countries.</dd><dt>Done when</dt><dd>A “can / can’t / what it costs” note for H3.</dd><dt>Dependencies</dt><dd>→ D-4</dd></dl></details><details class="js"><summary><span class="tid r1">PM-6</span><span class="jt">Experiment cards for sprint 2</span><span class="jm num">H1–H3 · Thu · 3 SP</span></summary><dl><dt>Job Story</dt><dd>When by Thursday it is clear which hypotheses are alive, I want to describe an experiment for each — a delivery-window pilot on one route, a fake door for credit in the cart, a manual WhatsApp repeat order for 30 stores — with sample, duration and threshold, so that sprint 2 starts with a launch, not with planning.</dd><dt>Why</dt><dd>3 SP — Three experiments, each to be agreed with ops or engineering and sized for low traffic. The uncertainty is which hypotheses survive until Thursday.</dd><dt>Done when</dt><dd>3 experiment cards agreed with ops and the tech lead.</dd><dt>Dependencies</dt><dd>PM-2, PM-3, PM-5</dd></dl></details><details class="js"><summary><span class="tid r1">PM-7</span><span class="jt">Synthesis, decision log and demo</span><span class="jm num">H1–H3 · Fri · 3 SP</span></summary><dl><dt>Job Story</dt><dd>When the sprint ends, I want to combine data, interviews and prototype reactions into a “what we learned → what we decided” decision log and run a demo for the CEO, so that each hypothesis gets a Go / Pivot / Kill decision with evidence.</dd><dt>Why</dt><dd>3 SP — Others prepare the materials, but data and interviews may contradict each other — the conflict must be worked through honestly, not resolved by picking the convenient version.</dd><dt>Done when</dt><dd>Decision log and a 20-minute demo.</dd><dt>Dependencies</dt><dd>UXR-5, D-6, PM-6</dd></dl></details></div><div class="role"><h3><span class="rdot r2"></span>UX researcher — 21 SP</h3><details class="js"><summary><span class="tid r2">UXR-1</span><span class="jt">Research plan and interview guide</span><span class="jm num">H1–H3 · Mon · 3 SP</span></summary><dl><dt>Job Story</dt><dd>When I, as a researcher, receive three hypotheses and churn reasons from stakeholders, I want to write a JTBD guide — how the store buys stock today, what breaks, how it pays — with past-experience questions before any prototype, so that interviews test the hypotheses rather than confirm them.</dd><dt>Why</dt><dd>3 SP — It must be adapted for three countries and interpreters; questions about money and debt are sensitive and must be phrased without leading. Not 5: a guide template exists.</dd><dt>Done when</dt><dd>Guide and screener; the guide piloted with one agent.</dd><dt>Dependencies</dt><dd>PM-1, PM-4</dd></dl></details><details class="js"><summary><span class="tid r2">UXR-2</span><span class="jt">Respondent recruiting</span><span class="jm num">H1–H3 · Mon–Tue · 5 SP</span></summary><dl><dt>Job Story</dt><dd>When I, as a researcher, need to reach owners who are in the store all day and often without a stable connection, I want to recruit 12 people from three segments — regular buyers, those who left after 1–2 orders, credit users — via agents and WhatsApp, with interpreters and incentives, so that I can run 10 interviews this week with a buffer for no-shows.</dd><dt>Why</dt><dd>5 SP — The main schedule risk: churned customers are reluctant to reply, interpreters and incentives (airtime or a voucher) are needed. Not 8: agents know the owners personally, and until PM-2 segments are ready we start from the agents’ lists.</dd><dt>Done when</dt><dd>12 confirmed slots, ≥ 3 per segment, at least 2 countries.</dd><dt>Dependencies</dt><dd>PM-2</dd></dl></details><details class="js"><summary><span class="tid r2">UXR-3</span><span class="jt">In-depth interviews</span><span class="jm num">H1–H3 · Tue–Thu · 5 SP</span></summary><dl><dt>Job Story</dt><dd>When respondents are recruited, I want to run 10 interviews of 45 minutes — some in the store, watching how the owner checks stock and orders — so that I find the real reasons the first order did not become a habit.</dd><dt>Why</dt><dd>5 SP — 10 interviews with an interpreter, travel and dropped connections; the uncertainty is no-shows and translation quality. Not 8: the concept test is a separate task, and recruiting is done in UXR-2.</dd><dt>Done when</dt><dd>10 interviews; notes on the shared board within 2 hours of each.</dd><dt>Dependencies</dt><dd>UXR-1, UXR-2</dd></dl></details><details class="js"><summary><span class="tid r2">UXR-4</span><span class="jt">Prototype concept test</span><span class="jm num">H1–H3 · Thu–Fri · 3 SP</span></summary><dl><dt>Job Story</dt><dd>When the designer prepares prototypes, I want to show them one by one at the end of 5–6 interviews and ask for a task — choose a delivery window, take credit in the cart, repeat an order in WhatsApp — so that I see whether owners understand the solution without explanation.</dd><dt>Why</dt><dd>3 SP — Prototypes arrive on different days, the showing order must be rotated, and without a connection they are shown on printouts (D-7).</dd><dt>Done when</dt><dd>An “understood / completed / objections” table per prototype.</dd><dt>Dependencies</dt><dd>D-3, D-4, D-5, D-7</dd></dl></details><details class="js"><summary><span class="tid r2">UXR-5</span><span class="jt">Synthesis: affinity map, jobs, CJM, OST</span><span class="jm num">H1–H3 · Fri · 5 SP</span></summary><dl><dt>Job Story</dt><dd>When interviews and concept tests are done, I want to sort observations into an affinity map, pick out 3–5 jobs, map the purchasing journey and update the OST, so that the team decides on facts and sees opportunities we did not know about.</dd><dt>Why</dt><dd>5 SP — The material is in different languages, across countries and segments, and may contradict PM-2 and PM-3 data. Not 8: debriefs happen during the week.</dd><dt>Done when</dt><dd>Affinity map, jobs, CJM and an updated OST by Friday 13:00.</dd><dt>Dependencies</dt><dd>UXR-3, UXR-4 → PM-7, D-6</dd></dl></details></div><div class="role"><h3><span class="rdot r3"></span>Product designer — 19 SP</h3><details class="js"><summary><span class="tid r3">D-1</span><span class="jt">Ordering and credit flow audit</span><span class="jm num">H1, H2 · Mon · 3 SP</span></summary><dl><dt>Job Story</dt><dd>When I, as a designer, want to see where the app gets in the way of a repeat order, I want to go through “catalogue → cart → credit → payment → tracking” on a budget Android with slow internet, so that I find problems that explain churn beyond our hypotheses.</dd><dt>Why</dt><dd>3 SP — The flow is known, but it needs a real budget phone, a slow-network simulation and a test account with credit.</dd><dt>Done when</dt><dd>10–15 issues with priority and screenshots.</dd><dt>Dependencies</dt><dd>—</dd></dl></details><details class="js"><summary><span class="tid r3">D-2</span><span class="jt">Observing interviews</span><span class="jm num">H1–H3 · Tue–Wed · 2 SP</span></summary><dl><dt>Job Story</dt><dd>When the researcher runs interviews, I want to sit in on three of them, including a store visit, so that I design for the real context — noise, a queue at the till, an old phone — not for an office.</dd><dt>Why</dt><dd>2 SP — 4–5 hours of attendance, no preparation needed.</dd><dt>Done when</dt><dd>Notes on the shared board.</dd><dt>Dependencies</dt><dd>UXR-3</dd></dl></details><details class="js"><summary><span class="tid r3">D-3</span><span class="jt">“Credit in the cart” prototype</span><span class="jm num">H2 · Wed · 3 SP</span></summary><dl><dt>Job Story</dt><dd>When a store lacks the cash for the batch it needs, I want to show “Pay in 7 days” in the cart with the cost in money and the due date, so that I check whether owners understand the terms on first reading.</dd><dt>Why</dt><dd>3 SP — 3–4 screens in the existing design system. The hard part is showing the cost of debt honestly and clearly without fine print; the copy is agreed with the credit team.</dd><dt>Done when</dt><dd>A clickable prototype by Wednesday evening.</dd><dt>Dependencies</dt><dd>PM-3 → UXR-4</dd></dl></details><details class="js"><summary><span class="tid r3">D-4</span><span class="jt">WhatsApp repeat-order prototype</span><span class="jm num">H3 · Wed–Thu · 5 SP</span></summary><dl><dt>Job Story</dt><dd>When an owner needs to restock the same goods as last time, I want to design a WhatsApp dialogue: “repeat order” → change quantities → confirm → pay, so that I check whether the owner can manage without the app.</dd><dt>Why</dt><dd>5 SP — A new channel with no design system; API limits (templates, buttons, the 24-hour window) from PM-5; error and substitution scenarios. A dialogue is harder than a set of screens.</dd><dt>Done when</dt><dd>A clickable dialogue prototype by Thursday 12:00.</dd><dt>Dependencies</dt><dd>PM-5 → UXR-4</dd></dl></details><details class="js"><summary><span class="tid r3">D-5</span><span class="jt">Delivery window and shortage warning prototype</span><span class="jm num">H1 · Thu · 3 SP</span></summary><dl><dt>Job Story</dt><dd>When a store is waiting for stock for its shelves, I want to design delivery-window selection at checkout and a “2 items are out — replace or remove?” message before dispatch, so that I check whether predictability reduces the fear of empty shelves.</dd><dt>Why</dt><dd>3 SP — 3–4 screens and notification templates; the real window logic sits with ops, and the assumptions from PM-4 are enough for a prototype.</dd><dt>Done when</dt><dd>Prototype by Thursday 12:00.</dd><dt>Dependencies</dt><dd>PM-4 → UXR-4</dd></dl></details><details class="js"><summary><span class="tid r3">D-6</span><span class="jt">Demo visualisation</span><span class="jm num">H1–H3 · Fri · 2 SP</span></summary><dl><dt>Job Story</dt><dd>When the researcher finishes the synthesis, I want to lay out the journey map and OST as “now / with the solution”, so that the CEO sees the problems and solutions in 10 minutes.</dd><dt>Why</dt><dd>2 SP — UXR provides the content; the task is the layout. Half a day.</dd><dt>Done when</dt><dd>A Figma page for the demo.</dd><dt>Dependencies</dt><dd>UXR-5 → PM-7</dd></dl></details><details class="js"><summary><span class="tid r3">D-7</span><span class="jt">Offline prototype cards</span><span class="jm num">H1–H3 · Thu · 1 SP</span></summary><dl><dt>Job Story</dt><dd>When an interview happens in a store without stable internet, I want to print the key screens of the three prototypes as cards, so that the concept test isn’t ruined by the connection.</dd><dt>Why</dt><dd>1 SP — The screens are ready; only a print layout is needed — up to two hours.</dd><dt>Done when</dt><dd>A print-ready PDF.</dd><dt>Dependencies</dt><dd>D-3, D-4, D-5 → UXR-4</dd></dl></details></div></div>
+  </section>
+
+  <section class="sec" id="week">
+    <h2>Week plan</h2>
+    <div class="tbl"><table><thead><tr><th>Day</th><th><span class="rdot r1"></span>Product manager</th><th><span class="rdot r2"></span>UX researcher</th><th><span class="rdot r3"></span>Product designer</th></tr></thead><tbody><tr><td><b>Mon</b></td><td><span class="tid r1">PM-1</span> <span class="tid r1">PM-4</span> <span class="tid r1">PM-2</span></td><td><span class="tid r2">UXR-1</span> <span class="tid r2">UXR-2</span></td><td><span class="tid r3">D-1</span></td></tr><tr><td><b>Tue</b></td><td><span class="tid r1">PM-2</span> <span class="tid r1">PM-5</span></td><td><span class="tid r2">UXR-2</span> <span class="tid r2">UXR-3</span></td><td><span class="tid r3">D-2</span></td></tr><tr><td><b>Wed</b></td><td><span class="tid r1">PM-2</span> <span class="tid r1">PM-3</span></td><td><span class="tid r2">UXR-3</span></td><td><span class="tid r3">D-2</span> <span class="tid r3">D-3</span> <span class="tid r3">D-4</span></td></tr><tr><td><b>Thu</b></td><td><span class="tid r1">PM-6</span></td><td><span class="tid r2">UXR-3</span> <span class="tid r2">UXR-4</span></td><td><span class="tid r3">D-4</span> <span class="tid r3">D-5</span> <span class="tid r3">D-7</span></td></tr><tr><td><b>Fri</b></td><td><span class="tid r1">PM-7</span></td><td><span class="tid r2">UXR-4</span> <span class="tid r2">UXR-5</span></td><td><span class="tid r3">D-6</span></td></tr></tbody></table></div>
+    <p class="crit">Critical path: PM-1 → UXR-1 → UXR-2 → UXR-3 → UXR-4 → UXR-5 → PM-7. Prototypes D-3, D-4, D-5 are due Thursday 12:00 for the concept test.</p>
+  </section>
+
+  <section class="sec" id="risks">
+    <h2>Risks and what we don’t do</h2>
+    <div class="tbl wrapcells"><table><thead><tr><th>Risk</th><th>What we do</th></tr></thead><tbody><tr><td><b>Respondent no-shows</b></td><td>Recruit 12 for 10 interviews; agents know the owners personally.</td></tr><tr><td><b>No data on incomplete deliveries</b></td><td>Proxy: orders with a return or an amount correction after delivery.</td></tr><tr><td><b>Language and connectivity</b></td><td>Interpreters; WhatsApp calls; prototype printouts (D-7).</td></tr><tr><td><b>Confirming our own ideas</b></td><td>Past experience first, prototypes only at the end; kill criteria set upfront.</td></tr></tbody></table></div>
+    <h3 class="sub">Out of the sprint</h3>
+    <ul class="bul"><li>A mass survey of 300+ stores — sprint 2, once interviews provide the answer options.</li><li>Hypotheses H4–H6 stay in the backlog.</li><li>Launching experiments, development, changing credit terms.</li></ul>
+  </section>
+
+  <section class="sec" id="decisions">
+    <h2>How planning decisions were made</h2>
+    <ul class="list"><li><span class="n">1</span><span>I started from what Jabu already has, so the hypotheses improve existing features rather than invent new ones.</span></li><li><span class="n">2</span><span>One sprint metric (M1 repeat rate) and two guardrails, so growth is not bought with bad debt or expensive delivery.</span></li><li><span class="n">3</span><span>Success and kill criteria were written before the research, not after.</span></li><li><span class="n">4</span><span>The 8 SP task was split: interviews and the concept test are separate tasks with different risks.</span></li><li><span class="n">5</span><span>The researcher keeps a buffer: 21 SP of 24. The mass survey moved to sprint 2 — it doesn’t change this week’s decisions.</span></li><li><span class="n">6</span><span>Every task is tied to a hypothesis, a day and dependencies — the critical path is visible.</span></li><li><span class="n">7</span><span>Estimates explain uncertainty and dependencies, not just hours.</span></li></ul>
+    <h3 class="sub">Sources</h3>
+    <ul class="src"><li><a href="https://techcrunch.com/2022/05/25/namibian-b2b-e-commerce-retail-platform-jabu-raises-15m-led-by-tiger-global" target="_blank" rel="noopener">TechCrunch, 2022 — JABU raises $15M</a></li><li><a href="https://techcrunch.com/2022/01/06/yc-backed-namibian-startup-jabu-gets-3-2m-for-its-b2b-e-commerce-and-retail-play" target="_blank" rel="noopener">TechCrunch, 2022 — JABU gets $3.2M</a></li><li><a href="https://www.offerzen.com/companies/jabu" target="_blank" rel="noopener">OfferZen — About JABU</a></li><li><a href="https://linkedin.com/company/jabu" target="_blank" rel="noopener">Jabu on LinkedIn</a></li><li><a href="https://builtin.com/job/customer-experience-specialist/7514436" target="_blank" rel="noopener">Built In — Jabu Customer Experience Specialist</a></li></ul>
+  </section>
+</main>
+<footer class="wrap">Training case from a Product Management course. Jabu is a real Y Combinator company (S21), but the hypotheses, tasks, estimates and thresholds here are my study plan, not company data.</footer>
+
+<!-- Shared by the case pages (inlined by build.py): highlights the section you are reading in the sticky top nav, shows reading progress,
+     and offers "← Back" to return to where you were before jumping to a section (button, Alt+← or the browser's back). -->
+<style>
+.nav { position: sticky; }
+.nav a.active { background: var(--ink); color: var(--bg); }
+.nav a.active:hover { background: var(--ink); color: var(--bg); }
+.nav .progress { position: absolute; left: 0; bottom: -1px; height: 2px; width: 100%; background: var(--focus); transform-origin: 0 50%; transform: scaleX(0); }
+.backjump { position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 12;
+  font: inherit; font-size: 14px; font-weight: 600; border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  padding: 9px 14px; border-radius: 999px; cursor: pointer; box-shadow: 0 6px 24px rgb(15 23 42 / .16); }
+.backjump:hover { border-color: var(--ink-2); }
+@media (prefers-reduced-motion: no-preference) { .nav a { transition: background .15s, color .15s; } }
+</style>
+<script>
+(function () {
+  const nav = document.querySelector(".nav");
+  if (!nav) return;
+  const row = nav.querySelector(".wrap");
+  const links = [...nav.querySelectorAll('a[href^="#"]')];
+  const pairs = links.map(a => [a, document.getElementById(a.getAttribute("href").slice(1))]).filter(p => p[1]);
+  const bar = document.createElement("div");
+  bar.className = "progress";
+  bar.setAttribute("aria-hidden", "true");
+  nav.appendChild(bar);
+  let current = null, ticking = false;
+
+  function update() {
+    ticking = false;
+    const line = nav.getBoundingClientRect().bottom + 24;
+    let active = null;
+    for (const [a, sec] of pairs) if (sec.getBoundingClientRect().top <= line) active = a;
+    const atEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+    if (atEnd && pairs.length) active = pairs[pairs.length - 1][0];
+    if (active !== current) {
+      if (current) { current.classList.remove("active"); current.removeAttribute("aria-current"); }
+      if (active) {
+        active.classList.add("active");
+        active.setAttribute("aria-current", "location");
+        // keep the active link visible in the horizontally scrolling nav (phones) without moving the page
+        const left = active.offsetLeft - (row.clientWidth - active.offsetWidth) / 2;
+        row.scrollTo({ left: Math.max(0, left), behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      }
+      current = active;
+    }
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.transform = "scaleX(" + (max > 0 ? Math.min(1, window.scrollY / max) : 0) + ")";
+  }
+  // one step back: remember the scroll position before every in-page jump
+  const ru = (document.documentElement.lang || "ru").slice(0, 2) === "ru";
+  const back = document.createElement("button");
+  back.type = "button"; back.className = "backjump"; back.hidden = true;
+  back.textContent = ru ? "\u2190 \u041d\u0430\u0437\u0430\u0434" : "\u2190 Back";
+  back.title = ru ? "\u0412\u0435\u0440\u043d\u0443\u0442\u044c\u0441\u044f \u0442\u0443\u0434\u0430, \u0433\u0434\u0435 \u0432\u044b \u0431\u044b\u043b\u0438 \u00b7 Alt + \u2190" : "Return to where you were \u00b7 Alt + \u2190"; // RU text escaped so English pages stay Cyrillic-free
+  document.body.appendChild(back);
+  const jumps = [];
+  const sync = () => { back.hidden = !jumps.length; };
+  document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener("click", () => {
+    if (a.getAttribute("href").length < 2) return;
+    jumps.push({ y: window.scrollY, h: location.hash }); if (jumps.length > 50) jumps.shift(); sync();
+  }));
+  function goBack() {
+    if (!jumps.length) return;
+    const y = jumps.pop().y;
+    try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+    window.scrollTo({ top: y, behavior: "auto" });
+    sync();
+  }
+  back.addEventListener("click", goBack);
+  // the browser's own back: drop the jump it just undid (clicking a link also fires popstate, so compare hashes)
+  window.addEventListener("popstate", () => { if (jumps.length && location.hash === jumps[jumps.length - 1].h) { jumps.pop(); sync(); } });
+  document.addEventListener("keydown", e => { if (e.altKey && e.key === "ArrowLeft" && jumps.length) { e.preventDefault(); goBack(); } });
+
+  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+  update();
+})();
+</script>
+
+<a class="pf-home" href="../#en" title="Back to the home page — all projects" aria-label="Back to the home page — all projects"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10"/><path d="M10 20v-6h4v6"/></svg><span>Home</span></a>
+<style>
+.pf-home { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 25;
+  display: inline-flex; align-items: center; gap: 7px; font: inherit; font-size: 14px; font-weight: 600; line-height: 1; text-decoration: none;
+  border: 1px solid var(--line, #d0d5dd); background: var(--surface, #fff); color: var(--ink, #0f172a);
+  padding: 10px 14px; border-radius: 999px; box-shadow: 0 6px 24px rgb(15 23 42 / .16); }
+.pf-home:hover { border-color: var(--ink-2, #475467); }
+.pf-home:focus-visible { outline: 2px solid var(--ink, #0f172a); outline-offset: 2px; }
+@media print { .pf-home { display: none; } }
+</style>
+<script>
+(function () {
+  try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) {}
+  function toTop() {
+    try { window.scrollTo(0, 0); } catch (e) {}
+    try { if (window.top !== window && document.body) document.body.scrollIntoView({ block: "start" }); } catch (e) {}
+  }
+  window.pfToTop = toTop;
+  function onLoad() {
+    var h = decodeURIComponent(location.hash.slice(1));
+    if (h && document.getElementById(h)) return; // a link to a section of a long page keeps its place
+    toTop();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", onLoad); else onLoad();
+  window.addEventListener("pageshow", function (e) { if (e.persisted) onLoad(); });
+  var TYPING = /^(INPUT|TEXTAREA|SELECT)$/;
+  function typing(el) { return el && (el.isContentEditable || (TYPING.test(el.tagName) && el.type !== "range" && el.type !== "checkbox" && el.type !== "radio" && el.type !== "button")); }
+  document.addEventListener("pointerdown", function (e) {
+    var a = document.activeElement;
+    if (!typing(a)) return;
+    var t = e.target;
+    if (t && t.closest && t.closest("input, textarea, select, label, [contenteditable]")) return;
+    a.blur();
+  }, true);
+  document.addEventListener("keydown", function (e) {
+    var a = document.activeElement;
+    if (!typing(a) || a.tagName === "TEXTAREA") return;
+    if (e.key === "Enter" || e.key === "Escape") a.blur();
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Discovery-бэклог на спринт · Jabu (YC S21) — Томирис (Гулсара) Жайлаубеккызы</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Учебный кейс: гипотезы решений и бэклог Discovery-задач на недельный спринт для продакта, дизайнера и UX-исследователя в Jabu — B2B-доставке продуктов в Намибии, Замбии и ЮАР.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Jabu sprint Discovery backlog case: context, metric, hypotheses, effort, backlog, job stories, week, risks. Same tokens as the other cases. */
+:root {
+  --bg: #f4f6f9; --surface: #ffffff; --surface-2: #eceff4; --ink: #131a26; --ink-2: #485264; --muted: #7a8496; --line: #dde2ea;
+  --focus: #2a78d6; --good: #11764f; --good-bg: #e3f4ec; --warn: #8a5a00; --warn-bg: #fff4de;
+  --c1: #2a78d6; --c1-t: #e8f1fc; --c2: #1baf7a; --c3: #eb6834; --c3-t: #fdece4; --base-bar: #c3c8d1;
+  --f-display: "Unbounded", "Onest", system-ui, sans-serif;
+  --f-body: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e121a; --surface: #161c27; --surface-2: #1e2633; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #2a3344;
+    --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --warn: #f0c46a; --warn-bg: #33270f;
+    --c1: #3987e5; --c1-t: #16263d; --c2: #199e70; --c3: #d95926; --c3-t: #362018; --base-bar: #4a5263; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e121a; --surface: #161c27; --surface-2: #1e2633; --ink: #eef1f6; --ink-2: #b6bfcc; --muted: #8b95a6; --line: #2a3344;
+  --focus: #5598e7; --good: #4fd09b; --good-bg: #123327; --warn: #f0c46a; --warn-bg: #33270f;
+  --c1: #3987e5; --c1-t: #16263d; --c2: #199e70; --c3: #d95926; --c3-t: #362018; --base-bar: #4a5263; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: inherit; }
+.num { font-variant-numeric: tabular-nums; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.nav .wrap { display: flex; gap: 6px; overflow-x: auto; padding-block: 10px; scrollbar-width: none; }
+.nav a { flex: none; text-decoration: none; color: var(--ink-2); font-size: 14px; padding: 6px 12px; border-radius: 999px; }
+.nav a.back { color: var(--ink); font-weight: 600; }
+.nav a.lang { margin-left: auto; font-weight: 700; font-family: var(--f-mono); font-size: 13px; border: 1px solid var(--line); }
+.nav a:hover { background: var(--surface-2); color: var(--ink); }
+
+.hero { padding-block: 56px 32px; display: grid; gap: 22px; }
+.hero h1 { font-family: var(--f-display); font-weight: 700; font-size: clamp(34px, 6vw, 64px); line-height: 1.04; letter-spacing: -.02em; }
+.hero h1 span { color: var(--muted); font-weight: 500; }
+.lead { font-size: clamp(16px, 1.6vw, 19px); color: var(--ink-2); max-width: 66ch; }
+.note { display: inline-flex; align-items: center; gap: 8px; width: fit-content; max-width: 100%; font-size: 13px; color: var(--warn); background: var(--warn-bg); padding: 6px 12px; border-radius: 999px; }
+.crmlink { width: fit-content; font-weight: 600; color: var(--c1); text-decoration: none; font-size: 15px; }
+.crmlink:hover { text-decoration: underline; }
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 8px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px 18px 16px; display: grid; gap: 6px; align-content: start; }
+.kpi .v { font-family: var(--f-display); font-size: clamp(22px, 2.6vw, 30px); font-weight: 700; letter-spacing: -.01em; }
+.kpi .v.bad { color: var(--c3); }
+.kpi .d { font-size: 13.5px; color: var(--ink-2); }
+
+
+:root { --todo-bg: #e9ecf1; --todo-ink: #44546f; --todo-bd: #c7ced9; --prog-bg: #e3eeff; --prog-ink: #0b57c9; --prog-bd: #9cc0f5;
+  --done-bg: #dcf5e7; --done-ink: #12704a; --done-bd: #94d8b4; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --todo-bg: #262e3b; --todo-ink: #c3cbd8; --todo-bd: #3c4658;
+  --prog-bg: #13284a; --prog-ink: #8ab8ff; --prog-bd: #2b5ba3; --done-bg: #10332a; --done-ink: #6fdcaa; --done-bd: #23714f; } }
+.hero { padding-block: 40px 20px; }
+.sec { padding-block: 28px; border-top: 1px solid var(--line); scroll-margin-top: 64px; display: grid; gap: 16px; }
+.sec h2 { font-family: var(--f-display); font-size: clamp(22px, 3vw, 30px); font-weight: 700; letter-spacing: -.01em; }
+.insight { font-size: 16px; color: var(--ink-2); max-width: 78ch; }
+.canvas { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow-x: auto; padding: 16px; }
+.wf { display: block; min-width: 860px; width: 100%; height: auto; font-family: var(--f-body); }
+.wf .node rect { stroke-width: 1.5; }
+.wf .node text { font-size: 12.5px; font-weight: 700; letter-spacing: .03em; }
+.wf .todo rect { fill: var(--todo-bg); stroke: var(--todo-bd); } .wf .todo text { fill: var(--todo-ink); }
+.wf .prog rect { fill: var(--prog-bg); stroke: var(--prog-bd); } .wf .prog text { fill: var(--prog-ink); }
+.wf .done rect { fill: var(--done-bg); stroke: var(--done-bd); } .wf .done text { fill: var(--done-ink); }
+.wf .edge { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+.wf .ahp { fill: var(--muted); }
+.wf .el { font-size: 11.5px; fill: var(--ink-2); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+.hint { font-size: 13px; color: var(--muted); display: none; }
+@media (max-width: 900px) { .hint { display: block; } }
+.legend { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; border: 1px solid; white-space: nowrap; }
+.pill.todo { background: var(--todo-bg); color: var(--todo-ink); border-color: var(--todo-bd); }
+.pill.prog { background: var(--prog-bg); color: var(--prog-ink); border-color: var(--prog-bd); }
+.pill.done { background: var(--done-bg); color: var(--done-ink); border-color: var(--done-bd); }
+.legend .pill { text-transform: none; letter-spacing: 0; font-weight: 600; }
+.howto { font-size: 14px; color: var(--ink-2); background: var(--surface-2); border-radius: 10px; padding: 12px 14px; max-width: 90ch; }
+.tbl { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow-x: auto; }
+.tbl table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 560px; }
+.tbl th, .tbl td { padding: 10px 16px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+.tbl th { font-size: 12px; font-family: var(--f-mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 500; white-space: nowrap; }
+.tbl td:first-child, .tbl td:nth-child(2) { white-space: nowrap; }
+.tbl tr:last-child td { border-bottom: 0; }
+.hyps { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; align-items: start; }
+.hyp { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: grid; gap: 12px; }
+.hyp .hh { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.hyp .hid { font-family: var(--f-mono); font-weight: 600; font-size: 13px; background: var(--c1-t); color: var(--c1); padding: 2px 8px; border-radius: 6px; }
+.hyp .seg { font-weight: 600; flex: 1; min-width: 0; }
+.hyp .ice { font-family: var(--f-mono); font-size: 12.5px; color: var(--ink-2); border: 1px solid var(--line); padding: 2px 8px; border-radius: 999px; }
+.hyp dl { margin: 0; display: grid; gap: 6px; font-size: 14.5px; color: var(--ink-2); }
+.hyp dt { font-family: var(--f-mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-top: 4px; }
+.hyp dd { margin: 0; }
+.board { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(220px, 1fr); gap: 10px; overflow-x: auto; padding-bottom: 6px; }
+.col { background: var(--surface-2); border-radius: var(--r); padding: 10px; display: grid; gap: 8px; align-content: start; }
+.col h3 { font-size: 12px; font-family: var(--f-mono); text-transform: uppercase; letter-spacing: .05em; display: flex; justify-content: space-between; padding: 4px 6px; border-radius: 6px; }
+.col.todo h3 { color: var(--todo-ink); background: var(--todo-bg); } .col.prog h3 { color: var(--prog-ink); background: var(--prog-bg); } .col.done h3 { color: var(--done-ink); background: var(--done-bg); }
+.col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.col li { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px; display: grid; gap: 6px; font-size: 14px; }
+.col li .tk { font-family: var(--f-mono); font-size: 11.5px; color: var(--muted); }
+.col li .th { justify-self: start; font-family: var(--f-mono); font-size: 11px; background: var(--c1-t); color: var(--c1); padding: 1px 6px; border-radius: 5px; }
+.col li.empty { background: transparent; border-style: dashed; color: var(--muted); font-size: 13px; text-align: center; }
+.list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; max-width: 80ch; }
+.list li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; font-size: 15px; color: var(--ink-2); }
+.list li b { display: block; color: var(--ink); font-weight: 600; }
+.list .n { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; font-family: var(--f-mono); font-size: 13px; font-weight: 600; }
+.list .n.fix { background: var(--good-bg); color: var(--good); }
+footer { padding-block: 24px 40px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); }
+@media (max-width: 900px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .hyps { grid-template-columns: minmax(0, 1fr); } .tbl th, .tbl td { padding: 9px 10px; } }
+/* sprint-backlog specifics */
+:root { --r1: var(--c1); --r1-t: var(--c1-t); --r2: #11815a; --r2-t: #e0f4ea; --r3: #c4511f; --r3-t: var(--c3-t); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --r2: #4fd09b; --r2-t: #123327; --r3: #f08a5d; } }
+.pdf { width: fit-content; font-weight: 600; color: var(--c1); text-decoration: none; font-size: 15px; }
+.pdf:hover { text-decoration: underline; }
+.bul { margin: 0; padding-left: 20px; display: grid; gap: 6px; color: var(--ink-2); max-width: 80ch; }
+.formula { font-family: var(--f-mono); font-size: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; white-space: nowrap; }
+.mgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.mcard { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; display: grid; gap: 6px; align-content: start; }
+.mcard.main { border-color: var(--c1); background: var(--c1-t); }
+.mcard b { font-size: 16px; }
+.mcard span:last-child { color: var(--ink-2); font-size: 14.5px; }
+.oid { font-family: var(--f-mono); font-size: 12px; font-weight: 600; color: var(--muted); margin-right: 4px; }
+.tbl.wrapcells td:first-child, .tbl.wrapcells td:nth-child(2) { white-space: normal; }
+.tbl td.num { white-space: nowrap; }
+.tbl td.dep { font-family: var(--f-mono); font-size: 12.5px; white-space: nowrap; color: var(--ink-2); }
+.tbl tr.tot td { font-weight: 700; }
+.small { font-size: 13px; color: var(--muted); }
+.hyp .ht { font-size: 15px; color: var(--ink); }
+.hyp dd.ok { color: var(--good); }
+.hyp dd.kill { color: var(--c3); }
+.sp { display: inline-grid; place-items: center; min-width: 26px; height: 24px; padding: 0 6px; border-radius: 7px; background: var(--surface-2); font-family: var(--f-mono); font-size: 12.5px; font-weight: 600; }
+.tid { display: inline-block; font-family: var(--f-mono); font-size: 12px; font-weight: 600; padding: 2px 7px; border-radius: 6px; white-space: nowrap; margin: 1px 0; }
+.tid.r1 { background: var(--r1-t); color: var(--r1); } .tid.r2 { background: var(--r2-t); color: var(--r2); } .tid.r3 { background: var(--r3-t); color: var(--r3); }
+.rdot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 0; }
+.rdot.r1 { background: var(--r1); } .rdot.r2 { background: var(--r2); } .rdot.r3 { background: var(--r3); }
+.roles { display: grid; gap: 20px; }
+.role { display: grid; gap: 8px; }
+.role h3 { font-size: 17px; font-weight: 700; }
+.js { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.js summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 12px 14px; }
+.js summary::-webkit-details-marker { display: none; }
+.js summary::after { content: "+"; margin-left: auto; font-family: var(--f-mono); color: var(--muted); }
+.js[open] summary::after { content: "−"; }
+.js .jt { font-weight: 600; flex: 1 1 220px; min-width: 0; }
+.js .jm { font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.js dl { margin: 0; padding: 0 14px 14px; display: grid; gap: 4px; font-size: 14.5px; color: var(--ink-2); }
+.js dt { font-family: var(--f-mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-top: 8px; }
+.js dd { margin: 0; }
+.crit { font-size: 14.5px; background: var(--warn-bg); color: var(--warn); border-radius: 10px; padding: 12px 14px; max-width: 90ch; }
+.list .n { background: var(--c1-t); color: var(--c1); }
+.list li { align-items: start; }
+.src { margin: 0; padding-left: 20px; display: grid; gap: 4px; font-size: 14px; color: var(--ink-2); }
+.src a { color: var(--c1); }
+h3.sub { font-size: 18px; font-weight: 700; margin-top: 8px; }
+@media (max-width: 700px) { .mgrid { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+
+
+<nav class="nav" aria-label="Разделы кейса">
+  <div class="wrap">
+    <a href="./#ru" class="back">← Все проекты</a>
+    <a href="#context">Контекст</a>
+    <a href="#metric">Метрика</a>
+    <a href="#hypotheses">Гипотезы</a>
+    <a href="#effort">Effort</a>
+    <a href="#backlog">Бэклог</a>
+    <a href="#stories">Job Stories</a>
+    <a href="#week">Неделя</a>
+    <a href="#risks">Риски</a>
+    <a href="#decisions">Решения</a>
+    <a href="en/jabu-sprint-backlog.html" class="lang">EN</a>
+  </div>
+</nav>
+
+<header class="wrap hero">
+  <span class="eyebrow">Учебный кейс · Product Discovery · уровень Medium</span>
+  <h1>Discovery-бэклог на спринт <span>· Jabu, YC S21</span></h1>
+  <p class="lead">Jabu доставляет продукты от производителей и дистрибьюторов в магазины у дома в Намибии, Замбии и ЮАР. Я сформулировала гипотезы решений и собрала бэклог Discovery-задач на недельный спринт для команды из трёх человек — продакта, UX-исследователя и продуктового дизайнера: с оценками в Story Points, зависимостями и планом по дням.</p>
+  <span class="note">Учебный план, а не работа внутри Jabu. Факты о продукте — из открытых источников 2022–2025; все пороги и проценты — допущения для проверки.</span>
+  <a class="pdf" href="files/jabu-discovery-backlog.pdf" target="_blank" rel="noopener">Скачать PDF кейса ↓</a>
+  <div class="kpis">
+    <div class="kpi"><span class="eyebrow">Гипотез</span><span class="v num">6</span><span class="d">по 4 возможностям в OST</span></div>
+    <div class="kpi"><span class="eyebrow">В спринте</span><span class="v num">3</span><span class="d">H1–H3 с наибольшим ICE</span></div>
+    <div class="kpi"><span class="eyebrow">Задач</span><span class="v num">19</span><span class="d">в формате Job Story</span></div>
+    <div class="kpi"><span class="eyebrow">Оценка</span><span class="v num">62 SP</span><span class="d">PM 22 · UXR 21 · Дизайн 19</span></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="sec" id="context">
+    <h2>Что у Jabu уже есть</h2>
+    <ul class="bul"><li>Заказ и оплата в приложении, доставка в тот же день (Jwallet)</li><li>Кредитные продукты для магазинов</li><li>Полевые агенты, которые подключают и сопровождают магазины</li><li>Поддержка клиентов в WhatsApp-группах</li><li>JabuPay и партнёрство с MTN в Замбии: моментальные платежи и меньше наличных</li></ul>
+    <p class="insight">Задача Discovery — не придумать эти функции заново, а понять, почему они не превращают первый заказ в привычку. Поэтому все гипотезы — об улучшении того, что уже есть.</p>
+  </section>
+
+  <section class="sec" id="metric">
+    <h2>Метрика спринта и дерево возможностей</h2>
+    <div class="formula">GMV = активные магазины × заказов на магазин в месяц × средний чек</div>
+    <div class="mgrid">
+      <div class="mcard main"><span class="eyebrow">Метрика спринта</span><b>Доля магазинов, сделавших 2-й заказ в течение 30 дней после 1-го — M1 repeat rate</b></div>
+      <div class="mcard"><span class="eyebrow">Guardrails</span><span>Доля просроченных кредитов и стоимость доставки на заказ — чтобы рост не покупался просрочкой или дорогой доставкой</span></div>
+    </div>
+    <div class="tbl wrapcells"><table><thead><tr><th>Возможность (боль владельца)</th><th>Гипотезы</th></tr></thead><tbody><tr><td><span class="oid">O1</span> «Не уверен, что привезут вовремя и всё, что заказал»</td><td class="num"><b>H1 ★</b></td></tr><tr><td><span class="oid">O2</span> «Нет денег, чтобы закупиться партией»</td><td class="num"><b>H2 ★, H6</b></td></tr><tr><td><span class="oid">O3</span> «Заказать в приложении сложнее, чем написать или позвонить»</td><td class="num"><b>H3 ★, H5</b></td></tr><tr><td><span class="oid">O4</span> «Не вижу, что это выгоднее cash &amp; carry»</td><td class="num"><b>H4</b></td></tr></tbody></table></div>
+    <p class="small">★ — гипотезы, которые проверяем в этом спринте.</p>
+  </section>
+
+  <section class="sec" id="hypotheses">
+    <h2>Гипотезы решений</h2>
+    <p class="insight">Формат: «Если мы сделаем X, то метрика Y изменится на Z, потому что W». ICE = Impact × Confidence × Ease (1–10), а Confidence объяснён уровнем доказательств. Критерии успеха и отказа записаны до исследования.</p>
+    <div class="hyps"><article class="hyp"><div class="hh"><span class="hid">H1</span><span class="seg">O1 · ★</span><span class="ice num" title="ICE = 8 × 7 × 6">ICE 8·7·6 = 336</span></div><p class="ht">Если при заказе показывать точное окно доставки, а о нехватке товара предупреждать до отгрузки с вариантом замены, то доля магазинов со 2-м заказом за 30 дней вырастет на 8 п.п., потому что неполные и поздние доставки возвращают владельцев в cash &amp; carry.</p><dl><dt>Самое рискованное допущение</dt><dd>Недовозы и опоздания случаются часто, и владельцы связывают их с Jabu.</dd><dt>Метрика</dt><dd>M1 repeat rate</dd><dt>Успех, если</dt><dd class="ok">В данных разрыв повторных заказов между идеальной и проблемной 1-й доставкой ≥ 10 п.п., и ≥ 5 из 10 респондентов называют надёжность доставки причиной.</dd><dt>Закрываем, если</dt><dd class="kill">Разрыв &lt; 3 п.п., и надёжность не всплывает в интервью.</dd><dt>Уверенность</dt><dd>C = 7: проверяем на реальных данных о доставках.</dd></dl></article><article class="hyp"><div class="hh"><span class="hid">H2</span><span class="seg">O2 · ★</span><span class="ice num" title="ICE = 9 × 5 × 6">ICE 9·5·6 = 270</span></div><p class="ht">Если предлагать уже существующий кредит прямо в корзине и показывать его стоимость в деньгах, а не в процентах, то доля заказов с кредитом вырастет вдвое, а средний чек у этих магазинов — на 15%, потому что магазины не знают о кредите или не понимают его условий.</p><dl><dt>Самое рискованное допущение</dt><dd>Кредитом мало пользуются из-за незнания, а не из-за страха долга или его цены.</dd><dt>Метрика</dt><dd>Доля заказов с кредитом, средний чек; guardrail — просрочка</dd><dt>Успех, если</dt><dd class="ok">Большинство магазинов с правом на кредит им не пользуются, и ≥ 5 из 10 в интервью объясняют это незнанием или непониманием условий.</dd><dt>Закрываем, если</dt><dd class="kill">Причина — страх долга или цена кредита. Тогда это другая гипотеза, не про интерфейс.</dd><dt>Уверенность</dt><dd>C = 5: причина низкого использования пока не известна.</dd></dl></article><article class="hyp"><div class="hh"><span class="hid">H3</span><span class="seg">O3 · ★</span><span class="ice num" title="ICE = 7 × 6 × 5">ICE 7·6·5 = 210</span></div><p class="ht">Если дать магазину повторить прошлый заказ одним сообщением в WhatsApp, то частота заказов у активных магазинов вырастет на 15%, потому что владельцы уже общаются с Jabu в WhatsApp, а приложение тяжело для дешёвых телефонов и дорогого трафика.</p><dl><dt>Самое рискованное допущение</dt><dd>Заказы магазинов достаточно повторяются, чтобы «повтор» был полезен.</dd><dt>Метрика</dt><dd>Заказов на магазин в месяц</dd><dt>Успех, если</dt><dd class="ok">≥ 6 из 10 регулярно заказывают похожий набор, проходят повтор заказа в прототипе без помощи, и техлид подтверждает осуществимость.</dd><dt>Закрываем, если</dt><dd class="kill">Состав заказа каждый раз разный или заказ через агента уже закрывает эту потребность.</dd><dt>Уверенность</dt><dd>C = 6: поддержка уже работает в WhatsApp, но спрос на заказ там не проверен.</dd></dl></article></div>
+    <h3 class="sub">Бэклог гипотез на следующие спринты</h3>
+    <div class="tbl wrapcells"><table><thead><tr><th>ID</th><th>Гипотеза</th><th>ICE</th></tr></thead><tbody><tr><td><span class="hid">H6</span></td><td>Если ввести мини-наборы ходовых товаров с меньшей минимальной суммой, то конверсия во 2-й заказ вырастет, потому что маленькие магазины не добирают минимум.</td><td class="num">5·5·7&nbsp;=&nbsp;175</td></tr><tr><td><span class="hid">H4</span></td><td>Если показывать экономию по сравнению с поездкой в cash &amp; carry (такси, закрытый магазин), то конверсия во 2-й заказ вырастет, потому что владельцы недооценивают скрытые затраты.</td><td class="num">5·4·8&nbsp;=&nbsp;160</td></tr><tr><td><span class="hid">H5</span></td><td>Если агент при визите оформляет повторный заказ за магазин, то частота заказов вырастет, потому что владельцу проще продиктовать заказ, чем оформить самому.</td><td class="num">6·5·4&nbsp;=&nbsp;120</td></tr></tbody></table></div>
+  </section>
+
+  <section class="sec" id="effort">
+    <h2>Шкала Effort</h2>
+    <p class="insight">Story Points отражают объём, неопределённость и зависимости, а не только часы. Ёмкость — 16–24 SP на человека в неделю.</p>
+    <div class="tbl"><table><thead><tr><th>SP</th><th>Значение</th><th>Ориентир</th></tr></thead><tbody><tr><td class="num"><span class="sp">1</span></td><td><b>Супер легко</b></td><td>До 2 часов, без неопределённости</td></tr><tr><td class="num"><span class="sp">2</span></td><td><b>Легко</b></td><td>Полдня, метод и вход понятны</td></tr><tr><td class="num"><span class="sp">3</span></td><td><b>Средне</b></td><td>Около дня, есть согласования или небольшая неопределённость</td></tr><tr><td class="num"><span class="sp">5</span></td><td><b>Сложно</b></td><td>Около двух дней, внешние люди, сырые данные или новый формат</td></tr><tr><td class="num"><span class="sp">8</span></td><td><b>Очень сложно</b></td><td>3+ дня, много зависимостей — сигнал разбить задачу</td></tr></tbody></table></div>
+  </section>
+
+  <section class="sec" id="backlog">
+    <h2>Сводный бэклог спринта</h2>
+    <p class="insight">Каждая задача связана с гипотезой, днём и зависимостями — так виден критический путь. Стрелка «→» — кому задача передаёт результат.</p>
+    <div class="tbl wrapcells"><table style="min-width:760px"><thead><tr><th>ID</th><th>Задача</th><th>Гип.</th><th>SP</th><th>Когда</th><th>Зависимости</th></tr></thead><tbody><tr><td><span class="tid r1">PM-1</span></td><td>Дерево метрик, OST и правила решений</td><td>H1–H3</td><td class="num"><span class="sp">3</span></td><td>Пн</td><td class="dep">—</td></tr><tr><td><span class="tid r1">PM-2</span></td><td>Когорты retention и надёжность доставки</td><td>H1</td><td class="num"><span class="sp">5</span></td><td>Пн–Ср</td><td class="dep">PM-1 → UXR-2</td></tr><tr><td><span class="tid r1">PM-3</span></td><td>Воронка существующего кредита</td><td>H2</td><td class="num"><span class="sp">3</span></td><td>Ср</td><td class="dep">PM-1 → D-3</td></tr><tr><td><span class="tid r1">PM-4</span></td><td>Интервью с людьми из поля</td><td>H1–H3</td><td class="num"><span class="sp">3</span></td><td>Пн</td><td class="dep">→ UXR-1, D-5</td></tr><tr><td><span class="tid r1">PM-5</span></td><td>Осуществимость заказа в WhatsApp</td><td>H3</td><td class="num"><span class="sp">2</span></td><td>Вт</td><td class="dep">→ D-4</td></tr><tr><td><span class="tid r1">PM-6</span></td><td>Карточки экспериментов на спринт 2</td><td>H1–H3</td><td class="num"><span class="sp">3</span></td><td>Чт</td><td class="dep">PM-2, PM-3, PM-5</td></tr><tr><td><span class="tid r1">PM-7</span></td><td>Синтез, decision log и демо</td><td>H1–H3</td><td class="num"><span class="sp">3</span></td><td>Пт</td><td class="dep">UXR-5, D-6, PM-6</td></tr><tr><td><span class="tid r2">UXR-1</span></td><td>План исследования и гайд интервью</td><td>H1–H3</td><td class="num"><span class="sp">3</span></td><td>Пн</td><td class="dep">PM-1, PM-4</td></tr><tr><td><span class="tid r2">UXR-2</span></td><td>Рекрутинг респондентов</td><td>H1–H3</td><td class="num"><span class="sp">5</span></td><td>Пн–Вт</td><td class="dep">PM-2</td></tr><tr><td><span class="tid r2">UXR-3</span></td><td>Глубинные интервью</td><td>H1–H3</td><td class="num"><span class="sp">5</span></td><td>Вт–Чт</td><td class="dep">UXR-1, UXR-2</td></tr><tr><td><span class="tid r2">UXR-4</span></td><td>Концепт-тест прототипов</td><td>H1–H3</td><td class="num"><span class="sp">3</span></td><td>Чт–Пт</td><td class="dep">D-3, D-4, D-5, D-7</td></tr><tr><td><span class="tid r2">UXR-5</span></td><td>Синтез: affinity map, jobs, CJM, OST</td><td>H1–H3</td><td class="num"><span class="sp">5</span></td><td>Пт</td><td class="dep">UXR-3, UXR-4 → PM-7, D-6</td></tr><tr><td><span class="tid r3">D-1</span></td><td>Аудит флоу заказа и кредита</td><td>H1, H2</td><td class="num"><span class="sp">3</span></td><td>Пн</td><td class="dep">—</td></tr><tr><td><span class="tid r3">D-2</span></td><td>Наблюдение на интервью</td><td>H1–H3</td><td class="num"><span class="sp">2</span></td><td>Вт–Ср</td><td class="dep">UXR-3</td></tr><tr><td><span class="tid r3">D-3</span></td><td>Прототип «кредит в корзине»</td><td>H2</td><td class="num"><span class="sp">3</span></td><td>Ср</td><td class="dep">PM-3 → UXR-4</td></tr><tr><td><span class="tid r3">D-4</span></td><td>Прототип повтора заказа в WhatsApp</td><td>H3</td><td class="num"><span class="sp">5</span></td><td>Ср–Чт</td><td class="dep">PM-5 → UXR-4</td></tr><tr><td><span class="tid r3">D-5</span></td><td>Прототип окна доставки и предупреждения о нехватке</td><td>H1</td><td class="num"><span class="sp">3</span></td><td>Чт</td><td class="dep">PM-4 → UXR-4</td></tr><tr><td><span class="tid r3">D-6</span></td><td>Визуализация для демо</td><td>H1–H3</td><td class="num"><span class="sp">2</span></td><td>Пт</td><td class="dep">UXR-5 → PM-7</td></tr><tr><td><span class="tid r3">D-7</span></td><td>Офлайн-карточки прототипов</td><td>H1–H3</td><td class="num"><span class="sp">1</span></td><td>Чт</td><td class="dep">D-3, D-4, D-5 → UXR-4</td></tr></tbody></table></div>
+    <div class="tbl"><table><thead><tr><th>Роль</th><th>SP</th><th>Ёмкость</th><th>Запас</th></tr></thead><tbody><tr><td><span class="rdot r1"></span>Продакт-менеджер</td><td class="num">22</td><td class="num">16–24</td><td class="num">2</td></tr><tr><td><span class="rdot r2"></span>UX-исследователь</td><td class="num">21</td><td class="num">16–24</td><td class="num">3</td></tr><tr><td><span class="rdot r3"></span>Продуктовый дизайнер</td><td class="num">19</td><td class="num">16–24</td><td class="num">5</td></tr><tr class="tot"><td>Итого</td><td class="num">62</td><td class="num">48–72</td><td></td></tr></tbody></table></div>
+  </section>
+
+  <section class="sec" id="stories">
+    <h2>Задачи в формате Job Story</h2>
+    <p class="insight">Формат: «Когда [ситуация], я хочу [действие], чтобы [результат]». У каждой оценки есть объяснение — почему именно столько и почему не соседнее значение. Нажмите на задачу, чтобы раскрыть.</p>
+    <div class="roles"><div class="role"><h3><span class="rdot r1"></span>Продакт-менеджер — 22 SP</h3><details class="js"><summary><span class="tid r1">PM-1</span><span class="jt">Дерево метрик, OST и правила решений</span><span class="jm num">H1–H3 · Пн · 3 SP</span></summary><dl><dt>Job Story</dt><dd>Когда я, как продакт, начинаю недельный спринт с шестью гипотезами, я хочу связать их с деревом метрик и заранее записать для трёх приоритетных критерии успеха и отказа, чтобы в пятницу решение принималось по правилам, а не по впечатлениям.</dd><dt>Почему</dt><dd>3 SP — Метод известен, но пороги неопределённы: базовых значений ещё нет, их нужно согласовать с CEO и ops. Не 2 — из-за согласований; не 5 — работы с данными нет, это решения.</dd><dt>Готово, когда</dt><dd>Дерево метрик и OST на одной странице; критерии успеха и отказа согласованы с CEO.</dd><dt>Зависимости</dt><dd>—</dd></dl></details><details class="js"><summary><span class="tid r1">PM-2</span><span class="jt">Когорты retention и надёжность доставки</span><span class="jm num">H1 · Пн–Ср · 5 SP</span></summary><dl><dt>Job Story</dt><dd>Когда я, как продакт, предполагаю, что магазины уходят из-за неполных и поздних доставок, я хочу сравнить повторные заказы у магазинов с идеальной и проблемной первой доставкой по трём странам, чтобы подтвердить или закрыть H1 на данных и дать исследователю сегменты для рекрутинга.</dd><dt>Почему</dt><dd>5 SP — Высокая неопределённость данных: заказы, логистика и CRM агентов в разных системах, три валюты, а «неполная доставка» может не логироваться — придётся договориться о прокси. Не 8: схема данных известна, новый трекинг не нужен.</dd><dt>Готово, когда</dt><dd>Таблица M1-когорт по сегментам; списки магазинов для рекрутинга к вечеру вторника.</dd><dt>Зависимости</dt><dd>PM-1 → UXR-2</dd></dl></details><details class="js"><summary><span class="tid r1">PM-3</span><span class="jt">Воронка существующего кредита</span><span class="jm num">H2 · Ср · 3 SP</span></summary><dl><dt>Job Story</dt><dd>Когда я, как продакт, знаю, что кредит уже есть, но не знаю, почему им мало пользуются, я хочу построить воронку «имеет право → видел предложение → взял → вернул вовремя», чтобы понять, где теряются магазины, и не тестировать кредит в корзине вслепую.</dd><dt>Почему</dt><dd>3 SP — Данные у кредитной команды, но события «видел предложение» может не быть — нужен прокси; данные чувствительные, доступ через финансы. Не 5: одна воронка, а не модель.</dd><dt>Готово, когда</dt><dd>Воронка по странам и доля просрочки как guardrail.</dd><dt>Зависимости</dt><dd>PM-1 → D-3</dd></dl></details><details class="js"><summary><span class="tid r1">PM-4</span><span class="jt">Интервью с людьми из поля</span><span class="jm num">H1–H3 · Пн · 3 SP</span></summary><dl><dt>Job Story</dt><dd>Когда я, как продакт, готовлюсь к интервью с клиентами, я хочу поговорить с 5–6 людьми из поля — агентами, диспетчерами, кредитной командой и поддержкой в WhatsApp, — чтобы собрать уже известные причины оттока и ограничения операций и не тратить интервью с клиентами на то, что компания уже знает.</dd><dt>Почему</dt><dd>3 SP — Созвоны легко назначить, но мнения противоречат друг другу: нужно свести их и отделить факты от мнений. Не 2 — из-за синтеза; не 5 — люди внутри компании.</dd><dt>Готово, когда</dt><dd>Список причин оттока с пометкой «факт / мнение»; передан в UXR-1.</dd><dt>Зависимости</dt><dd>→ UXR-1, D-5</dd></dl></details><details class="js"><summary><span class="tid r1">PM-5</span><span class="jt">Осуществимость заказа в WhatsApp</span><span class="jm num">H3 · Вт · 2 SP</span></summary><dl><dt>Job Story</dt><dd>Когда я, как продакт, рассматриваю повтор заказа в WhatsApp, я хочу за один созвон с техлидом оценить ограничения WhatsApp Business API, стоимость сообщений и связь с корзиной, чтобы не показывать клиентам решение, которое нельзя или слишком дорого сделать.</dd><dt>Почему</dt><dd>2 SP — Вопрос узкий, ответ у техлида, на выходе одна страница. Не 1: нужно посчитать стоимость сообщений по трём странам.</dd><dt>Готово, когда</dt><dd>Заметка «можно / нельзя / сколько стоит» для H3.</dd><dt>Зависимости</dt><dd>→ D-4</dd></dl></details><details class="js"><summary><span class="tid r1">PM-6</span><span class="jt">Карточки экспериментов на спринт 2</span><span class="jm num">H1–H3 · Чт · 3 SP</span></summary><dl><dt>Job Story</dt><dd>Когда к четвергу станет понятно, какие гипотезы живы, я хочу описать для каждой эксперимент — пилот окна доставки на одном маршруте, fake door кредита в корзине, ручной повтор заказа в WhatsApp на 30 магазинах — с выборкой, сроком и порогом, чтобы спринт 2 начался с запуска, а не с планирования.</dd><dt>Почему</dt><dd>3 SP — Три эксперимента, каждый надо согласовать с ops или разработкой и оценить выборку при небольшом трафике. Неопределённость — какие гипотезы доживут до четверга.</dd><dt>Готово, когда</dt><dd>3 карточки экспериментов, согласованные с ops и техлидом.</dd><dt>Зависимости</dt><dd>PM-2, PM-3, PM-5</dd></dl></details><details class="js"><summary><span class="tid r1">PM-7</span><span class="jt">Синтез, decision log и демо</span><span class="jm num">H1–H3 · Пт · 3 SP</span></summary><dl><dt>Job Story</dt><dd>Когда спринт заканчивается, я хочу свести данные, интервью и реакцию на прототипы в decision log «что узнали → что решили» и провести демо для CEO, чтобы по каждой гипотезе было решение Go / Pivot / Kill с доказательствами.</dd><dt>Почему</dt><dd>3 SP — Материалы готовят другие, но данные и интервью могут противоречить друг другу — конфликт нужно честно разобрать, а не выбрать удобную версию.</dd><dt>Готово, когда</dt><dd>Decision log и 20-минутное демо.</dd><dt>Зависимости</dt><dd>UXR-5, D-6, PM-6</dd></dl></details></div><div class="role"><h3><span class="rdot r2"></span>UX-исследователь — 21 SP</h3><details class="js"><summary><span class="tid r2">UXR-1</span><span class="jt">План исследования и гайд интервью</span><span class="jm num">H1–H3 · Пн · 3 SP</span></summary><dl><dt>Job Story</dt><dd>Когда я, как исследователь, получаю три гипотезы и причины оттока от стейкхолдеров, я хочу написать JTBD-гайд — как магазин закупается сейчас, что ломается, как платит, — где вопросы о прошлом опыте идут до показа прототипов, чтобы интервью проверяли гипотезы, а не подтверждали их.</dd><dt>Почему</dt><dd>3 SP — Нужна адаптация под три страны и переводчиков; вопросы о деньгах и долге чувствительные, их надо формулировать без наводки. Не 5: шаблон гайда есть.</dd><dt>Готово, когда</dt><dd>Гайд и скрининг-анкета; гайд пройден пилотно с одним агентом.</dd><dt>Зависимости</dt><dd>PM-1, PM-4</dd></dl></details><details class="js"><summary><span class="tid r2">UXR-2</span><span class="jt">Рекрутинг респондентов</span><span class="jm num">H1–H3 · Пн–Вт · 5 SP</span></summary><dl><dt>Job Story</dt><dd>Когда мне, как исследователю, нужно поговорить с владельцами, которые весь день в магазине и часто без стабильной связи, я хочу набрать 12 человек из трёх сегментов — заказывают регулярно, ушли после 1–2 заказов, брали кредит — через агентов и WhatsApp, с переводчиками и вознаграждением, чтобы провести 10 интервью на этой неделе с запасом на неявки.</dd><dt>Почему</dt><dd>5 SP — Главный риск по срокам: ушедшие клиенты неохотно отвечают, нужны переводчики и вознаграждение (эфирное время или ваучер). Не 8: агенты знают владельцев лично, а до готовности сегментов из PM-2 начинаем по спискам агентов.</dd><dt>Готово, когда</dt><dd>12 подтверждённых слотов, ≥ 3 в каждом сегменте, минимум 2 страны.</dd><dt>Зависимости</dt><dd>PM-2</dd></dl></details><details class="js"><summary><span class="tid r2">UXR-3</span><span class="jt">Глубинные интервью</span><span class="jm num">H1–H3 · Вт–Чт · 5 SP</span></summary><dl><dt>Job Story</dt><dd>Когда респонденты набраны, я хочу провести 10 интервью по 45 минут — часть в магазине, наблюдая, как владелец проверяет остатки и заказывает, — чтобы найти реальные причины, почему первый заказ не стал привычкой.</dd><dt>Почему</dt><dd>5 SP — 10 интервью с переводчиком, поездками и обрывами связи; неопределённость — неявки и качество перевода. Не 8: концепт-тест вынесен в отдельную задачу, а рекрутинг сделан в UXR-2.</dd><dt>Готово, когда</dt><dd>10 интервью; заметки в общем борде не позже чем через 2 часа после каждого.</dd><dt>Зависимости</dt><dd>UXR-1, UXR-2</dd></dl></details><details class="js"><summary><span class="tid r2">UXR-4</span><span class="jt">Концепт-тест прототипов</span><span class="jm num">H1–H3 · Чт–Пт · 3 SP</span></summary><dl><dt>Job Story</dt><dd>Когда дизайнер готовит прототипы, я хочу в конце 5–6 интервью показать их по одному и попросить выполнить задачу — выбрать окно доставки, взять кредит в корзине, повторить заказ в WhatsApp, — чтобы увидеть, понимают ли владельцы решение без объяснений.</dd><dt>Почему</dt><dd>3 SP — Прототипы приходят в разные дни, порядок показа нужно ротировать, а без связи показывать на распечатках (D-7).</dd><dt>Готово, когда</dt><dd>Таблица «понял / справился / возражения» по каждому прототипу.</dd><dt>Зависимости</dt><dd>D-3, D-4, D-5, D-7</dd></dl></details><details class="js"><summary><span class="tid r2">UXR-5</span><span class="jt">Синтез: affinity map, jobs, CJM, OST</span><span class="jm num">H1–H3 · Пт · 5 SP</span></summary><dl><dt>Job Story</dt><dd>Когда собраны интервью и концепт-тесты, я хочу разложить наблюдения в affinity map, выделить 3–5 jobs, построить карту пути закупки и обновить OST, чтобы команда решала по фактам и увидела возможности, о которых мы не знали.</dd><dt>Почему</dt><dd>5 SP — Материал на разных языках, по странам и сегментам, и он может противоречить данным PM-2 и PM-3. Не 8: дебрифы идут по ходу недели.</dd><dt>Готово, когда</dt><dd>Affinity map, jobs, CJM и обновлённый OST к пятнице 13:00.</dd><dt>Зависимости</dt><dd>UXR-3, UXR-4 → PM-7, D-6</dd></dl></details></div><div class="role"><h3><span class="rdot r3"></span>Продуктовый дизайнер — 19 SP</h3><details class="js"><summary><span class="tid r3">D-1</span><span class="jt">Аудит флоу заказа и кредита</span><span class="jm num">H1, H2 · Пн · 3 SP</span></summary><dl><dt>Job Story</dt><dd>Когда я, как дизайнер, хочу понять, где приложение мешает повторному заказу, я хочу пройти путь «каталог → корзина → кредит → оплата → отслеживание» на бюджетном Android с медленным интернетом, чтобы найти проблемы, которые объясняют отток помимо наших гипотез.</dd><dt>Почему</dt><dd>3 SP — Флоу известен, но нужен реальный бюджетный телефон, имитация медленной сети и тестовый аккаунт с кредитом.</dd><dt>Готово, когда</dt><dd>10–15 проблем с приоритетом и скриншотами.</dd><dt>Зависимости</dt><dd>—</dd></dl></details><details class="js"><summary><span class="tid r3">D-2</span><span class="jt">Наблюдение на интервью</span><span class="jm num">H1–H3 · Вт–Ср · 2 SP</span></summary><dl><dt>Job Story</dt><dd>Когда исследователь проводит интервью, я хочу присутствовать на трёх из них, включая визит в магазин, чтобы проектировать под реальный контекст — шум, очередь у кассы, старый телефон, — а не под офис.</dd><dt>Почему</dt><dd>2 SP — 4–5 часов участия, подготовка не нужна.</dd><dt>Готово, когда</dt><dd>Заметки в общем борде.</dd><dt>Зависимости</dt><dd>UXR-3</dd></dl></details><details class="js"><summary><span class="tid r3">D-3</span><span class="jt">Прототип «кредит в корзине»</span><span class="jm num">H2 · Ср · 3 SP</span></summary><dl><dt>Job Story</dt><dd>Когда магазину не хватает денег на нужную партию, я хочу показать в корзине «Оплатить через 7 дней» со стоимостью в деньгах и датой платежа, чтобы проверить, понимают ли владельцы условия с первого прочтения.</dd><dt>Почему</dt><dd>3 SP — 3–4 экрана в существующей дизайн-системе. Сложность — честно и понятно показать цену долга без мелкого шрифта; текст согласовать с кредитной командой.</dd><dt>Готово, когда</dt><dd>Кликабельный прототип к вечеру среды.</dd><dt>Зависимости</dt><dd>PM-3 → UXR-4</dd></dl></details><details class="js"><summary><span class="tid r3">D-4</span><span class="jt">Прототип повтора заказа в WhatsApp</span><span class="jm num">H3 · Ср–Чт · 5 SP</span></summary><dl><dt>Job Story</dt><dd>Когда владельцу нужно пополнить те же товары, что и в прошлый раз, я хочу спроектировать диалог в WhatsApp: «повторить заказ» → изменить количество → подтвердить → оплатить, — чтобы проверить, справится ли владелец без приложения.</dd><dt>Почему</dt><dd>5 SP — Новый канал без дизайн-системы; ограничения API (шаблоны, кнопки, 24-часовое окно) из PM-5; сценарии ошибок и замен. Диалог сложнее набора экранов.</dd><dt>Готово, когда</dt><dd>Кликабельный прототип диалога к четвергу 12:00.</dd><dt>Зависимости</dt><dd>PM-5 → UXR-4</dd></dl></details><details class="js"><summary><span class="tid r3">D-5</span><span class="jt">Прототип окна доставки и предупреждения о нехватке</span><span class="jm num">H1 · Чт · 3 SP</span></summary><dl><dt>Job Story</dt><dd>Когда магазин ждёт товар для полок, я хочу спроектировать выбор окна доставки при заказе и сообщение «2 товара закончились — заменить или убрать?» до отгрузки, чтобы проверить, снижает ли предсказуемость страх остаться с пустыми полками.</dd><dt>Почему</dt><dd>3 SP — 3–4 экрана и шаблоны уведомлений; реальная логика окон — у ops, для прототипа хватает допущений из PM-4.</dd><dt>Готово, когда</dt><dd>Прототип к четвергу 12:00.</dd><dt>Зависимости</dt><dd>PM-4 → UXR-4</dd></dl></details><details class="js"><summary><span class="tid r3">D-6</span><span class="jt">Визуализация для демо</span><span class="jm num">H1–H3 · Пт · 2 SP</span></summary><dl><dt>Job Story</dt><dd>Когда исследователь закончит синтез, я хочу оформить карту пути и OST в виде «сейчас / с решением», чтобы CEO за 10 минут увидел проблемы и решения.</dd><dt>Почему</dt><dd>2 SP — Содержание даёт UXR, задача — оформление. Полдня.</dd><dt>Готово, когда</dt><dd>Страница в Figma для демо.</dd><dt>Зависимости</dt><dd>UXR-5 → PM-7</dd></dl></details><details class="js"><summary><span class="tid r3">D-7</span><span class="jt">Офлайн-карточки прототипов</span><span class="jm num">H1–H3 · Чт · 1 SP</span></summary><dl><dt>Job Story</dt><dd>Когда интервью проходит в магазине без стабильного интернета, я хочу распечатать ключевые экраны трёх прототипов карточками, чтобы концепт-тест не сорвался из-за связи.</dd><dt>Почему</dt><dd>1 SP — Экраны уже готовы, нужна только раскладка для печати — до двух часов.</dd><dt>Готово, когда</dt><dd>PDF для печати.</dd><dt>Зависимости</dt><dd>D-3, D-4, D-5 → UXR-4</dd></dl></details></div></div>
+  </section>
+
+  <section class="sec" id="week">
+    <h2>План недели</h2>
+    <div class="tbl"><table><thead><tr><th>День</th><th><span class="rdot r1"></span>Продакт-менеджер</th><th><span class="rdot r2"></span>UX-исследователь</th><th><span class="rdot r3"></span>Продуктовый дизайнер</th></tr></thead><tbody><tr><td><b>Пн</b></td><td><span class="tid r1">PM-1</span> <span class="tid r1">PM-4</span> <span class="tid r1">PM-2</span></td><td><span class="tid r2">UXR-1</span> <span class="tid r2">UXR-2</span></td><td><span class="tid r3">D-1</span></td></tr><tr><td><b>Вт</b></td><td><span class="tid r1">PM-2</span> <span class="tid r1">PM-5</span></td><td><span class="tid r2">UXR-2</span> <span class="tid r2">UXR-3</span></td><td><span class="tid r3">D-2</span></td></tr><tr><td><b>Ср</b></td><td><span class="tid r1">PM-2</span> <span class="tid r1">PM-3</span></td><td><span class="tid r2">UXR-3</span></td><td><span class="tid r3">D-2</span> <span class="tid r3">D-3</span> <span class="tid r3">D-4</span></td></tr><tr><td><b>Чт</b></td><td><span class="tid r1">PM-6</span></td><td><span class="tid r2">UXR-3</span> <span class="tid r2">UXR-4</span></td><td><span class="tid r3">D-4</span> <span class="tid r3">D-5</span> <span class="tid r3">D-7</span></td></tr><tr><td><b>Пт</b></td><td><span class="tid r1">PM-7</span></td><td><span class="tid r2">UXR-4</span> <span class="tid r2">UXR-5</span></td><td><span class="tid r3">D-6</span></td></tr></tbody></table></div>
+    <p class="crit">Критический путь: PM-1 → UXR-1 → UXR-2 → UXR-3 → UXR-4 → UXR-5 → PM-7. Прототипы D-3, D-4, D-5 нужны к четвергу 12:00 для концепт-теста.</p>
+  </section>
+
+  <section class="sec" id="risks">
+    <h2>Риски и что не делаем</h2>
+    <div class="tbl wrapcells"><table><thead><tr><th>Риск</th><th>Что делаем</th></tr></thead><tbody><tr><td><b>Неявки респондентов</b></td><td>Набираем 12 на 10 интервью; агенты знают владельцев лично.</td></tr><tr><td><b>Нет данных о неполных доставках</b></td><td>Прокси: заказы с возвратом или правкой суммы после доставки.</td></tr><tr><td><b>Язык и связь</b></td><td>Переводчики; WhatsApp-звонки; распечатки прототипов (D-7).</td></tr><tr><td><b>Подтверждение своих идей</b></td><td>Сначала прошлый опыт, прототипы — только в конце; критерии отказа заданы заранее.</td></tr></tbody></table></div>
+    <h3 class="sub">Вне спринта</h3>
+    <ul class="bul"><li>Массовый опрос 300+ магазинов — спринт 2, после того как интервью дадут варианты ответов.</li><li>Гипотезы H4–H6 — остаются в бэклоге.</li><li>Запуск экспериментов, разработка, изменение условий кредита.</li></ul>
+  </section>
+
+  <section class="sec" id="decisions">
+    <h2>Как принимались решения при планировании</h2>
+    <ul class="list"><li><span class="n">1</span><span>Начала с того, что у Jabu уже есть, поэтому гипотезы — об улучшении существующих функций, а не о новых.</span></li><li><span class="n">2</span><span>Одна метрика спринта (M1 repeat rate) и два guardrail, чтобы рост не покупался просрочкой или дорогой доставкой.</span></li><li><span class="n">3</span><span>Критерии успеха и отказа записаны до исследования, а не после.</span></li><li><span class="n">4</span><span>Задача на 8 SP разбита: интервью и концепт-тест — отдельные задачи с разными рисками.</span></li><li><span class="n">5</span><span>У исследователя запас: 21 SP из 24. Массовый опрос перенесён в спринт 2 — он не меняет решения этой недели.</span></li><li><span class="n">6</span><span>Каждая задача связана с гипотезой, днём и зависимостями — видно критический путь.</span></li><li><span class="n">7</span><span>Оценки объясняют неопределённость и зависимости, а не только часы.</span></li></ul>
+    <h3 class="sub">Источники</h3>
+    <ul class="src"><li><a href="https://techcrunch.com/2022/05/25/namibian-b2b-e-commerce-retail-platform-jabu-raises-15m-led-by-tiger-global" target="_blank" rel="noopener">TechCrunch, 2022 — JABU raises $15M</a></li><li><a href="https://techcrunch.com/2022/01/06/yc-backed-namibian-startup-jabu-gets-3-2m-for-its-b2b-e-commerce-and-retail-play" target="_blank" rel="noopener">TechCrunch, 2022 — JABU gets $3.2M</a></li><li><a href="https://www.offerzen.com/companies/jabu" target="_blank" rel="noopener">OfferZen — About JABU</a></li><li><a href="https://linkedin.com/company/jabu" target="_blank" rel="noopener">Jabu on LinkedIn</a></li><li><a href="https://builtin.com/job/customer-experience-specialist/7514436" target="_blank" rel="noopener">Built In — Jabu Customer Experience Specialist</a></li></ul>
+  </section>
+</main>
+<footer class="wrap">Учебный кейс курса Product Management. Jabu — реальная компания из Y Combinator (S21), но гипотезы, задачи, оценки и пороги здесь — мой учебный план, а не данные компании.</footer>
+
+<!-- Shared by the case pages (inlined by build.py): highlights the section you are reading in the sticky top nav, shows reading progress,
+     and offers "← Back" to return to where you were before jumping to a section (button, Alt+← or the browser's back). -->
+<style>
+.nav { position: sticky; }
+.nav a.active { background: var(--ink); color: var(--bg); }
+.nav a.active:hover { background: var(--ink); color: var(--bg); }
+.nav .progress { position: absolute; left: 0; bottom: -1px; height: 2px; width: 100%; background: var(--focus); transform-origin: 0 50%; transform: scaleX(0); }
+.backjump { position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 12;
+  font: inherit; font-size: 14px; font-weight: 600; border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  padding: 9px 14px; border-radius: 999px; cursor: pointer; box-shadow: 0 6px 24px rgb(15 23 42 / .16); }
+.backjump:hover { border-color: var(--ink-2); }
+@media (prefers-reduced-motion: no-preference) { .nav a { transition: background .15s, color .15s; } }
+</style>
+<script>
+(function () {
+  const nav = document.querySelector(".nav");
+  if (!nav) return;
+  const row = nav.querySelector(".wrap");
+  const links = [...nav.querySelectorAll('a[href^="#"]')];
+  const pairs = links.map(a => [a, document.getElementById(a.getAttribute("href").slice(1))]).filter(p => p[1]);
+  const bar = document.createElement("div");
+  bar.className = "progress";
+  bar.setAttribute("aria-hidden", "true");
+  nav.appendChild(bar);
+  let current = null, ticking = false;
+
+  function update() {
+    ticking = false;
+    const line = nav.getBoundingClientRect().bottom + 24;
+    let active = null;
+    for (const [a, sec] of pairs) if (sec.getBoundingClientRect().top <= line) active = a;
+    const atEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+    if (atEnd && pairs.length) active = pairs[pairs.length - 1][0];
+    if (active !== current) {
+      if (current) { current.classList.remove("active"); current.removeAttribute("aria-current"); }
+      if (active) {
+        active.classList.add("active");
+        active.setAttribute("aria-current", "location");
+        // keep the active link visible in the horizontally scrolling nav (phones) without moving the page
+        const left = active.offsetLeft - (row.clientWidth - active.offsetWidth) / 2;
+        row.scrollTo({ left: Math.max(0, left), behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      }
+      current = active;
+    }
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.transform = "scaleX(" + (max > 0 ? Math.min(1, window.scrollY / max) : 0) + ")";
+  }
+  // one step back: remember the scroll position before every in-page jump
+  const ru = (document.documentElement.lang || "ru").slice(0, 2) === "ru";
+  const back = document.createElement("button");
+  back.type = "button"; back.className = "backjump"; back.hidden = true;
+  back.textContent = ru ? "\u2190 \u041d\u0430\u0437\u0430\u0434" : "\u2190 Back";
+  back.title = ru ? "\u0412\u0435\u0440\u043d\u0443\u0442\u044c\u0441\u044f \u0442\u0443\u0434\u0430, \u0433\u0434\u0435 \u0432\u044b \u0431\u044b\u043b\u0438 \u00b7 Alt + \u2190" : "Return to where you were \u00b7 Alt + \u2190"; // RU text escaped so English pages stay Cyrillic-free
+  document.body.appendChild(back);
+  const jumps = [];
+  const sync = () => { back.hidden = !jumps.length; };
+  document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener("click", () => {
+    if (a.getAttribute("href").length < 2) return;
+    jumps.push({ y: window.scrollY, h: location.hash }); if (jumps.length > 50) jumps.shift(); sync();
+  }));
+  function goBack() {
+    if (!jumps.length) return;
+    const y = jumps.pop().y;
+    try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+    window.scrollTo({ top: y, behavior: "auto" });
+    sync();
+  }
+  back.addEventListener("click", goBack);
+  // the browser's own back: drop the jump it just undid (clicking a link also fires popstate, so compare hashes)
+  window.addEventListener("popstate", () => { if (jumps.length && location.hash === jumps[jumps.length - 1].h) { jumps.pop(); sync(); } });
+  document.addEventListener("keydown", e => { if (e.altKey && e.key === "ArrowLeft" && jumps.length) { e.preventDefault(); goBack(); } });
+
+  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+  update();
+})();
+</script>
+
+<a class="pf-home" href="./#ru" title="На главную — все проекты" aria-label="На главную — все проекты"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10"/><path d="M10 20v-6h4v6"/></svg><span>Главная</span></a>
+<style>
+.pf-home { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 25;
+  display: inline-flex; align-items: center; gap: 7px; font: inherit; font-size: 14px; font-weight: 600; line-height: 1; text-decoration: none;
+  border: 1px solid var(--line, #d0d5dd); background: var(--surface, #fff); color: var(--ink, #0f172a);
+  padding: 10px 14px; border-radius: 999px; box-shadow: 0 6px 24px rgb(15 23 42 / .16); }
+.pf-home:hover { border-color: var(--ink-2, #475467); }
+.pf-home:focus-visible { outline: 2px solid var(--ink, #0f172a); outline-offset: 2px; }
+@media print { .pf-home { display: none; } }
+</style>
+<script>
+(function () {
+  try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) {}
+  function toTop() {
+    try { window.scrollTo(0, 0); } catch (e) {}
+    try { if (window.top !== window && document.body) document.body.scrollIntoView({ block: "start" }); } catch (e) {}
+  }
+  window.pfToTop = toTop;
+  function onLoad() {
+    var h = decodeURIComponent(location.hash.slice(1));
+    if (h && document.getElementById(h)) return; // a link to a section of a long page keeps its place
+    toTop();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", onLoad); else onLoad();
+  window.addEventListener("pageshow", function (e) { if (e.persisted) onLoad(); });
+  var TYPING = /^(INPUT|TEXTAREA|SELECT)$/;
+  function typing(el) { return el && (el.isContentEditable || (TYPING.test(el.tagName) && el.type !== "range" && el.type !== "checkbox" && el.type !== "radio" && el.type !== "button")); }
+  document.addEventListener("pointerdown", function (e) {
+    var a = document.activeElement;
+    if (!typing(a)) return;
+    var t = e.target;
+    if (t && t.closest && t.closest("input, textarea, select, label, [contenteditable]")) return;
+    a.blur();
+  }, true);
+  document.addEventListener("keydown", function (e) {
+    var a = document.activeElement;
+    if (!typing(a) || a.tagName === "TEXTAREA") return;
+    if (e.key === "Enter" || e.key === "Escape") a.blur();
+  });
+})();
+</script>
+</body>
+</html>
