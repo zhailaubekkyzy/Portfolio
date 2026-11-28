@@ -5,8 +5,8 @@
 from html import escape as e
 
 T = {
-    "title": ("Customer Discovery workflow · Jabu (YC S21) — Томирис Жайлаубеккызы",
-              "Customer Discovery workflow · Jabu (YC S21) — Tomiris Zhailaubekkyzy"),
+    "title": ("Customer Discovery workflow · Jabu (YC S21) — Томирис (Гулсара) Жайлаубеккызы",
+              "Customer Discovery workflow · Jabu (YC S21) — Tomiris (Gulsara) Zhailaubekkyzy"),
     "desc": ("Учебный кейс: процесс Customer Discovery в Jira, гипотезы решений и бэклог Discovery-задач для B2B-доставки продуктов в Намибии, Замбии и ЮАР.",
              "Training case: a Customer Discovery workflow in Jira, solution hypotheses and a Discovery backlog for B2B grocery delivery in Namibia, Zambia and South Africa."),
     "nav_label": ("Разделы кейса", "Case sections"),
